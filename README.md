@@ -11,9 +11,11 @@
 | `droplet_milkcrown_newton_surface.py` | milkcrown 连续水面、透明水材质和桌面切换 |
 | `droplet_milkcrown_newton.py` | milkcrown 的隐式 MPM 实现 |
 | `robot_testtube_pour.py` | 预握试管→抬起移动→倾倒→扶正；支持实时求解、可选物理缓存回放和 10 秒视频 |
-| `robot_target_volume_pour.py` | 实时 PBF 液体反馈，选择 20 / 30 / 40 mL 后自动扶正 |
+| `robot_target_volume_pour.py` | 手写实时 PBF 反馈基准，选择 20 / 30 / 40 mL 后自动扶正 |
+| `robot_target_volume_ai.py` | 支持冻结的 CEM 候选/基准切换，默认使用验证集选定策略 |
+| `train_target_volume_policy.py` | 在实时 PBF 中进行 CEM 策略搜索，分开记录训练、验证和独立测试 |
 
-机器人使用预握试管与 IK 运动学控制，液体由求解器计算。目标水量示例是反馈控制基准，尚未训练神经网络策略；没有模拟摩擦抓持、液体反力或力矩反馈。mL 按粒子体积估算，尚未校准为真实定量实验。
+机器人使用预握试管与 IK 运动学控制，液体由求解器计算。原目标水量入口是手写反馈基准；新 AI 入口支持 CEM 候选与基准切换。首轮候选未胜过基准，验证集选定的默认模型如实标为 `baseline_fallback`。学习对象是三个反馈参数，不是 PPO、神经网络或六关节端到端控制。没有模拟摩擦抓持、液体反力或力矩反馈。mL 来自固定粒子质量与密度，尚未校准为真实定量实验。
 
 ## 动画演示
 
@@ -55,11 +57,23 @@ exec(compile(script.read_text(encoding="utf-8"), str(script), "exec"),
 
 初始化后，在 **Target volume pouring** 面板选择 **20 / 30 / 40 mL → Play**。Pause 暂停，Reset 复位，Test 20 / 30 / 40 mL 可重新验证三项。文件顶部 `TARGET_VOLUME_ML` 设置初始目标。
 
-`launch.py` 默认启动目标水量示例；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `pour`、`milkcrown` 或 `bake-cache`。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
+`launch.py` 默认启动目标水量基准；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `ai`、`pour`、`milkcrown` 或 `bake-cache`。`ai` 需要已冻结的本地检查点。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
 
-## 已验证结果
+## 学习策略与水量显示
 
-以下为同一初始场景的三次 Isaac Sim 实时物理测试；并非跨场景成功率统计。
+目标水量面板默认使用蓝色水流，支持 **Blue water / Clear water** 切换。稀疏水滴以实时求解器的实际空中粒子中心显示，直径为一个粒间距，仅用于观察。新增入杯量、误差、空中余流和流速由仿真粒子测量；目标/实际量导线仅辅助观察等效静态液位，不从透明画面估算 mL。
+
+![实时求解得到的蓝色下落水滴](docs/images/ai_visible_flow.png)
+
+首轮完成 **18 个训练、6 个验证、18 个测试回合，共 42 次实时液体运行**。测试包含原 12 回合和追加 6 回合候选审计，只有 2 个测试种子、6 个目标×种子条件。独立测试 MAE：默认/基准 **0.082375 mL**，真正训练候选 **0.169313 mL**，未显示改进；两者均有 5/6 条件落在 ±0.2 mL 内。
+
+训练使用原始 1/60 s 物理时间，六次压力迭代，全部回合粒子及实际质量守恒。模型先冻结再测试，追加审计不改变验证集的默认选择。详见[简短结果与真实两代曲线](docs/AI_TRAINING_RESULTS.md)、[精选数据与冻结 SHA](results/ai_training.json)和[复现说明](assets/robot_testtube_pour/AI_TRAINING.md)。
+
+另完成原始逐步调度的三个 GUI 候选 nominal 验证和水流显示检查；它们不计入 42 次批量执行，也不是留出测试。显示的 36 个水滴与实际空中粒子一致，切换蓝水/清水时位置、速度、质量和物理时间完全不变。GUI 默认原始逐步调度；CUDA graph 仅为批量可选加速，需在指定环境验证等价，不能将 headless 等价视为与表面重建交织稳定。10 秒展示视频的时间映射不参与训练。
+
+## 原场景基准结果
+
+以下为原手写反馈基准在同一初始场景的三次 Isaac Sim 实时物理测试；并非新学习策略成绩或跨场景成功率统计。
 
 | 目标 | 最终入杯 | 误差 | 仿真时长 |
 | --- | ---: | ---: | ---: |

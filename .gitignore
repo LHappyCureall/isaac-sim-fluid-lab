@@ -12,6 +12,9 @@ __pycache__/
 *_frames/
 robot_pour_video_*/
 droplet_out/
+_cache/
+*.jsonl
+*.jsonl.gz
 test/
 assets/robot_testtube_pour/franka/
 textures/**/*.jpg

@@ -10,8 +10,9 @@ import numpy as np
 
 
 class TargetPourController:
-    def __init__(self, geometry, target_ml=30.0, spacing=0.0035):
+    def __init__(self, geometry, target_ml=30.0, spacing=0.0035, policy=None):
         self.geometry = geometry
+        self.policy = policy
         self.spacing = float(spacing)
         if not math.isfinite(self.spacing) or self.spacing <= 0:
             raise ValueError("spacing must be positive and finite")
@@ -51,6 +52,7 @@ class TargetPourController:
         self._last_received = 0.0
         self._last_stop_source = None
         self._trim_count = 0
+        self._last_command = {}
         self.status = dict(phase=self.phase, done=False, target_ml=self.target_ml,
                            received_ml=0.0, released_ml=0.0, inflight_ml=0.0,
                            flow_ml_s=0.0, predicted_final_ml=0.0, source_time=0.0,
@@ -84,6 +86,11 @@ class TargetPourController:
         next_v = float(np.clip(desired, v-self.max_acceleration*dt, v+self.max_acceleration*dt))
         acceleration = (next_v-v) / dt
         segment = (float(t), s, v, acceleration, dt, float(goal))
+        self._last_command = {"command_goal_source": float(goal),
+                              "command_max_rate": float(max_rate),
+                              "command_acceleration": float(acceleration),
+                              "command_source_velocity": float(v),
+                              "command_next_source_velocity": float(next_v)}
         if self._times[-1] == float(t):
             self._segments[-1] = segment
         else:
@@ -146,7 +153,24 @@ class TargetPourController:
         tilt = math.degrees(float(angle))
         if self.phase == "prepare" and source >= self.pretilt_source-1.0e-5:
             self.phase = "pour"
-        if self.phase == "pour" and predicted_final >= self.target_ml-0.20 and released > 1.0:
+        policy_action = None
+        stop_pour = predicted_final >= self.target_ml-0.20 and released > 1.0
+        if self.phase == "pour" and self.policy is not None:
+            policy_action = dict(self.policy.act({
+                "time": t, "target_ml": self.target_ml,
+                "received_ml": received, "inflight_ml": inflight,
+                "flow_ml_s": float(self._flow), "tilt_deg": tilt,
+                "released_ml": released, "source_time": source,
+                "remaining_ml": float(np.count_nonzero(initial_tube & tube)*self.particle_ml)}))
+            if not isinstance(policy_action.get("stop"), (bool, np.bool_)):
+                raise ValueError("Policy stop action must be a boolean.")
+            for key in ("rate", "predicted_final_ml"):
+                if not math.isfinite(float(policy_action[key])):
+                    raise ValueError(f"Policy {key} must be finite.")
+            policy_action["rate"] = float(np.clip(float(policy_action["rate"]), 0.0, self.max_speed))
+            stop_pour = bool(policy_action["stop"]) and released > 1.0
+            predicted_final = float(policy_action["predicted_final_ml"])
+        if self.phase == "pour" and stop_pour:
             self.phase = "return"
             self._last_stop_source = source
         if self.phase == "return" and source <= self.upright_source+1.0e-5:
@@ -169,6 +193,10 @@ class TargetPourController:
             rate = 0.05 if tilt < 80 else 0.025
             if remaining < 8:
                 rate = min(rate, 0.012)
+            if policy_action is not None:
+                # Learning can choose a smaller rate, but cannot exceed the
+                # existing phase-specific speed or acceleration constraints.
+                rate = min(rate, policy_action["rate"])
             self._command(t, self.max_source, rate, dt)
         elif self.phase == "return":
             self._command(t, self.upright_source, 1.0, dt)
@@ -181,7 +209,10 @@ class TargetPourController:
             source_time=source, tilt_deg=tilt, error_ml=received-self.target_ml,
             particle_count=len(points), tube_remaining_ml=(count*self.particle_ml-released),
             spilled_ml=float(np.count_nonzero(free & ~airborne)*self.particle_ml),
-            trim_count=self._trim_count)
+            trim_count=self._trim_count,
+            policy_name=getattr(self.policy, "name", "baseline") if self.policy is not None else "baseline",
+            policy_params=dict(getattr(self.policy, "params", {})) if self.policy is not None else None,
+            policy_action=policy_action, **self._last_command)
         self._last_t = t
         self._last_points = points.copy()
         self._last_released = released

@@ -9,6 +9,7 @@ import argparse
 import ast
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -18,19 +19,36 @@ import tempfile
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_WORKSPACE = Path(r"C:\omninverse")
+SOURCE_TO_DEST = {
+    "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
+    "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
+}
+MODEL_FILES = (
+    "assets/robot_testtube_pour/policy/target_volume_policy.json",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json",
+)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
     "robot_testtube_pour.py",
     "robot_target_volume_pour.py",
+    "robot_target_volume_ai.py",
+    "train_target_volume_policy.py",
     "assets/robot_testtube_pour/scripts/geometry.py",
     "assets/robot_testtube_pour/scripts/robot.py",
     "assets/robot_testtube_pour/scripts/liquid.py",
     "assets/robot_testtube_pour/scripts/target_control.py",
+    "assets/robot_testtube_pour/scripts/volume_visuals.py",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py",
+    "assets/robot_testtube_pour/scripts/learned_policy.py",
+    "assets/robot_testtube_pour/scripts/pbf_graph.py",
     "assets/robot_testtube_pour/scripts/video.py",
     "assets/robot_testtube_pour/README.md",
     "assets/robot_testtube_pour/TARGET_VOLUME.md",
+    "assets/robot_testtube_pour/AI_TRAINING.md",
     "textures/table_options/sources.json",
+    *SOURCE_TO_DEST,
+    *MODEL_FILES,
 )
 
 
@@ -43,6 +61,50 @@ def _replace(text, old, new, *, count=1):
     if found != count:
         raise SyncError(f"Anchor {old!r}: expected {count} occurrence(s), found {found}.")
     return text.replace(old, new)
+
+
+def _validate_checkpoint(relative, text):
+    """Only the two reviewed, small three-parameter policy JSONs may publish."""
+    if len(text.encode("utf-8")) > 64 * 1024:
+        raise SyncError(f"Unexpectedly large policy checkpoint: {relative}.")
+    value = json.loads(text)
+    expected = {"schema_version", "policy_kind", "parameters", "observation_units", "target_feature", "metadata"}
+    if not isinstance(value, dict) or set(value) != expected:
+        raise SyncError("Policy checkpoint fields differ from the reviewed schema.")
+    if type(value["schema_version"]) is not int or value["schema_version"] != 1:
+        raise SyncError("Unsupported policy checkpoint schema version.")
+    if value["policy_kind"] != "cem_linear_tail_compensation_v1":
+        raise SyncError("Only the reviewed three-parameter CEM feedback policy can publish.")
+    bounds = {"bias_ml": (-0.8, 0.8), "lead_seconds": (0.0, 0.5), "target_slope_ml": (-0.5, 0.5)}
+    parameters = value["parameters"]
+    if not isinstance(parameters, dict) or set(parameters) != set(bounds):
+        raise SyncError("Policy must contain exactly the three reviewed parameters.")
+    for name, (low, high) in bounds.items():
+        parameter = parameters[name]
+        if (type(parameter) not in (int, float) or not low <= parameter <= high
+                or not math.isfinite(parameter)):
+            raise SyncError(f"Nonfinite, nonnumeric or out-of-bounds policy parameter: {name}.")
+    if value["observation_units"] != {"volume": "mL", "flow": "mL/s", "tilt": "degrees"}:
+        raise SyncError("Policy observation units changed.")
+    if value["target_feature"] != "(target_ml - 30.0) / 10.0":
+        raise SyncError("Policy target-feature normalization changed.")
+    metadata = value["metadata"]
+    if not isinstance(metadata, dict) or type(metadata.get("is_trained")) is not bool:
+        raise SyncError("Policy metadata must explicitly identify whether parameters were trained.")
+    if relative == MODEL_FILES[0]:
+        origin = metadata.get("selection_origin", metadata.get("selection"))
+        if origin not in ("baseline_fallback", "cem_training_best"):
+            raise SyncError("Default policy must identify its validation-based selection origin.")
+        if metadata["is_trained"] != (origin == "cem_training_best"):
+            raise SyncError("Default policy training label contradicts its selection origin.")
+        if origin == "baseline_fallback" and parameters != {"bias_ml": 0.2, "lead_seconds": 0.2, "target_slope_ml": 0.0}:
+            raise SyncError("A baseline fallback must preserve the original baseline parameters.")
+    elif (metadata["is_trained"] is not True or metadata.get("default_deployment") is not False
+          or metadata.get("selection_origin") != "research_candidate_not_default_deployment"):
+        raise SyncError("Candidate checkpoint must be explicitly marked trained and not the default deployment.")
+    # Also reject NaN/Infinity hidden in metadata; json.loads accepts these by
+    # default even though they are not valid interoperable JSON numbers.
+    json.dumps(value, allow_nan=False)
 
 
 def transform(relative, text):
@@ -69,6 +131,33 @@ def transform(relative, text):
             text = _replace(text, 'OUTPUT = Path(r"C:\\omninverse\\droplet_out\\robot_testtube_pour")',
                             'OUTPUT = PROJECT_ROOT / "droplet_out" / "robot_testtube_pour"')
             text = _replace(text, 'LIQUID_MODE = "replay"', 'LIQUID_MODE = "simulate"')
+    elif relative == "robot_target_volume_ai.py":
+        text = _replace(text, "from pathlib import Path\n",
+                        "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT\n")
+        text = _replace(text, 'INSTALL = Path(os.environ.get("ISAAC_SIM_ROOT", r"C:\\omninverse"))',
+                        'INSTALL = PROJECT_ROOT')
+    elif relative == "train_target_volume_policy.py":
+        text = _replace(text, "from pathlib import Path\n",
+                        "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, require_isaac_sim_root\n")
+        text = _replace(text, "ROOT = Path(__file__).resolve().parent", "ROOT = PROJECT_ROOT")
+        text = _replace(text, '    sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT))).resolve()',
+                        '    sdk = require_isaac_sim_root()')
+        text = _replace(text, '    sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT)))',
+                        '    sdk = require_isaac_sim_root()')
+    elif relative in MODEL_FILES:
+        _validate_checkpoint(relative, text)
+    elif relative == "projects/pour_policy_training/audit_candidate.py":
+        _replace(text, '"""Supplementary live audit of the already-trained CEM candidate.',
+                 '"""Supplementary live audit of the already-trained CEM candidate.')
+        _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                 "ROOT = Path(__file__).resolve().parents[2]")
+    elif relative == "projects/pour_policy_training/plot_results.py":
+        _replace(text, '"""Plot only a completed pouring-training run, using its recorded results.',
+                 '"""Plot only a completed pouring-training run, using its recorded results.')
+        _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                 "ROOT = Path(__file__).resolve().parents[2]")
+        text = _replace(text, r"C:\\omninverse\\kit\\python\\python.exe plot_results.py RUN_DIRECTORY",
+                        "SDK_PYTHON tools/training/plot_results.py RUN_DIRECTORY")
     elif relative.endswith("/scripts/robot.py"):
         text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, ISAAC_SIM_ROOT\n")
         text = _replace(text,
@@ -147,6 +236,20 @@ def transform(relative, text):
                         "原 `robot_testtube_pour.py` 的回放加速和 10 秒视频设置不应用于本例。",
                         "本例始终实时求解；旧 `robot_testtube_pour.py` 入口的公开默认也是 `LIQUID_MODE=\"simulate\"`，"
                         "其 `replay` 是需要另生成物理缓存的可选模式。旧入口的回放加速和 10 秒视频设置不应用于本例。")
+    elif relative.endswith("/AI_TRAINING.md"):
+        text = _replace(text,
+                        "入口：`robot_target_volume_ai.py`。训练完成后，在 Isaac Sim 的 Script Editor 中打开并 Run，选择目标水量，再按 Play。",
+                        "入口：项目根目录的 `robot_target_volume_ai.py`。结果与模型选择见 `results/ai_training.json`；"
+                        "冻结检查点准备好后，在 Isaac Sim Script Editor 中使用[根目录 README 的加载片段](../../README.md#环境与启动)，"
+                        "保留 `sys.path` 与真实 `__file__`，将 `script` 指向该入口，选择目标水量后按 Play。")
+        text = _replace(text,
+                        '& "C:\\omninverse\\kit\\python\\python.exe" "C:\\omninverse\\train_target_volume_policy.py" --quick --graph '
+                        '--output "C:\\omninverse\\droplet_out\\pour_policy_training\\my_run"',
+                        '$env:ISAAC_SIM_ROOT = "D:\\apps\\isaac-sim"\n'
+                        '& "$env:ISAAC_SIM_ROOT\\kit\\python\\python.exe" "$PWD\\train_target_volume_policy.py" --quick --graph '
+                        '--output "$PWD\\droplet_out\\pour_policy_training\\run_quick"')
+        text = _replace(text, "从 PowerShell 运行一轮训练：",
+                        "从仓库根目录的 PowerShell 运行一轮训练，并将 `ISAAC_SIM_ROOT` 改为实际 SDK 安装位置：")
     elif relative.endswith("/geometry.py"):
         _replace(text, '"""Pure NumPy geometry and prescribed motion for the robot pouring example.',
                  '"""Pure NumPy geometry and prescribed motion for the robot pouring example.')
@@ -156,6 +259,18 @@ def transform(relative, text):
     elif relative.endswith("/target_control.py"):
         _replace(text, '"""Feedback dosing controller; pure NumPy, no particle/state modifications.',
                  '"""Feedback dosing controller; pure NumPy, no particle/state modifications.')
+    elif relative.endswith("/volume_visuals.py"):
+        _replace(text, '"""Display-only water contrast and equivalent-volume guides for dosing.',
+                 '"""Display-only water contrast and equivalent-volume guides for dosing.')
+    elif relative.endswith("/pour_training_env.py"):
+        _replace(text, '"""Live PBF environment for goal-conditioned pouring policy experiments.',
+                 '"""Live PBF environment for goal-conditioned pouring policy experiments.')
+    elif relative.endswith("/learned_policy.py"):
+        _replace(text, '"""Small, interpretable feedback policy trained by episodic CEM search.',
+                 '"""Small, interpretable feedback policy trained by episodic CEM search.')
+    elif relative.endswith("/pbf_graph.py"):
+        _replace(text, '"""Optional CUDA graph dispatch for the existing PourFluid PBF substep.',
+                 '"""Optional CUDA graph dispatch for the existing PourFluid PBF substep.')
     elif relative == "textures/table_options/sources.json":
         manifest = json.loads(text)
         if set(manifest) != {"gray_concrete", "pale_oak", "white_marble"}:
@@ -168,7 +283,7 @@ def transform(relative, text):
         raise SyncError(f"Unmapped machine-specific path or username in {relative}.")
     if relative.endswith(".py"):
         ast.parse(text, filename=relative)
-    return text.rstrip() + "\n"
+    return text if relative in MODEL_FILES else text.rstrip() + "\n"
 
 
 def prepare_sync(workspace):
@@ -179,12 +294,16 @@ def prepare_sync(workspace):
         source = (root / relative).resolve()
         if not source.is_relative_to(root) or not source.is_file():
             raise SyncError(f"Missing or unsafe allowlisted source: {relative}.")
-        original = source.read_text(encoding="utf-8")
+        # Model bytes retain their original line endings so the published
+        # checkpoint has exactly the same SHA as the frozen local artifact.
+        original = (source.read_bytes().decode("utf-8") if relative in MODEL_FILES
+                    else source.read_text(encoding="utf-8"))
         try:
             published = transform(relative, original)
         except (ValueError, SyntaxError, SyncError) as error:
             raise SyncError(f"{relative}: {error}") from error
-        prepared.append((relative, published.encode("utf-8")))
+        destination_relative = SOURCE_TO_DEST.get(relative, relative)
+        prepared.append((destination_relative, published.encode("utf-8")))
     return prepared
 
 

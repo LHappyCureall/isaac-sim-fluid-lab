@@ -4,3 +4,4 @@
 *.json text eol=lf
 *.png binary
 *.gif binary
+assets/robot_testtube_pour/policy/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

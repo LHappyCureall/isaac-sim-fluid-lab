@@ -25,6 +25,7 @@ RENDER_MODE = "RealTimePathTracing"   # preview; "PathTracing" for paused stills
 PARTICLE_SPACING = 0.0035      # meters; smaller = finer liquid and more work
 COLLISION_GRID_SIZE = 0.007   # native collision/surface helper grid, meters
 SURFACE_VOXEL_SIZE = 0.0025
+SURFACE_MAX_GRID_CELLS = 4_000_000  # display extraction capacity; no fluid physics change
 SIMULATION_FPS = 60.0         # fixed simulation time step, not a frame-rate promise
 MOTION_TIME_SCALE = 2.0       # physical source timing; keep 2.0 for the saved cache
 STOP_AFTER_UPRIGHT = True    # finish upright; False also returns to the starting pose
@@ -644,7 +645,8 @@ async def create_demo(new_stage=True, attach=True):
     points, groups = geometry.initial_water_points(PARTICLE_SPACING)
     fluid = fluids.PourFluid(points, groups, tube_data, beaker_data, geometry.tube_pose,
         spacing=PARTICLE_SPACING, voxel=COLLISION_GRID_SIZE, dt=1.0 / SIMULATION_FPS,
-        substeps=SUBSTEPS, surface_voxel=SURFACE_VOXEL_SIZE)
+        substeps=SUBSTEPS, surface_voxel=SURFACE_VOXEL_SIZE,
+        surface_max_cells=SURFACE_MAX_GRID_CELLS)
     if LIQUID_MODE == "replay":
         fluid = RecordedFluid(fluid, CACHE_FILE, geometry)
     elif LIQUID_MODE != "simulate":

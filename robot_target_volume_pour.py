@@ -21,7 +21,9 @@ import numpy as np
 # ---- User options -----------------------------------------------------------
 TARGET_VOLUME_ML = 30.0       # 20.0 / 30.0 / 40.0; also selectable in the panel
 TARGET_OPTIONS_ML = (20.0, 30.0, 40.0)
-VOLUME_TOLERANCE_ML = 2.0     # simulation acceptance tolerance, not hardware accuracy
+VOLUME_TOLERANCE_ML = 0.5     # simulation acceptance tolerance, not hardware accuracy
+WATER_STYLE = "training_blue"  # training_blue = visible flow; clear = original water
+WINDOW_TITLE = "Target volume pouring"
 TABLE_STYLE = "white_matte"
 RENDER_MODE = "RealTimePathTracing"
 SURFACE_EVERY_N_STEPS = 3
@@ -60,8 +62,10 @@ class _SourceRig:
 
 
 class TargetPourDemo:
-    def __init__(self, scene, base, controls, target_ml):
+    def __init__(self, scene, base, controls, target_ml, policy=None, visuals=None):
         self.scene, self.base, self.controls = scene, base, controls
+        self.policy, self.visuals = policy, visuals
+        self.trained_policy = policy
         self._closed = False
         self.busy = False
         self._testing = False
@@ -69,11 +73,20 @@ class TargetPourDemo:
         self.target_ml = float(target_ml)
         self.original_rig = scene.rig
         self.controller = controls.TargetPourController(
-            scene.geometry, target_ml=self.target_ml, spacing=base.PARTICLE_SPACING)
+            scene.geometry, target_ml=self.target_ml, spacing=base.PARTICLE_SPACING, policy=self.policy)
         self.scene.rig = _SourceRig(self.original_rig, self.controller)
         self.fluid.pose_fn = self.controller.tube_pose
         self._initial_points = self.fluid.positions()
         self._initial_mass = self.fluid.total_mass
+        self._initial_mass_array = self.fluid.model.particle_mass.numpy().copy()
+        self._initial_actual_mass = float(self._initial_mass_array.astype(np.float64).sum())
+        self.volume_guide = None
+        self.flow_display = None
+        if visuals is not None:
+            self.water_display = visuals.set_water_style(scene, WATER_STYLE)
+            self.flow_display = visuals.FlowParticles(scene, base.PARTICLE_SPACING)
+            initial_ml = np.count_nonzero(self.fluid.labels == 0) * base.PARTICLE_SPACING ** 3 * 1e6
+            self.volume_guide = visuals.VolumeGuide(scene, initial_ml)
         self.reset()
 
     def __getattr__(self, name):
@@ -101,14 +114,39 @@ class TargetPourDemo:
         return metrics
 
     def _update_label(self):
+        if self.volume_guide is not None:
+            self.volume_guide.update(self.target_ml, self.current['received_ml'])
         label = getattr(self, "status_label", None)
         if label is None:
             return
         m = self.current
         phase = self.status.get("phase", "ready")
-        label.text = (f"Target: {self.target_ml:g} mL  |  Received: {m['received_ml']:.2f} mL\n"
-                      f"{phase}  |  {self.fluid.time:.1f} s  |  "
-                      f"In flight: {m['inflight_ml']:.2f} mL")
+        mode_label = getattr(self, "mode_label", None)
+        if mode_label is not None:
+            mode_label.text = "Franka - " + (getattr(self.policy, "display_name", "learned CEM feedback") if self.policy is not None else "baseline feedback")
+        quantum = self.base.PARTICLE_SPACING ** 3 * 1e6
+        error = m['received_ml'] - self.target_ml
+        label.text = (f"Target: {self.target_ml:g} mL | Received: {m['received_ml']:.3f} mL\n"
+                      f"Error: {error:+.3f} mL | In flight: {m['inflight_ml']:.3f} mL\n"
+                      f"Flow: {self.status.get('flow_ml_s', 0):.2f} mL/s | {phase} | {self.fluid.time:.1f} s\n"
+                      f"Sim particle volume: {quantum:.6f} mL")
+
+    def set_water_style(self, style):
+        if self._owns_scene() and self.visuals is not None:
+            self.water_display = self.visuals.set_water_style(self.scene, style)
+            self._update_flow_display()
+
+    def _update_flow_display(self):
+        if self.flow_display is not None:
+            self.flow_display.update(self.fluid.positions(), self.fluid.labels,
+                                     self.controller.source_time(self.fluid.time),
+                                     self.water_display['style'] == 'training_blue')
+
+    def _mass_conserved(self):
+        masses = self.fluid.model.particle_mass.numpy()
+        return bool(masses.shape == self._initial_mass_array.shape
+                    and np.isfinite(masses).all()
+                    and np.array_equal(masses, self._initial_mass_array))
 
     def _grasp_error(self):
         from pxr import Gf, UsdGeom
@@ -134,7 +172,7 @@ class TargetPourDemo:
                 raise ValueError(f"Choose one of {TARGET_OPTIONS_ML} mL.")
             self.target_ml = target_ml
         self.controller = self.controls.TargetPourController(
-            self.geometry, target_ml=self.target_ml, spacing=self.base.PARTICLE_SPACING)
+            self.geometry, target_ml=self.target_ml, spacing=self.base.PARTICLE_SPACING, policy=self.policy)
         self.scene.rig.controller = self.controller
         self.fluid.pose_fn = self.controller.tube_pose
         self.fluid.reset()
@@ -151,6 +189,7 @@ class TargetPourDemo:
         self._finished = False
         self._last_phase = self.status.get("phase")
         self.scene.sync_visuals(force_surface=True)
+        self._update_flow_display()
         self._update_label()
 
     def advance(self, render=True):
@@ -173,6 +212,7 @@ class TargetPourDemo:
             self.scene.sync_visuals()
         else:
             self.scene.rig.update(self.fluid.time)
+        self._update_flow_display()
         self.max_grasp_error = max(self.max_grasp_error, self._grasp_error())
         phase = self.status.get("phase", "unknown")
         if phase != self._last_phase or self.scene.step_count % 15 == 0:
@@ -200,7 +240,7 @@ class TargetPourDemo:
                   and self.max_below_table == 0 and m["spilled_ml"] <= 1.0
                   and self.max_grasp_error < .003 and self.max_grasp_angle_error < .02
                   and self.max_source_rate <= 1.00001
-                  and self.fluid.total_mass == self._initial_mass
+                  and self._mass_conserved()
                   and reset_error < 1e-7)
         return {"success": passed, "complete": self._finished,
                 "target_ml": self.target_ml, "received_ml": m["received_ml"],
@@ -211,7 +251,14 @@ class TargetPourDemo:
                 "wall_seconds": time.perf_counter() - getattr(self, "_run_started", time.perf_counter()),
                 "particle_count": self.fluid.particle_count,
                 "particle_volume_ml": self.base.PARTICLE_SPACING ** 3 * 1e6,
-                "mass_conserved": self.fluid.total_mass == self._initial_mass,
+                "mass_conserved": self._mass_conserved(),
+                "actual_total_mass_kg": float(self.fluid.model.particle_mass.numpy().astype(np.float64).sum()),
+                "mass_measurement": "actual model.particle_mass array; fixed source particle IDs",
+                "nearest_attainable_ml": round(self.target_ml / (self.base.PARTICLE_SPACING ** 3 * 1e6)) * (self.base.PARTICLE_SPACING ** 3 * 1e6),
+                "policy_name": getattr(self.policy, 'name', 'baseline_feedback'),
+                "policy_parameters": getattr(self.policy, 'params', None),
+                "policy_selection_origin": getattr(self.policy, 'selection_origin', 'baseline'),
+                "water_display": getattr(self, 'water_display', None),
                 "max_below_table_particles": self.max_below_table,
                 "max_grasp_position_error_m": self.max_grasp_error,
                 "max_grasp_orientation_error_rad": self.max_grasp_angle_error,
@@ -285,6 +332,16 @@ class TargetPourDemo:
         timeline.set_current_time(0.0)
         self.reset(target)
 
+    def select_policy(self, policy):
+        if not self._owns_scene() or self.busy:
+            return
+        import omni.timeline
+        self.policy = policy
+        timeline = omni.timeline.get_timeline_interface()
+        timeline.stop()
+        timeline.set_current_time(0.0)
+        self.reset()
+
     def stop(self):
         if not self._owns_scene():
             return
@@ -310,12 +367,16 @@ class TargetPourDemo:
                 if viewport is not None:
                     viewport.camera_path = self.cameras[name]
 
-        window = ui.Window("Target volume pouring", width=365, height=275,
-                           position_x=70, position_y=610)
+        window = ui.Window(WINDOW_TITLE, width=460, height=395 if self.trained_policy is not None else 355,
+                           position_x=70, position_y=480)
         with window.frame:
             with ui.VStack(spacing=7):
-                ui.Label("Franka - live volume feedback", height=24)
-                self.status_label = ui.Label("", height=42)
+                self.mode_label = ui.Label("", height=24)
+                self.status_label = ui.Label("", height=78)
+                if self.trained_policy is not None:
+                    with ui.HStack(height=28, spacing=5):
+                        ui.Button(getattr(self, "learned_button_label", "Selected policy"), clicked_fn=lambda: self.select_policy(self.trained_policy))
+                        ui.Button(getattr(self, "baseline_button_label", "Baseline"), clicked_fn=lambda: self.select_policy(None))
                 with ui.HStack(height=28, spacing=5):
                     for target in TARGET_OPTIONS_ML:
                         ui.Button(f"{target:g} mL", clicked_fn=lambda value=target: self.select_target(value))
@@ -327,9 +388,13 @@ class TargetPourDemo:
                     ui.Button("Overview", clicked_fn=lambda: view("overview"))
                     ui.Button("Pour close-up", clicked_fn=lambda: view("close"))
                 with ui.HStack(height=28, spacing=5):
+                    ui.Button("Blue water", clicked_fn=lambda: self.set_water_style("training_blue"))
+                    ui.Button("Clear water", clicked_fn=lambda: self.set_water_style("clear"))
+                with ui.HStack(height=28, spacing=5):
                     ui.Button("Test 20 / 30 / 40 mL", clicked_fn=self.test_all)
                     ui.Button("Cancel test", clicked_fn=self.cancel_test)
-                ui.Label("Live fluid; pre-grasped kinematic tube", height=20)
+                ui.Label("Orange: target | Cyan: received (equivalent level)", height=20)
+                ui.Label("Live physics time; simulator mass, not a real sensor", height=20)
         omni.kit.app._robot_pour_window = window
         self._update_label()
 
@@ -410,7 +475,7 @@ class TargetPourDemo:
                         f"{r['target_ml']:g}: {r['received_ml']:.2f} mL" for r in results)
 
 
-async def create_demo(attach=True):
+async def create_demo(attach=True, policy=None):
     import omni.kit.app
     if float(TARGET_VOLUME_ML) not in TARGET_OPTIONS_ML:
         raise ValueError(f"TARGET_VOLUME_ML must be one of {TARGET_OPTIONS_ML}.")
@@ -422,7 +487,9 @@ async def create_demo(attach=True):
     scene = await base.create_demo(attach=False)
     controls = _load_source("target_pour_control", INSTALL / "assets" / "robot_testtube_pour" /
                             "scripts" / "target_control.py")
-    demo = TargetPourDemo(scene, base, controls, TARGET_VOLUME_ML)
+    visuals = _load_source("target_pour_visuals", INSTALL / "assets" / "robot_testtube_pour" /
+                           "scripts" / "volume_visuals.py")
+    demo = TargetPourDemo(scene, base, controls, TARGET_VOLUME_ML, policy=policy, visuals=visuals)
     demo._require_current()
     omni.kit.app._robot_testtube_demo = demo
     if attach:
