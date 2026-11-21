@@ -1,0 +1,33 @@
+# Generated experiment output and local physics/robot caches
+__pycache__/
+*.py[cod]
+*.npz
+*.npy
+*.usd
+*.usda
+*.usdc
+*.mp4
+*.mov
+*.log
+*_frames/
+robot_pour_video_*/
+droplet_out/
+test/
+assets/robot_testtube_pour/franka/
+textures/**/*.jpg
+textures/**/*.png
+*.zip
+*.pdf
+.env
+.env.*
+.venv/
+.vscode/
+local_settings.json
+.sync_manifest.json
+
+# Isaac Sim is an external installation, never part of this repository.
+kit/
+exts/
+extscache/
+extsDeprecated/
+python_packages/

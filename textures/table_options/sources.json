@@ -1,0 +1,115 @@
+{
+  "gray_concrete": {
+    "asset": "concrete_floor_worn_001",
+    "source": "https://polyhaven.com/a/concrete_floor_worn_001",
+    "license": "CC0 1.0",
+    "license_url": "https://polyhaven.com/license",
+    "maps": {
+      "albedo": {
+        "file": "gray_concrete_albedo_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 482906,
+        "sha256": "e29b45cdcd6d02fae3c087c456196ffa750779a9b62e7071aa3831dc322a0cc4",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/concrete_floor_worn_001/concrete_floor_worn_001_diff_2k.jpg"
+      },
+      "roughness": {
+        "file": "gray_concrete_roughness_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 735249,
+        "sha256": "b904992f0d75da2c41edf832bbb838622cca076f48f7913065a152c3b640690e",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/concrete_floor_worn_001/concrete_floor_worn_001_rough_2k.jpg"
+      },
+      "normal_gl": {
+        "file": "gray_concrete_normal_gl_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 870609,
+        "sha256": "3b782137e34d63fd59b2e92b4e27b2ee4d082caf9dd23f00dc7ab4da5513daef",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/concrete_floor_worn_001/concrete_floor_worn_001_nor_gl_2k.jpg"
+      }
+    }
+  },
+  "pale_oak": {
+    "asset": "white_oak_veneer",
+    "source": "https://polyhaven.com/a/white_oak_veneer",
+    "license": "CC0 1.0",
+    "license_url": "https://polyhaven.com/license",
+    "maps": {
+      "albedo": {
+        "file": "pale_oak_albedo_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 2537257,
+        "sha256": "00e09e2f901fb76c6d206e7a0197f257f8a9d5f662d3cd863c2258c9b287131e",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/white_oak_veneer/white_oak_veneer_diff_2k.jpg"
+      },
+      "roughness": {
+        "file": "pale_oak_roughness_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 2352922,
+        "sha256": "1e325ebc77729c09afb9a2c6ed3bf51b2f0b3f8c1731642dca39b197c79097f0",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/white_oak_veneer/white_oak_veneer_rough_2k.jpg"
+      },
+      "normal_gl": {
+        "file": "pale_oak_normal_gl_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 2840866,
+        "sha256": "262b2c0b9020e34abbba2f3d02a5d7184d5ef008f12499c5350187125929b053",
+        "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/white_oak_veneer/white_oak_veneer_nor_gl_2k.jpg"
+      }
+    }
+  },
+  "white_marble": {
+    "asset": "Marble012",
+    "source": "https://ambientcg.com/view?id=Marble012",
+    "license": "CC0 1.0",
+    "license_url": "https://docs.ambientcg.com/license/",
+    "download_url": "https://ambientcg.com/get?file=Marble012_2K-JPG.zip",
+    "archive_bytes": 14792073,
+    "maps": {
+      "albedo": {
+        "file": "white_marble_albedo_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 5139092,
+        "sha256": "1e1ef2d556dcda237181590b4a7543a66ea49223ccf2d455000e05f37e8a8ec5"
+      },
+      "roughness": {
+        "file": "white_marble_roughness_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 2166701,
+        "sha256": "d4a906a9739f30f386914a8b8393e64100f340851dc50328e5b91e24fa95ce7a"
+      },
+      "normal_gl": {
+        "file": "white_marble_normal_gl_2k.jpg",
+        "dimensions": [
+          2048,
+          2048
+        ],
+        "bytes": 1418258,
+        "sha256": "0e295859c9e55ba2dd147aed37a674aba90decaf91d3622d5aa8386441020649"
+      }
+    }
+  }
+}

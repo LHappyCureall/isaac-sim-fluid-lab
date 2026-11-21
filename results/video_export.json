@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "frame_count": 300,
+  "fps": 30.0,
+  "duration_seconds": 10.0,
+  "resolution": [
+    1280,
+    720
+  ],
+  "source_start_seconds": 0.0,
+  "source_end_seconds": 15.6,
+  "last_tilt_radians": 0.0,
+  "ends_upright": true,
+  "render_mode": "RealTimePathTracing",
+  "verified_with_ffprobe": true,
+  "encoding": "H.264/libx264 CRF18 yuv420p"
+}
