@@ -15,6 +15,20 @@
 
 机器人使用预握试管与 IK 运动学控制，液体由求解器计算。目标水量示例是反馈控制基准，尚未训练神经网络策略；没有模拟摩擦抓持、液体反力或力矩反馈。mL 按粒子体积估算，尚未校准为真实定量实验。
 
+## 动画演示
+
+### 液滴撞击与水冠
+
+对应 [`droplet_milkcrown_newton_surface.py`](droplet_milkcrown_newton_surface.py)，预览来自 `milkcrown_1121.mp4`。
+
+[![液滴落入水面并形成水冠](docs/demos/milkcrown_1121.gif)](docs/demos/milkcrown_1121.gif)
+
+### Franka 试管倒水
+
+对应 [`robot_testtube_pour.py`](robot_testtube_pour.py)，预览来自 `bot_pour_overview.mp4`：预握试管、移动、倾倒并扶正。
+
+[![Franka 机械臂使用试管向烧杯倒水的全景动画](docs/demos/bot_pour_overview.gif)](docs/demos/bot_pour_overview.gif)
+
 ## 环境与启动
 
 本次验证环境：Windows、NVIDIA RTX 4090、Isaac Sim **6.2.0-rc.14**、SDK 自带 Python 3.12 与 Newton/Warp。使用 SDK 配套依赖；本项目不附带 Isaac Sim 安装程序，也不通过普通 `pip install` 替换其物理引擎。
