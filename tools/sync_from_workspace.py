@@ -88,11 +88,65 @@ def transform(relative, text):
                         "> 公开仓库默认 `white_matte` 桌面与 `simulate` 实时求解；原实验的回放、视频与节奏说明"
                         "适用于可选物理缓存。Franka 从 SDK 本地转换，缓存不随源码提供。"
                         "`<PROJECT_ROOT>` 表示本仓库目录，启动配置见根目录 README。\n")
+        text = _replace(text, "入口：`<PROJECT_ROOT>\\robot_testtube_pour.py`。",
+                        "入口：项目根目录的 `robot_testtube_pour.py`。")
+        text = _replace(text, "在 Isaac Sim 的 Window > Script Editor 中打开入口文件，点击 Run。",
+                        "在 Isaac Sim 的 Window > Script Editor 中使用[根目录 README 的加载片段](../../README.md#环境与启动)，"
+                        "保留其中的 `sys.path` 和真实 `__file__` 设置，并将 `script` 改为 `project / \"robot_testtube_pour.py\"`，再点击 Run。")
+        text = _replace(text, "点击 Export 10s MP4 直接生成短片。",
+                        "先生成可选物理缓存并切换到 `replay`，才可点击 Export 10s MP4 生成短片。")
+        text = _replace(text,
+                        "也可在 PowerShell 中从安装目录启动：\n\n```powershell\n"
+                        "cd <PROJECT_ROOT>\n.\\isaac-sim.bat --exec <PROJECT_ROOT>\\robot_testtube_pour.py\n```",
+                        "也可在 PowerShell 中设置独立的 SDK 安装目录，并从仓库根目录启动。把下方 SDK 路径改为实际安装位置：\n\n"
+                        '```powershell\n$env:ISAAC_SIM_ROOT = "D:\\apps\\isaac-sim"\n'
+                        '$env:ISAAC_FLUID_DEMO = "pour"\n'
+                        '& "$env:ISAAC_SIM_ROOT\\isaac-sim.bat" --exec "$PWD\\launch.py"\n```')
+        text = _replace(text,
+                        "默认回放约 9.85 秒，扶正后结束。倒水后的等待为 0.25 秒，扶正用时 1.2 秒。",
+                        "公开版默认实时求解，仿真时间约 15.6 秒，扶正后结束。可选缓存回放约 9.85 秒；"
+                        "回放中的倒水后等待为 0.25 秒，扶正用时 1.2 秒。")
+        text = _replace(text,
+                        '- `LIQUID_MODE = "replay"`：默认，回放经过物理计算的 60 Hz 粒子轨迹，实时重建水面，减少卡顿。\n'
+                        '- `LIQUID_MODE = "simulate"`：重新实时求解液体，计算量更大。修改水粒子间距、运动时长或容器几何后使用此模式。',
+                        '- `LIQUID_MODE = "simulate"`：公开版默认，实时求解液体，不需要物理缓存。修改水粒子间距、运动时长或容器几何后也使用此模式。\n'
+                        '- `LIQUID_MODE = "replay"`：可选，先按[根目录 README](../../README.md#缓存桌面与视频)生成 `pour_cache.npz`，'
+                        '再回放经过物理计算的 60 Hz 粒子轨迹，实时重建水面，减少卡顿。缓存不随源码发布。')
+        text = _replace(text, "默认推荐直接使用本示例的 Export 按钮，",
+                        "在已准备好缓存的 `replay` 模式下推荐使用本示例的 Export 按钮，")
+        text = _replace(text,
+                        "`scripts/` 中四个模块分别提供几何、机器人、液体和视频导出实现。`franka/` 是官方 URDF 转换后的必要资源；"
+                        "`pour_cache.npz` 是完整物理轨迹，不是视频。材质复用现有 milkcrown surface 脚本及桌面纹理。",
+                        "`scripts/` 提供几何、机器人、液体、反馈控制与视频导出实现。`franka/` 是首次运行时从 SDK 自带 URDF 转换生成的本地缓存；"
+                        "可选的 `pour_cache.npz` 是物理轨迹，不是视频，可通过 `tools/bake_pour_cache.py` 生成。两类缓存均不进入 Git。"
+                        "材质复用 milkcrown surface 脚本，默认纯色桌面无需贴图。")
+        text = _replace(text,
+                        "两个文件可以同时在 Script Editor 中打开；选择目标文件并点击 Run 才会切换场景。"
+                        "磁盘文件更新后，旧标签不会自动读取新代码，应关闭后重新打开该文件。",
+                        "可以在 Script Editor 中保留多个加载片段；用根目录 README 的方式选择入口并点击 Run 切换场景。"
+                        "该加载片段每次从磁盘读取源码，更新后重新运行片段即可。")
     elif relative.endswith("/TARGET_VOLUME.md"):
         text = _replace(text, r"C:\omninverse", "<PROJECT_ROOT>", count=2)
         text = _replace(text, "# 目标水量倒水\n", "# 目标水量倒水\n\n"
                         "> `<PROJECT_ROOT>` 表示本仓库目录。公开版默认使用无需下载贴图的 `white_matte` 桌面，"
                         "SDK 与项目路径配置见根目录 README。\n")
+        text = _replace(text, "新入口：`<PROJECT_ROOT>\\robot_target_volume_pour.py`。",
+                        "入口：项目根目录的 `robot_target_volume_pour.py`。")
+        text = _replace(text,
+                        "在 Isaac Sim 中选择 Window > Script Editor，在 File > Open 中打开新入口并 Run。",
+                        "在 Isaac Sim 中选择 Window > Script Editor，使用[根目录 README 的加载片段](../../README.md#环境与启动)，"
+                        "保留 `sys.path` 和真实 `__file__` 设置，将 `script` 指向 `project / \"robot_target_volume_pour.py\"` 后 Run。")
+        text = _replace(text,
+                        "文件顶部 `TARGET_VOLUME_ML = 30.0` 设置初始目标。",
+                        "也可从仓库根目录在 PowerShell 中启动，把 SDK 路径改为实际安装位置：\n\n"
+                        '```powershell\n$env:ISAAC_SIM_ROOT = "D:\\apps\\isaac-sim"\n'
+                        '$env:ISAAC_FLUID_DEMO = "target-volume"\n'
+                        '& "$env:ISAAC_SIM_ROOT\\isaac-sim.bat" --exec "$PWD\\launch.py"\n```\n\n'
+                        "文件顶部 `TARGET_VOLUME_ML = 30.0` 设置初始目标。")
+        text = _replace(text,
+                        "原 `robot_testtube_pour.py` 的回放加速和 10 秒视频设置不应用于本例。",
+                        "本例始终实时求解；旧 `robot_testtube_pour.py` 入口的公开默认也是 `LIQUID_MODE=\"simulate\"`，"
+                        "其 `replay` 是需要另生成物理缓存的可选模式。旧入口的回放加速和 10 秒视频设置不应用于本例。")
     elif relative.endswith("/geometry.py"):
         _replace(text, '"""Pure NumPy geometry and prescribed motion for the robot pouring example.',
                  '"""Pure NumPy geometry and prescribed motion for the robot pouring example.')
