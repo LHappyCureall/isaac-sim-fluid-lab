@@ -111,6 +111,86 @@ def _check_ai_results():
     _published_file("docs/AI_TRAINING_RESULTS.md")
 
 
+def _check_full_results():
+    report = json.loads(_published_file("results/ai_training_full_20261122.json").read_text(encoding="utf-8"))
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_full_budget_live_pouring_results"
+    assert report["complete"] is True
+    counts, seeds = report["counts"], report["seeds"]
+    targets = {float(target) for target in seeds["training_by_target"]}
+    test_seeds = set(seeds["heldout_test"])
+    quick = json.loads(_published_file("results/ai_training.json").read_text(encoding="utf-8"))
+    assert test_seeds.isdisjoint(quick["seeds"]["heldout_test"])
+    assert test_seeds.isdisjoint(seeds["validation"])
+    assert test_seeds.isdisjoint(seeds["training_by_target"].values())
+    assert counts["training_episodes"] == counts["generations"] * counts["population"] * len(targets)
+    assert counts["fixed_training_target_seed_conditions"] == len(targets)
+    assert counts["validation_episodes"] == 2 * len(targets) * len(seeds["validation"])
+    assert counts["distinct_validation_target_seed_conditions"] == len(targets) * len(seeds["validation"])
+    assert counts["distinct_test_seeds"] == len(test_seeds)
+    expected = {(target, seed) for target in targets for seed in test_seeds}
+    assert counts["distinct_test_target_seed_conditions"] == len(expected)
+    assert counts["test_episodes"] == 2 * len(expected)
+    assert counts["all_executed_live_episodes"] == sum(counts[name] for name in ("training_episodes", "validation_episodes", "test_episodes"))
+    pairs = report["heldout_pairs"]
+    assert len(pairs) == len(expected) and {(float(p["target_ml"]), p["seed"]) for p in pairs} == expected
+    recommended_role = report["recommendation"]["test_result_role"]
+    assert recommended_role in ("candidate", "baseline")
+    assert counts["recommended_additional_test_rollouts"] == report["recommendation"]["additional_test_rollouts"] == 0
+    assert report["recommendation"]["test_results_are_references"] is True
+    for role in ("candidate", "baseline"):
+        results = [p[role] for p in pairs]
+        errors, safe = [], []
+        for pair, result in zip(pairs, results):
+            assert pair["recommended_result_role"] == recommended_role and "selected" not in pair
+            assert abs(result["received_ml"] - pair["target_ml"] - result["error_ml"]) < 1e-8
+            assert math.isfinite(result["received_ml"]) and math.isfinite(result["error_ml"])
+            assert abs(result["physical_time_s"] - result["physical_steps"] * report["physics"]["dt_s"]) < 1e-8
+            errors.append(abs(result["error_ml"]))
+            safe.append(result["valid_physics"] and result["complete"] and result["upright"]
+                        and result["max_spilled_ml"] == 0 and result["inflight_ml"] <= .1)
+        metric = report["heldout_metrics"][role]
+        assert metric["episodes"] == len(results)
+        assert abs(metric["mae_ml"] - sum(errors) / len(errors)) < 1e-8
+        assert abs(metric["worst_absolute_error_ml"] - max(errors)) < 1e-8
+        assert metric["within_0_2_ml_count"] == sum(ok and e <= .2 for ok, e in zip(safe, errors))
+        assert metric["within_0_5_ml_count"] == sum(ok and e <= .5 for ok, e in zip(safe, errors))
+        assert metric["safe_completed_count"] == sum(safe)
+        assert metric["all_mass_conserved"] == all(r["mass_conserved"] for r in results)
+    assert len(report["training"]["curve"]) == counts["generations"]
+    assert report["training"]["curve"][-1]["completed_training_episodes"] == counts["training_episodes"]
+    assert len(report["training"]["candidates"]) == counts["generations"] * counts["population"]
+    for group in (report["training"], report["all_rollout_checks"]):
+        assert abs(group["physical_seconds"] - group["physical_steps"] * report["physics"]["dt_s"]) < 1e-7
+    spec = importlib.util.spec_from_file_location("release_full_sync_validator", ROOT / "tools/sync_from_workspace.py")
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    for _, (relative, role) in sync.FULL_MODEL_SOURCES.items():
+        entry = report["models"][role]
+        assert entry["file"] == relative
+        raw = _published_file(relative).read_bytes()
+        sync._validate_checkpoint(relative, raw.decode("utf-8"))
+        assert hashlib.sha256(raw).hexdigest() == entry["sha256"]
+        model = json.loads(raw)
+        assert model["parameters"] == entry["parameters"]
+        assert model["metadata"]["is_trained"] == entry["is_trained"]
+        assert model["metadata"]["source_sha256"] == report["provenance"]["original_training_source_sha256"]
+        assert model["metadata"]["protocol_id"] == report["provenance"]["protocol_id"]
+    candidate = report["models"]["candidate"]
+    assert report["training"]["best_parameters"] == candidate["parameters"]
+    changed = candidate["parameters"] != report["baseline_parameters"]
+    assert candidate["is_trained"] == report["training"]["parameters_changed_from_baseline"] == changed
+    scores = report["validation"]["mean_score"]
+    expected_role = "candidate" if changed and scores["candidate"] < scores["baseline"] else "baseline"
+    assert recommended_role == expected_role == report["validation"]["recommended_role"]
+    assert report["models"]["recommended"]["parameters"] == (candidate["parameters"] if expected_role == "candidate" else report["baseline_parameters"])
+    assert report["models"]["recommended"]["is_trained"] == (expected_role == "candidate")
+    assert report["gui"]["new_deployment"] is False
+    for relative in report["plots"].values():
+        assert _published_file(relative).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+    _published_file("docs/AI_TRAINING_FULL_20261122.md")
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -118,7 +198,7 @@ def main():
         compile(source.read_text(encoding="utf-8"), str(source), "exec")
     required = ("droplet_milkcrown_newton.py", "droplet_milkcrown_newton_surface.py",
                 "robot_testtube_pour.py", "robot_target_volume_pour.py", "robot_target_volume_ai.py",
-                "train_target_volume_policy.py", "launch.py", "lab_paths.py")
+                "train_target_volume_policy.py", "train_target_volume_policy_full.py", "launch.py", "lab_paths.py")
     assert all((ROOT / name).is_file() for name in required), "Missing experiment source"
     for path in ROOT.rglob("*"):
         if not path.is_file() or ".git" in path.relative_to(ROOT).parts:
@@ -137,7 +217,8 @@ def main():
         assert abs(result["error_ml"]) < 2 and result["spilled_ml"] == 0
         assert result["mass_conserved"] and result["particle_count"] == 5330
     _check_ai_results()
-    print(f"PASS: {len(sources)} Python sources compile; old baseline and curated AI results/weights/plots are consistent.")
+    _check_full_results()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick and full results/weights/plots are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 

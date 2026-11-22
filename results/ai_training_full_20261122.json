@@ -1,0 +1,928 @@
+{
+  "schema_version": 1,
+  "kind": "curated_full_budget_live_pouring_results",
+  "date": "2026-11-22",
+  "complete": true,
+  "conclusion": "CEM search completed but the best parameter vector remained the initial baseline; no learned precision improvement found.",
+  "counts": {
+    "generations": 3,
+    "population": 6,
+    "training_episodes": 54,
+    "validation_episodes": 18,
+    "test_episodes": 18,
+    "all_executed_live_episodes": 90,
+    "fixed_training_target_seed_conditions": 3,
+    "distinct_validation_target_seed_conditions": 9,
+    "distinct_test_target_seed_conditions": 9,
+    "distinct_test_seeds": 3,
+    "recommended_additional_test_rollouts": 0
+  },
+  "seeds": {
+    "cem_sampler": 20261122,
+    "training_by_target": {
+      "20": 2011,
+      "30": 2012,
+      "40": 2013
+    },
+    "validation": [
+      2101,
+      2102,
+      2103
+    ],
+    "heldout_test": [
+      31001,
+      31002,
+      31003
+    ]
+  },
+  "physics": {
+    "mode": "live_PBF_action_conditioned",
+    "dt_s": 0.016666666666666666,
+    "spacing_m": 0.0035,
+    "motion_time_scale": 2.0,
+    "minimum_substeps": 4,
+    "pressure_iterations": 6,
+    "max_seconds": 35.0,
+    "cuda_graph": true,
+    "particle_count": 5330,
+    "source_particle_count": 1198,
+    "particle_volume_ml": 0.042875,
+    "volume_measurement": "privileged fixed-particle mass/density in beaker; not optical or real-scale calibration"
+  },
+  "randomization": {
+    "initial_jitter_max_spacing": 0.03,
+    "viscosity_factor": [
+      0.9,
+      1.1
+    ]
+  },
+  "training": {
+    "physical_steps": 64008,
+    "physical_seconds": 1066.8,
+    "best_score": 0.021955555555557213,
+    "best_parameters": {
+      "bias_ml": 0.2,
+      "lead_seconds": 0.2,
+      "target_slope_ml": 0.0
+    },
+    "parameters_changed_from_baseline": false,
+    "unique_population_parameter_vectors": 16,
+    "candidates": [
+      {
+        "generation": 0,
+        "candidate": 0,
+        "parameters": {
+          "bias_ml": 0.2,
+          "lead_seconds": 0.2,
+          "target_slope_ml": 0.0
+        },
+        "mean_score": 0.021955555555557213,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.012500000000002842,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 0,
+        "candidate": 1,
+        "parameters": {
+          "bias_ml": 0.17129483568512255,
+          "lead_seconds": 0.3239460230423143,
+          "target_slope_ml": 0.14530241842487038
+        },
+        "mean_score": 1.149813888888889,
+        "target_errors_ml": {
+          "20": -0.8348750000000003,
+          "30": 1.6417500000000018,
+          "40": -0.9408749999999984
+        }
+      },
+      {
+        "generation": 0,
+        "candidate": 2,
+        "parameters": {
+          "bias_ml": 0.22870516431487747,
+          "lead_seconds": 0.07605397695768575,
+          "target_slope_ml": -0.14530241842487038
+        },
+        "mean_score": 0.7366000000000031,
+        "target_errors_ml": {
+          "20": 0.5371250000000032,
+          "30": 0.9128750000000032,
+          "40": 0.7312500000000028
+        }
+      },
+      {
+        "generation": 0,
+        "candidate": 3,
+        "parameters": {
+          "bias_ml": 0.25570085056491926,
+          "lead_seconds": 0.08650863978825997,
+          "target_slope_ml": -0.2869179209070833
+        },
+        "mean_score": 0.6508416666666689,
+        "target_errors_ml": {
+          "20": 0.3656250000000014,
+          "30": 0.8271250000000023,
+          "40": 0.7312500000000028
+        }
+      },
+      {
+        "generation": 0,
+        "candidate": 4,
+        "parameters": {
+          "bias_ml": 0.14429914943508076,
+          "lead_seconds": 0.31349136021174007,
+          "target_slope_ml": 0.2869179209070833
+        },
+        "mean_score": 1.1641111111111084,
+        "target_errors_ml": {
+          "20": -0.7062499999999972,
+          "30": 1.7703750000000014,
+          "40": -0.9837499999999935
+        }
+      },
+      {
+        "generation": 0,
+        "candidate": 5,
+        "parameters": {
+          "bias_ml": 0.4966658508790326,
+          "lead_seconds": 0.26596218030689633,
+          "target_slope_ml": -0.2992072615544651
+        },
+        "mean_score": 1.3376666666666661,
+        "target_errors_ml": {
+          "20": 1.7376250000000013,
+          "30": 1.899000000000001,
+          "40": -0.34062499999999574
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 0,
+        "parameters": {
+          "bias_ml": 0.2,
+          "lead_seconds": 0.2,
+          "target_slope_ml": 0.0
+        },
+        "mean_score": 0.021955555555557213,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.012500000000002842,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 1,
+        "parameters": {
+          "bias_ml": 0.21949529769772175,
+          "lead_seconds": 0.160278023925891,
+          "target_slope_ml": -0.10042127231747915
+        },
+        "mean_score": 0.15059166666666787,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.1411250000000024,
+          "40": 0.2596249999999998
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 2,
+        "parameters": {
+          "bias_ml": 0.2785878979271378,
+          "lead_seconds": 0.008115389456313599,
+          "target_slope_ml": 0.04463289759289436
+        },
+        "mean_score": 1.1225027777777807,
+        "target_errors_ml": {
+          "20": 1.0516250000000014,
+          "30": 1.213000000000001,
+          "40": 1.0742500000000064
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 3,
+        "parameters": {
+          "bias_ml": 0.1604026974683057,
+          "lead_seconds": 0.3124406583954684,
+          "target_slope_ml": -0.24547544222785267
+        },
+        "mean_score": 1.4234222222222213,
+        "target_errors_ml": {
+          "20": 1.9948750000000004,
+          "30": 1.7703750000000014,
+          "40": -0.4692499999999953
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 4,
+        "parameters": {
+          "bias_ml": 0.2859027313954106,
+          "lead_seconds": 0.2218047870410979,
+          "target_slope_ml": -0.16479249595555454
+        },
+        "mean_score": 0.2128916666666647,
+        "target_errors_ml": {
+          "20": -0.3632499999999972,
+          "30": -0.24474999999999625,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 1,
+        "candidate": 5,
+        "parameters": {
+          "bias_ml": 0.15308786400003288,
+          "lead_seconds": 0.09875126081068408,
+          "target_slope_ml": -0.03605004867940376
+        },
+        "mean_score": 0.6794277777777814,
+        "target_errors_ml": {
+          "20": 0.5371250000000032,
+          "30": 0.8271250000000023,
+          "40": 0.6455000000000055
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 0,
+        "parameters": {
+          "bias_ml": 0.2,
+          "lead_seconds": 0.2,
+          "target_slope_ml": 0.0
+        },
+        "mean_score": 0.021955555555557213,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.012500000000002842,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 1,
+        "parameters": {
+          "bias_ml": 0.21267194350351915,
+          "lead_seconds": 0.17418071555182915,
+          "target_slope_ml": -0.06527382700636145
+        },
+        "mean_score": 0.15059166666666787,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.1411250000000024,
+          "40": 0.2596249999999998
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 2,
+        "parameters": {
+          "bias_ml": 0.23695711175696707,
+          "lead_seconds": 0.16552787457426887,
+          "target_slope_ml": -0.17641658062308654
+        },
+        "mean_score": 0.15059166666666787,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.1411250000000024,
+          "40": 0.2596249999999998
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 3,
+        "parameters": {
+          "bias_ml": 0.18838677525007122,
+          "lead_seconds": 0.18283355652938943,
+          "target_slope_ml": 0.04586892661036365
+        },
+        "mean_score": 0.06483333333333484,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.1411250000000024,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 4,
+        "parameters": {
+          "bias_ml": 0.2319535125637679,
+          "lead_seconds": 0.19000106244136702,
+          "target_slope_ml": -0.051782651317604914
+        },
+        "mean_score": 0.021955555555557213,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.012500000000002842,
+          "40": 0.002375000000000682
+        }
+      },
+      {
+        "generation": 2,
+        "candidate": 5,
+        "parameters": {
+          "bias_ml": 0.1933903744432704,
+          "lead_seconds": 0.15836036866229128,
+          "target_slope_ml": -0.07876500269511798
+        },
+        "mean_score": 0.15059166666666787,
+        "target_errors_ml": {
+          "20": 0.02262500000000145,
+          "30": 0.1411250000000024,
+          "40": 0.2596249999999998
+        }
+      }
+    ],
+    "curve": [
+      {
+        "generation": 0,
+        "mean_score": 0.8434981481481488,
+        "generation_best_score": 0.021955555555557213,
+        "best_training_score": 0.021955555555557213,
+        "mean_reward": -0.8434981481481488,
+        "mae_ml": 0.8332152777777784,
+        "completed_training_episodes": 18
+      },
+      {
+        "generation": 1,
+        "mean_score": 0.6017986111111121,
+        "generation_best_score": 0.021955555555557213,
+        "best_training_score": 0.021955555555557213,
+        "mean_reward": -0.6017986111111121,
+        "mae_ml": 0.5919097222222233,
+        "completed_training_episodes": 36
+      },
+      {
+        "generation": 2,
+        "mean_score": 0.09341990740740881,
+        "generation_best_score": 0.021955555555557213,
+        "best_training_score": 0.021955555555557213,
+        "mean_reward": -0.09341990740740881,
+        "mae_ml": 0.08395833333333474,
+        "completed_training_episodes": 54
+      }
+    ]
+  },
+  "validation": {
+    "mean_score": {
+      "candidate": 0.09607314814814721,
+      "baseline": 0.09607314814814721
+    },
+    "metrics": {
+      "candidate": {
+        "episodes": 9,
+        "mae_ml": 0.08661111111111018,
+        "worst_absolute_error_ml": 0.33049999999999713,
+        "safe_completion_rate": 1.0,
+        "within_0_2_ml_rate": 0.8888888888888888,
+        "within_0_5_ml_rate": 1.0,
+        "spilled_ml": 0.0,
+        "physical_steps": 10219,
+        "physical_seconds": 170.31666666666666,
+        "all_mass_conserved": true
+      },
+      "baseline": {
+        "episodes": 9,
+        "mae_ml": 0.08661111111111018,
+        "worst_absolute_error_ml": 0.33049999999999713,
+        "safe_completion_rate": 1.0,
+        "within_0_2_ml_rate": 0.8888888888888888,
+        "within_0_5_ml_rate": 1.0,
+        "spilled_ml": 0.0,
+        "physical_steps": 10219,
+        "physical_seconds": 170.31666666666666,
+        "all_mass_conserved": true
+      }
+    },
+    "recommended_role": "baseline",
+    "selection_origin": "baseline_fallback"
+  },
+  "recommendation": {
+    "selection_origin": "baseline_fallback",
+    "is_trained": false,
+    "test_result_role": "baseline",
+    "test_results_are_references": true,
+    "additional_test_rollouts": 0
+  },
+  "models": {
+    "candidate": {
+      "file": "assets/robot_testtube_pour/policy/full_20261122_candidate.json",
+      "sha256": "d80c83e0bca0f20fa1df6556fdb0998d15373baf8e89d244cb31e613767df11c",
+      "parameters": {
+        "bias_ml": 0.2,
+        "lead_seconds": 0.2,
+        "target_slope_ml": 0.0
+      },
+      "is_trained": false,
+      "selection_origin": "full_CEM_training_best",
+      "policy_role": "candidate"
+    },
+    "recommended": {
+      "file": "assets/robot_testtube_pour/policy/full_20261122_recommended.json",
+      "sha256": "857f8813db4da8b084b6cde6b87479f2e909513b7b90006997658f931ddac357",
+      "parameters": {
+        "bias_ml": 0.2,
+        "lead_seconds": 0.2,
+        "target_slope_ml": 0.0
+      },
+      "is_trained": false,
+      "selection_origin": "baseline_fallback",
+      "policy_role": "recommended"
+    }
+  },
+  "heldout_metrics": {
+    "candidate": {
+      "episodes": 9,
+      "mae_ml": 0.1367638888888882,
+      "worst_absolute_error_ml": 0.3203749999999985,
+      "within_0_2_ml_count": 7,
+      "within_0_5_ml_count": 9,
+      "safe_completed_count": 9,
+      "all_mass_conserved": true
+    },
+    "baseline": {
+      "episodes": 9,
+      "mae_ml": 0.1367638888888882,
+      "worst_absolute_error_ml": 0.3203749999999985,
+      "within_0_2_ml_count": 7,
+      "within_0_5_ml_count": 9,
+      "safe_completed_count": 9,
+      "all_mass_conserved": true
+    }
+  },
+  "heldout_pairs": [
+    {
+      "target_ml": 20,
+      "seed": 31001,
+      "candidate": {
+        "received_ml": 19.679625,
+        "error_ml": -0.3203749999999985,
+        "physical_steps": 1066,
+        "physical_time_s": 17.766666666666666,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 19.679625,
+        "error_ml": -0.3203749999999985,
+        "physical_steps": 1066,
+        "physical_time_s": 17.766666666666666,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 20,
+      "seed": 31002,
+      "candidate": {
+        "received_ml": 19.851125000000003,
+        "error_ml": -0.14887499999999676,
+        "physical_steps": 1067,
+        "physical_time_s": 17.78333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 19.851125000000003,
+        "error_ml": -0.14887499999999676,
+        "physical_steps": 1067,
+        "physical_time_s": 17.78333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 20,
+      "seed": 31003,
+      "candidate": {
+        "received_ml": 19.851125000000003,
+        "error_ml": -0.14887499999999676,
+        "physical_steps": 1068,
+        "physical_time_s": 17.8,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 19.851125000000003,
+        "error_ml": -0.14887499999999676,
+        "physical_steps": 1068,
+        "physical_time_s": 17.8,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 30,
+      "seed": 31001,
+      "candidate": {
+        "received_ml": 29.926750000000002,
+        "error_ml": -0.07324999999999804,
+        "physical_steps": 1133,
+        "physical_time_s": 18.883333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 29.926750000000002,
+        "error_ml": -0.07324999999999804,
+        "physical_steps": 1133,
+        "physical_time_s": 18.883333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 30,
+      "seed": 31002,
+      "candidate": {
+        "received_ml": 29.841,
+        "error_ml": -0.15899999999999892,
+        "physical_steps": 1133,
+        "physical_time_s": 18.883333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 29.841,
+        "error_ml": -0.15899999999999892,
+        "physical_steps": 1133,
+        "physical_time_s": 18.883333333333333,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 30,
+      "seed": 31003,
+      "candidate": {
+        "received_ml": 29.883875000000003,
+        "error_ml": -0.1161249999999967,
+        "physical_steps": 1135,
+        "physical_time_s": 18.916666666666668,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 29.883875000000003,
+        "error_ml": -0.1161249999999967,
+        "physical_steps": 1135,
+        "physical_time_s": 18.916666666666668,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 40,
+      "seed": 31001,
+      "candidate": {
+        "received_ml": 40.002375,
+        "error_ml": 0.002375000000000682,
+        "physical_steps": 1203,
+        "physical_time_s": 20.05,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 40.002375,
+        "error_ml": 0.002375000000000682,
+        "physical_steps": 1203,
+        "physical_time_s": 20.05,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 40,
+      "seed": 31002,
+      "candidate": {
+        "received_ml": 40.216750000000005,
+        "error_ml": 0.21675000000000466,
+        "physical_steps": 1203,
+        "physical_time_s": 20.05,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 40.216750000000005,
+        "error_ml": 0.21675000000000466,
+        "physical_steps": 1203,
+        "physical_time_s": 20.05,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    },
+    {
+      "target_ml": 40,
+      "seed": 31003,
+      "candidate": {
+        "received_ml": 40.04525,
+        "error_ml": 0.0452500000000029,
+        "physical_steps": 1204,
+        "physical_time_s": 20.066666666666666,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "baseline": {
+        "received_ml": 40.04525,
+        "error_ml": 0.0452500000000029,
+        "physical_steps": 1204,
+        "physical_time_s": 20.066666666666666,
+        "valid_physics": true,
+        "complete": true,
+        "upright": true,
+        "mass_conserved": true,
+        "max_spilled_ml": 0.0,
+        "inflight_ml": 0.0
+      },
+      "recommended_result_role": "baseline"
+    }
+  ],
+  "all_rollout_checks": {
+    "all_valid_physics": true,
+    "all_states_finite": true,
+    "all_actual_mass_arrays_unchanged": true,
+    "all_mass_conserved": true,
+    "all_source_partitions_conserved": true,
+    "particle_count": 5330,
+    "max_spilled_ml": 0.0,
+    "max_below_table_particles": 0,
+    "maximum_mass_drift_kg": 0.0,
+    "physical_steps": 104870,
+    "physical_seconds": 1747.8333333333333
+  },
+  "timing": {
+    "wall_seconds": 4092.9383062999987,
+    "rollout_wall_seconds": 4091.251571800123
+  },
+  "gui": {
+    "new_deployment": false,
+    "new_gui_trial": true,
+    "historical_evidence_date": "2026-11-21",
+    "historical_evidence_file": "results/ai_training.json",
+    "reason": "Full recommendation loaded explicitly into the existing scene; no stage rebuild or replacement of default GUI asset files.",
+    "new_gui_trial_started": true,
+    "new_gui_trial_complete": true,
+    "new_gui_trial_status": "physical_integration_passed_with_40ml_accuracy_failure",
+    "date": "2026-11-22",
+    "protocol_id": "a42c37cf3830317d033bc277ecd6a944c6bb08d7bd3f7aeaa79572fadb1c0cae",
+    "loaded_recommended_model_sha256": "857f8813db4da8b084b6cde6b87479f2e909513b7b90006997658f931ddac357",
+    "additional_nominal_gui_episodes": 3,
+    "included_in_batch_episodes": false,
+    "training_or_heldout_test": false,
+    "scene_rebuilt": false,
+    "cuda_graph": false,
+    "physical_integration_passed": true,
+    "dose_within_existing_0_25_ml_tolerance": false,
+    "accuracy_tolerance_ml": 0.25,
+    "accuracy_pass_count": 2,
+    "results": [
+      {
+        "target_ml": 20.0,
+        "received_ml": 19.936875,
+        "error_ml": -0.06312499999999943,
+        "tolerance_ml": 0.25,
+        "success": true,
+        "physical_integration_passed": true,
+        "spilled_ml": 0.0,
+        "inflight_ml": 0.0,
+        "final_tilt_degrees": 0.0,
+        "simulation_seconds": 17.816666666666666,
+        "particle_count": 5330,
+        "mass_conserved": true,
+        "max_below_table_particles": 0,
+        "max_grasp_position_error_m": 5.4536305699765206e-05,
+        "max_grasp_orientation_error_rad": 0.0005315849190438021,
+        "max_source_rate": 1.0000000000001563,
+        "reset_max_position_error_m": 0.0,
+        "controller_done": true,
+        "dose_within_tolerance": true
+      },
+      {
+        "target_ml": 30.0,
+        "received_ml": 29.755250000000004,
+        "error_ml": -0.24474999999999625,
+        "tolerance_ml": 0.25,
+        "success": true,
+        "physical_integration_passed": true,
+        "spilled_ml": 0.0,
+        "inflight_ml": 0.0,
+        "final_tilt_degrees": 0.0,
+        "simulation_seconds": 18.85,
+        "particle_count": 5330,
+        "mass_conserved": true,
+        "max_below_table_particles": 0,
+        "max_grasp_position_error_m": 5.616422335266683e-05,
+        "max_grasp_orientation_error_rad": 0.0005315849190438021,
+        "max_source_rate": 1.0000000000001563,
+        "reset_max_position_error_m": 0.0,
+        "controller_done": true,
+        "dose_within_tolerance": true
+      },
+      {
+        "target_ml": 40.0,
+        "received_ml": 39.745125,
+        "error_ml": -0.2548749999999984,
+        "tolerance_ml": 0.25,
+        "success": false,
+        "physical_integration_passed": true,
+        "spilled_ml": 0.0,
+        "inflight_ml": 0.0,
+        "final_tilt_degrees": 0.0,
+        "simulation_seconds": 20.016666666666666,
+        "particle_count": 5330,
+        "mass_conserved": true,
+        "max_below_table_particles": 0,
+        "max_grasp_position_error_m": 5.693328053108983e-05,
+        "max_grasp_orientation_error_rad": 0.000566567705282066,
+        "max_source_rate": 1.0000000000001563,
+        "reset_max_position_error_m": 0.0,
+        "controller_done": true,
+        "dose_within_tolerance": false
+      }
+    ],
+    "evidence": {
+      "report_sha256": "65ebde8a39f55aae1cb22d7f54fff54e52c8920ddf631b697047c283194a8229",
+      "report_mtime_utc": "2026-11-22T03:31:26.775060+00:00",
+      "validation_script_sha256": "2f63429045c8228a2c7f0a2987e64c1ebd7213790c2e30e0412a06e428c6fd51",
+      "stream_image": "docs/images/full_20261122_visible_flow.png",
+      "stream_image_sha256": "7fb6f494f8e5fb770cd3e24799b3c09d63171a2c6c851060d2218836c997ec88"
+    }
+  },
+  "software": {
+    "numpy": "2.3.1",
+    "warp": "1.17.0",
+    "newton": "1.6.1",
+    "device": "cuda:0",
+    "python": "3.12.14 (tags/v3.12.14-dirty:2abcf90, Sep  4 2026, 07:52:08) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "isaac_sim": "6.2.0-rc.14+release.52805.02189a84.gl"
+  },
+  "provenance": {
+    "protocol_id": "a42c37cf3830317d033bc277ecd6a944c6bb08d7bd3f7aeaa79572fadb1c0cae",
+    "summary_sha256": "5c98635db70c1e64239e2b8fbd3c999c29257f318272886a9384d56d27ac777c",
+    "episodes_sha256": "e292f1ed04ee8c8fc30391175883e3ce7c1b54cf4d9a8f5aa174d6603e5b0f7e",
+    "completed_at_utc": "2026-11-22T03:21:18.260239+00:00",
+    "models_frozen_at_utc": "2026-11-22T03:08:16.794433+00:00",
+    "original_training_source_sha256": {
+      "train_target_volume_policy_full.py": "1ed01d50113bb6e910e3333e657190c0928d714e4c892c8e78ae4d8447a8f7e7",
+      "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+      "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+      "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+      "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+      "assets/robot_testtube_pour/scripts/learned_policy.py": "018ee2783d4c2b65b030a9eef6fd4464c143c922992b94caaec622f8f8c1dedd",
+      "assets/robot_testtube_pour/scripts/pour_training_env.py": "4b6ed41e225de900647c6bb0ed43755a05565fdd922142250e058d9a37b86857",
+      "assets/robot_testtube_pour/scripts/pbf_graph.py": "c73aaf5774a668ab417de79c9b459f595a53daf2853bb3544cffae68ec616e0d"
+    },
+    "source_sha256_unchanged_after_run": true,
+    "original_seven_source_sha256_unchanged": true,
+    "full_run_audit_sha256": "7637c48f32ca83bce9174bf96b8fe82add9775f2c29fc3734ac69328b3eb5fe1",
+    "plot_helper_original_sha256": "518a35668b32aa4547e2e6a6ff8b5956473b2909fb34ed2748f6a7cc823ccfd7"
+  },
+  "plots": {
+    "training_curve": "docs/images/full_20261122_training_curve.png",
+    "heldout_errors": "docs/images/full_20261122_heldout_errors.png",
+    "gui_live_flow": "docs/images/full_20261122_visible_flow.png"
+  },
+  "limitations": [
+    "54 training executions reuse only three fixed target/seed initial conditions (CRN).",
+    "Nine held-out conditions use three initialization/viscosity seeds; not broad generalization.",
+    "The selected CEM population member did not change baseline parameters; is_trained=false.",
+    "Quick and full runs use different test seeds; their MAE values do not establish improvement or regression.",
+    "No neural joint policy, optical volume estimator, contact-force grasp or hardware volume calibration."
+  ],
+  "baseline_parameters": {
+    "bias_ml": 0.2,
+    "lead_seconds": 0.2,
+    "target_slope_ml": 0.0
+  },
+  "parameter_bounds": {
+    "bias_ml": [
+      -0.8,
+      0.8
+    ],
+    "lead_seconds": [
+      0.0,
+      0.5
+    ],
+    "target_slope_ml": [
+      -0.5,
+      0.5
+    ]
+  },
+  "integrity_audit": {
+    "integrity_pass": true,
+    "audited_at_utc": "2026-11-22T03:30:30.811044+00:00",
+    "completed_live_episodes": 90,
+    "stage_counts": {
+      "train": 54,
+      "validation": 18,
+      "test": 18
+    },
+    "complete_trace_files_verified": 90,
+    "recorded_step_rows_including_initial_states": 104960,
+    "physical_updates": 104870,
+    "physical_seconds": 1747.8333333333333,
+    "maximum_timestamp_roundoff_seconds": 3.552713678800501e-15,
+    "maximum_recorded_mass_drift_kg": 0.0,
+    "maximum_source_volume_partition_roundoff_ml": 7.105427357601002e-15,
+    "source_snapshot_and_active_hashes_verified": 8,
+    "original_seven_unchanged": true,
+    "gui_model_before_after_and_current_hashes_match": true,
+    "failed_acceptance_cases_retained": 33,
+    "failed_acceptance_cases_by_stage": {
+      "train": 29,
+      "validation": 2,
+      "test": 2
+    },
+    "invalid_physics_cases": 0,
+    "accuracy_acceptance_tolerance_ml": 0.25,
+    "scope": "Serialized traces and source/hash records audited; no GPU replay. Per-particle arrays are not serialized.",
+    "freeze_evidence": {
+      "model_file_times_precede_trace_creation": true,
+      "snapshotted_control_flow_freezes_before_test": true,
+      "exact_wall_clock_episode_start_in_raw_trace": false
+    }
+  }
+}

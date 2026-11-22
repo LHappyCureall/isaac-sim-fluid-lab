@@ -19,14 +19,23 @@ import tempfile
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_WORKSPACE = Path(r"C:\omninverse")
+FULL_MODEL_SOURCES = {
+    "droplet_out/pour_policy_training/run_20261122_full/candidate_frozen.json":
+        ("assets/robot_testtube_pour/policy/full_20261122_candidate.json", "candidate"),
+    "droplet_out/pour_policy_training/run_20261122_full/recommended_frozen.json":
+        ("assets/robot_testtube_pour/policy/full_20261122_recommended.json", "recommended"),
+}
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
+    "projects/pour_policy_training/plot_full_results.py": "tools/training/plot_full_results.py",
+    **{source: item[0] for source, item in FULL_MODEL_SOURCES.items()},
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
     "assets/robot_testtube_pour/policy/target_volume_candidate.json",
 )
+CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
@@ -34,6 +43,7 @@ ALLOWLIST = (
     "robot_target_volume_pour.py",
     "robot_target_volume_ai.py",
     "train_target_volume_policy.py",
+    "train_target_volume_policy_full.py",
     "assets/robot_testtube_pour/scripts/geometry.py",
     "assets/robot_testtube_pour/scripts/robot.py",
     "assets/robot_testtube_pour/scripts/liquid.py",
@@ -64,7 +74,7 @@ def _replace(text, old, new, *, count=1):
 
 
 def _validate_checkpoint(relative, text):
-    """Only the two reviewed, small three-parameter policy JSONs may publish."""
+    """Only the explicitly reviewed small three-parameter JSONs may publish."""
     if len(text.encode("utf-8")) > 64 * 1024:
         raise SyncError(f"Unexpectedly large policy checkpoint: {relative}.")
     value = json.loads(text)
@@ -91,7 +101,26 @@ def _validate_checkpoint(relative, text):
     metadata = value["metadata"]
     if not isinstance(metadata, dict) or type(metadata.get("is_trained")) is not bool:
         raise SyncError("Policy metadata must explicitly identify whether parameters were trained.")
-    if relative == MODEL_FILES[0]:
+    full_role = next((role for source, (destination, role) in FULL_MODEL_SOURCES.items()
+                      if relative in (source, destination)), None)
+    if full_role is not None:
+        if (metadata.get("policy_role") != full_role or metadata.get("test_used_for_selection") is not False
+                or metadata.get("gui_deployment_written") is not False):
+            raise SyncError("Full-run model role/isolation metadata changed.")
+        baseline = {"bias_ml": 0.2, "lead_seconds": 0.2, "target_slope_ml": 0.0}
+        if full_role == "candidate":
+            changed = parameters != baseline
+            if (metadata.get("selection_origin") != "full_CEM_training_best"
+                    or metadata.get("parameters_changed_from_baseline") is not changed
+                    or metadata["is_trained"] is not changed):
+                raise SyncError("Full candidate must identify whether search changed baseline parameters.")
+        else:
+            origin = metadata.get("selection_origin")
+            if origin not in ("baseline_fallback", "cem_training_best") or metadata["is_trained"] != (origin == "cem_training_best"):
+                raise SyncError("Full recommendation training label contradicts validation selection.")
+            if origin == "baseline_fallback" and parameters != baseline:
+                raise SyncError("Full baseline recommendation must retain baseline parameters.")
+    elif relative == MODEL_FILES[0]:
         origin = metadata.get("selection_origin", metadata.get("selection"))
         if origin not in ("baseline_fallback", "cem_training_best"):
             raise SyncError("Default policy must identify its validation-based selection origin.")
@@ -144,7 +173,13 @@ def transform(relative, text):
                         '    sdk = require_isaac_sim_root()')
         text = _replace(text, '    sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT)))',
                         '    sdk = require_isaac_sim_root()')
-    elif relative in MODEL_FILES:
+    elif relative == "train_target_volume_policy_full.py":
+        text = _replace(text, "from pathlib import Path\n",
+                        "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, require_isaac_sim_root\n")
+        text = _replace(text, "ROOT = Path(__file__).resolve().parent", "ROOT = PROJECT_ROOT")
+        text = _replace(text, '    sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT)))',
+                        '    sdk = require_isaac_sim_root()')
+    elif relative in CHECKPOINT_SOURCES:
         _validate_checkpoint(relative, text)
     elif relative == "projects/pour_policy_training/audit_candidate.py":
         _replace(text, '"""Supplementary live audit of the already-trained CEM candidate.',
@@ -158,6 +193,11 @@ def transform(relative, text):
                  "ROOT = Path(__file__).resolve().parents[2]")
         text = _replace(text, r"C:\\omninverse\\kit\\python\\python.exe plot_results.py RUN_DIRECTORY",
                         "SDK_PYTHON tools/training/plot_results.py RUN_DIRECTORY")
+    elif relative == "projects/pour_policy_training/plot_full_results.py":
+        _replace(text, '"""Plot only a completed, internally consistent full-budget pouring run.',
+                 '"""Plot only a completed, internally consistent full-budget pouring run.')
+        _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                 "ROOT = Path(__file__).resolve().parents[2]")
     elif relative.endswith("/scripts/robot.py"):
         text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, ISAAC_SIM_ROOT\n")
         text = _replace(text,
@@ -283,7 +323,7 @@ def transform(relative, text):
         raise SyncError(f"Unmapped machine-specific path or username in {relative}.")
     if relative.endswith(".py"):
         ast.parse(text, filename=relative)
-    return text if relative in MODEL_FILES else text.rstrip() + "\n"
+    return text if relative in CHECKPOINT_SOURCES else text.rstrip() + "\n"
 
 
 def prepare_sync(workspace):
@@ -296,9 +336,28 @@ def prepare_sync(workspace):
             raise SyncError(f"Missing or unsafe allowlisted source: {relative}.")
         # Model bytes retain their original line endings so the published
         # checkpoint has exactly the same SHA as the frozen local artifact.
-        original = (source.read_bytes().decode("utf-8") if relative in MODEL_FILES
+        original = (source.read_bytes().decode("utf-8") if relative in CHECKPOINT_SOURCES
                     else source.read_text(encoding="utf-8"))
         try:
+            if relative in FULL_MODEL_SOURCES:
+                # These checkpoints are frozen before test. Publish them only
+                # after the isolated full run has actually completed its budget.
+                summary_path = source.parent / "summary.json"
+                if not summary_path.is_file():
+                    raise SyncError("Full-run summary is missing; checkpoint publication is premature.")
+                summary = json.loads(summary_path.read_text(encoding="utf-8"))
+                checkpoint = json.loads(original)
+                role = FULL_MODEL_SOURCES[relative][1]
+                entry = summary.get("models", {}).get(role, {})
+                if (summary.get("complete") is not True
+                        or type(summary.get("total_recorded_episodes")) is not int
+                        or summary["total_recorded_episodes"] != 90):
+                    raise SyncError("Full-run checkpoint requires a completed 90-episode summary.")
+                if (not summary.get("protocol_id")
+                        or summary["protocol_id"] != checkpoint.get("metadata", {}).get("protocol_id")
+                        or hashlib.sha256(original.encode("utf-8")).hexdigest() != entry.get("sha256")
+                        or checkpoint.get("parameters") != entry.get("parameters")):
+                    raise SyncError("Full-run checkpoint does not match the completed summary.")
             published = transform(relative, original)
         except (ValueError, SyntaxError, SyncError) as error:
             raise SyncError(f"{relative}: {error}") from error
