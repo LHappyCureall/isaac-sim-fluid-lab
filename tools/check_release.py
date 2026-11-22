@@ -575,6 +575,7 @@ def main():
     for source in sources:
         compile(source.read_text(encoding="utf-8"), str(source), "exec")
     required = ("droplet_milkcrown_newton.py", "droplet_milkcrown_newton_surface.py",
+                "droplet_milkcrown_newton_view.py",
                 "robot_testtube_pour.py", "robot_target_volume_pour.py", "robot_target_volume_ai.py",
                 "train_target_volume_policy.py", "train_target_volume_policy_full.py", "launch.py", "lab_paths.py")
     assert all((ROOT / name).is_file() for name in required), "Missing experiment source"

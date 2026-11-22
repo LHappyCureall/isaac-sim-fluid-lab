@@ -1,6 +1,7 @@
 """Kit --exec launcher that makes this checkout importable.
 
-Set ISAAC_FLUID_DEMO to target-volume (default), precision, ai, pour, milkcrown, or bake-cache.
+Set ISAAC_FLUID_DEMO to target-volume (default), precision, ai, pour,
+milkcrown, milkcrown-view, or bake-cache.
 For Script Editor buffers, use the explicit project-path snippet in README.
 """
 import os
@@ -15,6 +16,7 @@ DEMOS = {
     "precision": "robot_target_volume_precision.py",
     "pour": "robot_testtube_pour.py",
     "milkcrown": "droplet_milkcrown_newton_surface.py",
+    "milkcrown-view": "droplet_milkcrown_newton_view.py",
     "bake-cache": "tools/bake_pour_cache.py",
 }
 

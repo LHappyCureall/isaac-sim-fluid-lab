@@ -74,6 +74,7 @@ CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCE
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
+    "droplet_milkcrown_newton_view.py",
     "robot_testtube_pour.py",
     "robot_target_volume_pour.py",
     "robot_target_volume_ai.py",
@@ -368,6 +369,11 @@ def transform(relative, text):
                         'TEXTURE_DIRECTORY = PROJECT_ROOT / "textures" / "table_options"')
         text = _replace(text, '    r"C:\\omninverse\\droplet_milkcrown_newton.py",',
                         '    str(PROJECT_ROOT / "droplet_milkcrown_newton.py"),')
+    elif relative == "droplet_milkcrown_newton_view.py":
+        text = _replace(text, "import importlib.util\n",
+                        "import importlib.util\n\nfrom lab_paths import PROJECT_ROOT\n")
+        text = _replace(text, '    r"C:\\omninverse\\droplet_milkcrown_newton_surface.py",',
+                        '    str(PROJECT_ROOT / "droplet_milkcrown_newton_surface.py"),')
     elif relative in ("robot_testtube_pour.py", "robot_target_volume_pour.py"):
         text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT\n")
         text = _replace(text, 'TABLE_STYLE = "pale_oak"', 'TABLE_STYLE = "white_matte"')

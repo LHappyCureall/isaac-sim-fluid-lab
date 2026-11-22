@@ -9,6 +9,7 @@
 | 文件 | 内容 |
 | --- | --- |
 | `droplet_milkcrown_newton_surface.py` | milkcrown 连续水面、透明水材质和桌面切换 |
+| `droplet_milkcrown_newton_view.py` | 水冠面板切换 Surface / Particles / Both，保持同一次仿真 |
 | `droplet_milkcrown_newton.py` | milkcrown 的隐式 MPM 实现 |
 | `robot_testtube_pour.py` | 预握试管→抬起移动→倾倒→扶正；支持实时求解、可选物理缓存回放和 10 秒视频 |
 | `robot_target_volume_pour.py` | 手写实时 PBF 反馈基准，选择 20 / 30 / 40 mL 后自动扶正 |
@@ -28,6 +29,8 @@
 对应 [`droplet_milkcrown_newton_surface.py`](droplet_milkcrown_newton_surface.py)，预览来自 `milkcrown_1121.mp4`。
 
 [![液滴落入水面并形成水冠](docs/demos/milkcrown_1121.gif)](docs/demos/milkcrown_1121.gif)
+
+运行 `droplet_milkcrown_newton_view.py` 可打开 **Milk crown view** 面板：**Surface** 显示连续液面、**Particles** 显示粒子球、**Both** 叠加两者（默认）。切换只改变绘制，不重置液滴或求解器；Play / Pause / Stop 控制播放、暂停和复位。首次启动仍需编译表面重建，切换其他示例前请关闭此面板。
 
 ### Franka 试管倒水
 
@@ -61,7 +64,7 @@ exec(compile(script.read_text(encoding="utf-8"), str(script), "exec"),
 
 初始化后，在 **Target volume pouring** 面板选择 **20 / 30 / 40 mL → Play**。Pause 暂停，Reset 复位，Test 20 / 30 / 40 mL 可重新验证三项。文件顶部 `TARGET_VOLUME_ML` 设置初始目标。
 
-`launch.py` 默认启动目标水量基准；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `precision`、`ai`、`pour`、`milkcrown` 或 `bake-cache`。`precision` 使用新的 V2 检查点，面板可切换原基准；`ai` 使用旧 CEM 检查点。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
+`launch.py` 默认启动目标水量基准；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `precision`、`ai`、`pour`、`milkcrown`、`milkcrown-view` 或 `bake-cache`。`milkcrown-view` 打开水冠三模式面板，`milkcrown` 保留原连续液面入口。`precision` 使用新的 V2 检查点，面板可切换原基准；`ai` 使用旧 CEM 检查点。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
 
 ## 学习策略与水量显示
 
