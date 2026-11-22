@@ -54,6 +54,38 @@ FAST_PARAMETER_BOUNDS = {
     "meter_tilt_deg_s": (10.0, 80.0), "return_tilt_deg_s": (70.0, 180.0),
     "tail_lead_s": (0.02, 0.8), "stop_bias_ml": (-5.0, 10.0),
 }
+PIVOT_RUN = "droplet_out/pour_policy_pivot_v4/run_20261122_joint_cem"
+PIVOT_PROJECT = "projects/pour_policy_training_v4/"
+PIVOT_TOOL_SOURCES = {
+    **{FAST_PROJECT + name: "tools/training/" + name for name in (
+        "prepare_mouth_pivot_path.py", "prepare_mouth_pivot_lift_path.py",
+        "verify_mouth_pivot_path.py", "estimate_upright_lift_pivot.py", "pilot_direct.py")},
+    **{PIVOT_PROJECT + name: "tools/training/" + name for name in (
+        "run_pivot_job.py", "audit_pivot_run.py", "plot_pivot_results.py")},
+}
+PIVOT_RUNTIME_SOURCES = ("train_target_volume_pivot.py", *["assets/robot_testtube_pour/scripts/" + name
+    for name in ("direct_fast_geometry.py", "direct_fast_control.py", "direct_training_env.py",
+                 "mouth_pivot_fast_geometry.py", "mouth_pivot_lift_geometry.py", "mouth_pivot_lift_control_v2.py")])
+# These files already resolve their own source/cache paths relative to ROOT.
+# Keep their original bytes and literal study pins; no dynamic rebinding is
+# used to pretend that rebuilt/public assets are the archived private inputs.
+PIVOT_UNCHANGED_SOURCES = tuple(source for source in PIVOT_RUNTIME_SOURCES if source != "train_target_volume_pivot.py")
+PIVOT_MODEL_SOURCES = {
+    PIVOT_RUN + "/candidate_frozen.json":
+        ("assets/robot_testtube_pour/policy/pivot_v4_20261122_candidate.json", "candidate"),
+    PIVOT_RUN + "/recommended_frozen.json":
+        ("assets/robot_testtube_pour/policy/pivot_v4_20261122_recommended.json", "recommended"),
+}
+PIVOT_PARAMETER_BOUNDS = {
+    "prepare_fraction": (.8, 1.), "dose_tilt_deg_s": (20., 120.),
+    "return_fraction": (.8, 1.), "tail_lead_s": (0., .8),
+    "stop_bias_ml": (-5., 10.), "max_dose_u_accel": (2., 10.),
+}
+PIVOT_SEARCH_BOUNDS = {"prepare_fraction": (.95, 1.), "dose_tilt_deg_s": (22., 34.),
+    "return_fraction": (.95, 1.), "tail_lead_s": (.08, .5),
+    "stop_bias_ml": (4., 10.), "max_dose_u_accel": (5., 8.)}
+V5_SCORE_SOURCES = {"projects/pour_policy_training_v5/" + name: "tools/scoring/" + name
+                    for name in ("task_score.py", "test_task_score.py")}
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
@@ -65,12 +97,16 @@ SOURCE_TO_DEST = {
     **{source: item[0] for source, item in PRECISION_MODEL_SOURCES.items()},
     **FAST_TOOL_SOURCES,
     **{source: item[0] for source, item in FAST_MODEL_SOURCES.items()},
+    **PIVOT_TOOL_SOURCES,
+    **{source: item[0] for source, item in PIVOT_MODEL_SOURCES.items()},
+    **V5_SCORE_SOURCES,
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
     "assets/robot_testtube_pour/policy/target_volume_candidate.json",
 )
-CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES, *FAST_MODEL_SOURCES)
+CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES,
+                      *FAST_MODEL_SOURCES, *PIVOT_MODEL_SOURCES)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
@@ -83,6 +119,7 @@ ALLOWLIST = (
     "train_target_volume_policy_full.py",
     "train_target_volume_precision.py",
     *FAST_RUNTIME_SOURCES,
+    *PIVOT_RUNTIME_SOURCES,
     "assets/robot_testtube_pour/scripts/geometry.py",
     "assets/robot_testtube_pour/scripts/robot.py",
     "assets/robot_testtube_pour/scripts/liquid.py",
@@ -116,6 +153,10 @@ def _replace(text, old, new, *, count=1):
 
 def _validate_checkpoint(relative, text):
     """Validate the reviewed CEM or distinct precision checkpoint schema."""
+    pivot_role = next((role for source, (destination, role) in PIVOT_MODEL_SOURCES.items()
+                       if relative in (source, destination)), None)
+    if pivot_role is not None:
+        return _validate_pivot_checkpoint(text, pivot_role)
     fast_role = next((role for source, (destination, role) in FAST_MODEL_SOURCES.items()
                       if relative in (source, destination)), None)
     if fast_role is not None:
@@ -258,6 +299,84 @@ def _validate_fast_checkpoint(text, role):
     json.dumps(value, allow_nan=False)
 
 
+def _validate_pivot_parameters(parameters):
+    if not isinstance(parameters, dict) or set(parameters) != set(PIVOT_PARAMETER_BOUNDS):
+        raise SyncError("Pivot V4 requires its own six physical speed/stop parameters.")
+    for name, (low, high) in PIVOT_PARAMETER_BOUNDS.items():
+        value = parameters[name]
+        if type(value) not in (int, float) or not math.isfinite(value) or not low <= value <= high:
+            raise SyncError("Invalid archived pivot V4 parameter: " + name)
+
+
+def _validate_pivot_checkpoint(text, role):
+    if len(text.encode("utf-8")) > 64 * 1024:
+        raise SyncError("Unexpectedly large pivot V4 research checkpoint.")
+    value = json.loads(text)
+    if (not isinstance(value, dict) or set(value) != {"schema_version", "policy_kind", "parameters", "observation_units", "metadata"}
+            or type(value["schema_version"]) is not int or value["schema_version"] != 1
+            or value["policy_kind"] != "upright_lift_fixed_mouth_planned_return_v2"):
+        raise SyncError("Pivot V4 archived model has a distinct schema/kind, not V3 or V5.")
+    _validate_pivot_parameters(value["parameters"])
+    if value["observation_units"] != {"volume": "mL", "flow": "mL/s", "tilt_rate": "degrees/physical-second"}:
+        raise SyncError("Pivot V4 observation units changed.")
+    metadata = value["metadata"]
+    if (not isinstance(metadata, dict) or metadata.get("role") != role
+            or metadata.get("algorithm") != "feasibility_first_CEM_upright_lift_fixed_mouth_feedback_v4"
+            or metadata.get("neural_policy") is not False or metadata.get("ppo") is not False
+            or metadata.get("training_episodes") != 48 or metadata.get("test_used_for_selection") is not False
+            or metadata.get("automatic_gui_deployment") is not False
+            or not re.fullmatch(r"[0-9a-f]{64}", str(metadata.get("protocol_id", "")))
+            or not re.fullmatch(r"[0-9a-f]{64}", str(metadata.get("input_id", "")))
+            or not isinstance(metadata.get("source_sha256"), dict) or len(metadata["source_sha256"]) != 30):
+        raise SyncError("Pivot V4 frozen role, source count or train/test isolation changed.")
+    binding = metadata.get("module_binding", {})
+    if (binding.get("geometry_file") != "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py"
+            or binding.get("controller_file") != "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py"
+            or binding.get("collector_file") != "assets/robot_testtube_pour/scripts/direct_training_env.py"
+            or binding.get("step_evidence_type") != "direct_step_evidence"
+            or binding.get("containment") != "actual_solver_body_q_full_R"):
+        raise SyncError("Pivot V4 model is not bound to its original full-R implementation.")
+    json.dumps(value, allow_nan=False)
+
+
+def _transform_pivot_source(relative, text):
+    """Archive failed research with original pins, not an open-box rerun claim."""
+    if relative in PIVOT_UNCHANGED_SOURCES:
+        ast.parse(text, filename=relative)
+        return text
+    if relative == "train_target_volume_pivot.py":
+        text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import require_isaac_sim_root\n")
+        text = _replace(text, 'sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT))).resolve()',
+                        'sdk = require_isaac_sim_root().resolve()')
+        text = _replace(text, 'raise RuntimeError("The explicitly reused V3 pure I/O/statistics helpers changed.")',
+                        'raise RuntimeError("Archived V4 study requires the exact private V3 helper/protocol/cache lineage. Public portable copies and rebuilt caches are different versions; do not rebind pins or resume original logs. See docs/PIVOT_V4_20261122.md.")')
+        for source, destination in PIVOT_TOOL_SOURCES.items():
+            if source in text:
+                text = _replace(text, source, destination)
+    elif relative in PIVOT_TOOL_SOURCES:
+        name = Path(relative).name
+        if name == "pilot_direct.py":
+            text = _replace(text, "ROOT = Path(r'C:\\omninverse')",
+                            'ROOT = Path(__file__).resolve().parents[2]\nsys.path.insert(0, str(ROOT))')
+            for source, destination in PIVOT_TOOL_SOURCES.items():
+                if source in text:
+                    text = _replace(text, source, destination)
+        elif name == "plot_pivot_results.py":
+            text = _replace(text, 'ROOT / "projects/pour_policy_training_v3/plot_fast_results.py"',
+                            'ROOT / "tools/training/plot_fast_results.py"')
+        elif name in ("prepare_mouth_pivot_path.py", "verify_mouth_pivot_path.py"):
+            text = _replace(text, 'HERE = Path(__file__).resolve().parent',
+                            'HERE = ROOT / "projects/pour_policy_training_v3"')
+        elif name in ("prepare_mouth_pivot_lift_path.py", "estimate_upright_lift_pivot.py"):
+            text = _replace(text, 'HERE = Path(__file__).resolve().parent',
+                            'HERE = Path(__file__).resolve().parents[2] / "projects/pour_policy_training_v3"')
+        elif name not in ("run_pivot_job.py", "audit_pivot_run.py"):
+            raise SyncError("Unreviewed pivot V4 helper: " + name)
+    else:
+        raise SyncError("Unreviewed pivot V4 archived source: " + relative)
+    return text
+
+
 def _transform_fast_source(relative, text):
     """Portable research tools; retain all solver/controller calculations."""
     cache_dir = 'ROOT / "_cache/pour_training/fast_v3"'
@@ -353,7 +472,11 @@ def _transform_fast_source(relative, text):
 
 def transform(relative, text):
     """Return the fixed publication variant; never evaluate imported scripts."""
-    if relative in FAST_RUNTIME_SOURCES or relative in FAST_TOOL_SOURCES:
+    if relative in PIVOT_RUNTIME_SOURCES or relative in PIVOT_TOOL_SOURCES:
+        text = _transform_pivot_source(relative, text)
+    elif relative in V5_SCORE_SOURCES:
+        _replace(text, 'from dataclasses import ', 'from dataclasses import ')
+    elif relative in FAST_RUNTIME_SOURCES or relative in FAST_TOOL_SOURCES:
         text = _transform_fast_source(relative, text)
     elif relative == "droplet_milkcrown_newton.py":
         text = _replace(text, "import os\n", "import os\n\nfrom lab_paths import PROJECT_ROOT\n")
@@ -583,7 +706,7 @@ def transform(relative, text):
         raise SyncError(f"Unmapped machine-specific path or username in {relative}.")
     if relative.endswith(".py"):
         ast.parse(text, filename=relative)
-    return text if relative in CHECKPOINT_SOURCES else text.rstrip() + "\n"
+    return text if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES) else text.rstrip() + "\n"
 
 
 def _fast_publication_gate(root):
@@ -638,21 +761,82 @@ def _fast_publication_gate(root):
     return summary
 
 
+def _pivot_publication_gate(root):
+    """Only complete, independently audited failed V4 research may publish."""
+    run = root / PIVOT_RUN
+    required = ("summary.json", "protocol.json", "input_freeze.json", "freeze.json", "episodes.jsonl", "pivot_run_audit.json")
+    if any(not (run / name).is_file() for name in required):
+        raise SyncError("Pivot V4 publication requires its completed 78-case summary and independent raw audit.")
+    summary, envelope, freeze, audit = (json.loads((run/name).read_text(encoding="utf-8")) for name in
+                                      ("summary.json", "protocol.json", "freeze.json", "pivot_run_audit.json"))
+    protocol = envelope["protocol"]
+    declaration = protocol["declaration"]
+    identity = hashlib.sha256(json.dumps(protocol, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+    budget = {"generations": 2, "population": 4, "elites": 2, "training": 48, "validation": 12, "test": 18, "total": 78}
+    if (summary.get("complete") is not True or summary.get("total_recorded_episodes") != 78
+            or protocol.get("kind") != "formal_upright_lift_fixed_mouth_CEM_78_live_episodes"
+            or declaration.get("budget") != budget or summary.get("protocol") != protocol
+            or identity != envelope.get("protocol_id") or summary.get("protocol_id") != identity
+            or freeze.get("protocol_id") != identity or audit.get("protocol_id") != identity
+            or audit.get("artifact_integrity_verified") is not True or audit.get("all_failures_retained") is not True
+            or audit.get("episodes_audited") != 78 or audit.get("raw_action_trace_count") != 78
+            or audit.get("budgets") != {"training":48,"validation":12,"test":18,"total":78}
+            or audit.get("summary_sha256") != hashlib.sha256((run/"summary.json").read_bytes()).hexdigest()
+            or audit.get("journal_sha256") != hashlib.sha256((run/"episodes.jsonl").read_bytes()).hexdigest()
+            or summary.get("automatic_gui_deployment") is not False or freeze.get("test_used_for_selection") is not False
+            or summary.get("test_used_for_training_or_selection") is not False):
+        raise SyncError("Pivot V4 must remain the complete, unchanged, independently audited 48/12/18 experiment.")
+    sources = declaration.get("source_sha256", {})
+    if len(sources) != 30:
+        raise SyncError("Pivot V4 requires exactly thirty frozen sources.")
+    for relative, expected in sources.items():
+        source, frozen = (root/relative).resolve(), (run/"source_snapshot"/relative).resolve()
+        if (relative not in ALLOWLIST or not source.is_relative_to(root) or not frozen.is_relative_to(run)
+                or not source.is_file() or not frozen.is_file()
+                or hashlib.sha256(source.read_bytes()).hexdigest() != expected
+                or hashlib.sha256(frozen.read_bytes()).hexdigest() != expected):
+            raise SyncError("Pivot V4 original source changed or is not reviewed: " + relative)
+    rows = [json.loads(line) for line in (run/"episodes.jsonl").read_text(encoding="utf-8").splitlines()]
+    if (len(rows) != 78 or len({row["episode_id"] for row in rows}) != 78
+            or {stage:sum(row["conditions"]["stage"]==stage for row in rows) for stage in ("train","validation","test")}
+            != {"train":48,"validation":12,"test":18}
+            or any(datetime.fromisoformat(row["episode_wall_clock_start_utc"]) <= datetime.fromisoformat(freeze["frozen_at_utc"])
+                   for row in rows if row["conditions"]["stage"] == "test")):
+        raise SyncError("Pivot V4 journal counts or pre-test model freeze changed.")
+    for role in ("candidate", "recommended"):
+        raw = (run/(role+"_frozen.json")).read_bytes()
+        _validate_pivot_checkpoint(raw.decode("utf-8"), role)
+        model, entry = json.loads(raw), summary["models"][role]
+        if (hashlib.sha256(raw).hexdigest() != entry["sha256"] or entry["sha256"] != freeze[role+"_sha256"]
+                or model["parameters"] != entry["parameters"] or model["parameters"] != freeze[role+"_params"]
+                or model["metadata"]["source_sha256"] != sources or model["metadata"]["protocol_id"] != identity
+                or model["metadata"]["input_id"] != protocol["input_id"]):
+            raise SyncError("Pivot V4 original model bytes, parameters or provenance changed.")
+    return summary
+
+
 def prepare_sync(workspace):
     """Validate the entire allowlist before returning any content to write."""
     root = Path(workspace).expanduser().resolve()
     prepared = []
     precision_source_manifest = None
     fast_summary = None
+    pivot_summary = None
     for relative in ALLOWLIST:
         source = (root / relative).resolve()
         if not source.is_relative_to(root) or not source.is_file():
             raise SyncError(f"Missing or unsafe allowlisted source: {relative}.")
         # Model bytes retain their original line endings so the published
         # checkpoint has exactly the same SHA as the frozen local artifact.
-        original = (source.read_bytes().decode("utf-8") if relative in CHECKPOINT_SOURCES
+        original = (source.read_bytes().decode("utf-8") if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES)
                     else source.read_text(encoding="utf-8"))
         try:
+            if relative in PIVOT_MODEL_SOURCES:
+                if pivot_summary is None:
+                    pivot_summary = _pivot_publication_gate(root)
+                role = PIVOT_MODEL_SOURCES[relative][1]
+                if hashlib.sha256(original.encode("utf-8")).hexdigest() != pivot_summary["models"][role]["sha256"]:
+                    raise SyncError("Pivot checkpoint changed during publication preparation.")
             if relative in FAST_MODEL_SOURCES:
                 if fast_summary is None:
                     fast_summary = _fast_publication_gate(root)

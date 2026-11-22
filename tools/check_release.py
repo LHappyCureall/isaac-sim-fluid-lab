@@ -367,18 +367,24 @@ def _check_precision_results():
         _published_file(relative)
 
 
-def _check_fast_results():
-    """Verify completed failed V3 research without treating it as a GUI release."""
-    report = json.loads(_published_file("results/fast_v3_20261122.json").read_text(encoding="utf-8"))
+def _check_cem_research_results(version):
+    """Check each original failed protocol; V5's new score is not retroactive."""
+    assert version in (3, 4)
+    pivot = version == 4
+    prefix, generation_count, population_count, train_count, source_count = (
+        ("pivot_v4", 2, 4, 48, 30) if pivot else ("fast_v3", 3, 6, 108, 20))
+    report = json.loads(_published_file("results/"+prefix+"_20261122.json").read_text(encoding="utf-8"))
     json.dumps(report, allow_nan=False)
-    assert report["schema_version"] == 1 and report["kind"] == "curated_fast_v3_live_CEM_results"
+    assert report["schema_version"] == 1 and report["kind"] == "curated_"+prefix+"_live_CEM_results"
     assert report["complete"] is True
     protocol, counts = report["protocol_summary"], report["counts"]
-    assert protocol["algorithm"] == "feasibility_first_CEM_speed_and_stop_feedback_v3"
+    assert protocol["algorithm"] == ("feasibility_first_CEM_upright_lift_fixed_mouth_feedback_v4" if pivot
+                                      else "feasibility_first_CEM_speed_and_stop_feedback_v3")
     assert report.get("neural_policy", protocol.get("neural_policy", False)) is False
     assert report.get("ppo", protocol.get("ppo", False)) is False
     assert {key: counts[key] for key in ("training", "validation", "test", "total", "generations", "population")} == {
-        "training": 108, "validation": 12, "test": 18, "total": 138, "generations": 3, "population": 6}
+        "training": train_count, "validation": 12, "test": 18, "total": train_count+30,
+        "generations": generation_count, "population": population_count}
     targets = set(protocol["targets_ml"])
     train, validation, test = [set(protocol[key+"_seeds"]) for key in ("train", "validation", "test")]
     assert targets == {20, 30, 40} and [len(group) for group in (train, validation, test)] == [2, 2, 3]
@@ -395,13 +401,24 @@ def _check_fast_results():
     spec = importlib.util.spec_from_file_location("release_fast_sync_validator", ROOT / "tools/sync_from_workspace.py")
     sync = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sync)
-    assert len(protocol["source_sha256"]) == 20
-    assert set(protocol["cem"]["bounds"]) == set(sync.FAST_PARAMETER_BOUNDS)
-    assert all(tuple(protocol["cem"]["bounds"][key]) == bounds for key, bounds in sync.FAST_PARAMETER_BOUNDS.items())
-    sync._validate_fast_parameters(protocol["cem"]["baseline_params"])
+    assert len(protocol["source_sha256"]) == source_count
+    bounds = sync.PIVOT_SEARCH_BOUNDS if pivot else sync.FAST_PARAMETER_BOUNDS
+    validate_parameters = sync._validate_pivot_parameters if pivot else sync._validate_fast_parameters
+    assert set(protocol["cem"]["bounds"]) == set(bounds)
+    assert all(tuple(protocol["cem"]["bounds"][key]) == limits for key, limits in bounds.items())
+    validate_parameters(protocol["cem"]["baseline_params"])
     assert report["protocol_id"] == report["audit"]["protocol_id"]
     assert len(report["protocol_id"]) == 64 and report["audit"]["artifact_integrity_verified"] is True
-    assert report["audit"]["budgets"] == {"training": 108, "validation": 12, "test": 18, "total": 138}
+    assert report["audit"]["budgets"] == {"training": train_count, "validation": 12, "test": 18, "total": train_count+30}
+    if pivot:
+        assert report["audit"]["all_failures_retained"] is True
+        assert report["audit"]["episodes_audited"] == report["audit"]["raw_action_trace_count"] == 78
+        assert len(protocol["input_sha256"]) == 15
+        assert report["publication"]["archive_only_not_turnkey_reproduction"] is True
+        assert report["publication"]["checkpoint_bytes_transformed"] is False
+        historical = json.loads(_published_file("results/fast_v3_20261122.json").read_text(encoding="utf-8"))
+        assert test.isdisjoint(historical["protocol_summary"]["test_seeds"])
+        _published_file("docs/PIVOT_V4_20261122.md")
 
     def near(one, two):
         assert type(one) in (int, float) and math.isfinite(one) and abs(one-two) < 1e-7
@@ -481,18 +498,18 @@ def _check_fast_results():
 
     all_train, candidates = [], []
     generations = report["training"]["generations"]
-    assert len(generations) == 3 and [g["generation"] for g in generations] == [0, 1, 2]
+    assert len(generations) == generation_count and [g["generation"] for g in generations] == list(range(generation_count))
     for generation in generations:
-        assert len(generation["candidates"]) == 6 and {c["index"] for c in generation["candidates"]} == set(range(6))
+        assert len(generation["candidates"]) == population_count and {c["index"] for c in generation["candidates"]} == set(range(population_count))
         for candidate in generation["candidates"]:
-            sync._validate_fast_parameters(candidate["params"])
+            validate_parameters(candidate["params"])
             rows = candidate["cases"]
             check_conditions(rows, train, candidate["params"])
             check_metrics(candidate["metrics"], rows)
             check_key(candidate["selection_key"], key(rows))
             candidates.append(candidate)
             all_train.extend(rows)
-    assert len(all_train) == 108
+    assert len(all_train) == train_count
     assert counts["distinct_parameter_vectors"] == len({json.dumps(c["params"], sort_keys=True) for c in candidates})
     best = min(candidates, key=lambda candidate: candidate["selection_key"])
     validation_cases = report["validation"]["cases"]
@@ -528,7 +545,8 @@ def _check_fast_results():
         assert report["release_acceptance"][role+"_passed"] is passed
     assert report["release_acceptance"]["does_not_reselect_model"] is True
 
-    for source, (relative, role) in sync.FAST_MODEL_SOURCES.items():
+    model_sources = sync.PIVOT_MODEL_SOURCES if pivot else sync.FAST_MODEL_SOURCES
+    for source, (relative, role) in model_sources.items():
         entry = report["models"][role]
         assert entry["file"] == relative
         raw = _published_file(relative).read_bytes()
@@ -541,12 +559,14 @@ def _check_fast_results():
         assert entry["parameters"] == (best["params"] if role == "candidate" or expected_role == "candidate"
                                        else protocol["cem"]["baseline_params"])
     mapping = report["publication"]["source_mapping"]
-    assert len(mapping) == 20 and {item["original_file"] for item in mapping} == set(protocol["source_sha256"])
+    assert len(mapping) == source_count and {item["original_file"] for item in mapping} == set(protocol["source_sha256"])
     for item in mapping:
         original, published = item["original_file"], item["published_file"]
         assert item["original_sha256"] == protocol["source_sha256"][original]
         assert published == sync.SOURCE_TO_DEST.get(original, original)
         assert hashlib.sha256(_published_file(published).read_bytes()).hexdigest() == item["published_sha256"]
+        if pivot and original in sync.PIVOT_UNCHANGED_SOURCES:
+            assert item["original_sha256"] == item["published_sha256"], "Original literal study pins must not be rebound."
     comparison = report["per_target_comparison"]
     assert len(comparison) == 3 and {item["target_ml"] for item in comparison} == targets
     for item in comparison:
@@ -557,16 +577,51 @@ def _check_fast_results():
             check_metrics(item[role], [pair[role] for pair in subset])
             near(item[role]["mean_action_wall_seconds"], sum(pair[role]["result"]["wall_seconds"] for pair in subset)/3)
             near(item[role]["mean_action_plus_post_wall_seconds"], sum(pair[role]["total_action_plus_post_wall_seconds"] for pair in subset)/3)
-    assert report["gui"] == {"new_deployment": False, "fast_gui_entry_implemented": False}
-    assert not (ROOT / "assets/robot_testtube_pour/policy/fast_v3.json").exists()
-    assert not (ROOT / "robot_target_volume_fast.py").exists()
+    assert report["gui"] == {"new_deployment": False,
+                             ("pivot_gui_entry_implemented" if pivot else "fast_gui_entry_implemented"): False}
+    assert not (ROOT / ("assets/robot_testtube_pour/policy/"+prefix+".json")).exists()
+    assert not (ROOT / ("robot_target_volume_pivot.py" if pivot else "robot_target_volume_fast.py")).exists()
     for entry in report["plots"].values():
         assert set(entry) == {"file", "sha256"}
         raw = _published_file(entry["file"]).read_bytes()
         assert raw.startswith(b"\x89PNG\r\n\x1a\n") and hashlib.sha256(raw).hexdigest() == entry["sha256"]
-    for source in (*sync.FAST_RUNTIME_SOURCES, *sync.FAST_TOOL_SOURCES):
+    runtime = (*sync.PIVOT_RUNTIME_SOURCES, *sync.PIVOT_TOOL_SOURCES) if pivot else (*sync.FAST_RUNTIME_SOURCES, *sync.FAST_TOOL_SOURCES)
+    for source in runtime:
         public = _published_file(sync.SOURCE_TO_DEST.get(source, source)).read_text(encoding="utf-8")
         assert "C:\\omninverse" not in public and "127.0.0.1" not in public and "8226" not in public
+
+
+def _check_fast_results():
+    return _check_cem_research_results(3)
+
+
+def _check_pivot_results():
+    return _check_cem_research_results(4)
+
+
+def _check_v5_score_only():
+    """Run the shipped pure-score counterexamples; no controller/SDK imports."""
+    import io
+    import sys
+    import unittest
+    folder = _published_file("tools/scoring/test_task_score.py").parent
+    previous = sys.path[:]
+    previous_module = sys.modules.pop("task_score", None)
+    try:
+        sys.path.insert(0, str(folder))
+        spec = importlib.util.spec_from_file_location("release_v5_score_tests", folder/"test_task_score.py")
+        tests = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(tests)
+        suite = unittest.defaultTestLoader.loadTestsFromModule(tests)
+        assert suite.countTestCases() == 14
+        output = io.StringIO()
+        result = unittest.TextTestRunner(stream=output, verbosity=0).run(suite)
+        assert result.wasSuccessful(), output.getvalue()
+    finally:
+        sys.path[:] = previous
+        sys.modules.pop("task_score", None)
+        if previous_module is not None:
+            sys.modules["task_score"] = previous_module
 
 
 def main():
@@ -599,7 +654,9 @@ def main():
     _check_full_results()
     _check_precision_results()
     _check_fast_results()
-    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, precision and fast V3 research results/weights are consistent.")
+    _check_pivot_results()
+    _check_v5_score_only()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4 archived results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 

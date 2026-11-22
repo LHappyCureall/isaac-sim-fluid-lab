@@ -5,3 +5,5 @@
 *.png binary
 *.gif binary
 assets/robot_testtube_pour/policy/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# This single archived controller retains the exact frozen study bytes/SHA.
+assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
