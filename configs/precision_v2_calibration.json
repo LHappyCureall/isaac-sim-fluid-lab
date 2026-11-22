@@ -1,0 +1,32 @@
+[
+  {
+    "name": "reserve3_micro",
+    "params": {
+      "reserve_ml": 3.0,
+      "probe_rate": 0.003,
+      "pulse_particles": 1,
+      "retract_source": 0.04,
+      "fine_retract_source": 0.008
+    }
+  },
+  {
+    "name": "reserve275_micro",
+    "params": {
+      "reserve_ml": 2.75,
+      "probe_rate": 0.003,
+      "pulse_particles": 1,
+      "retract_source": 0.04,
+      "fine_retract_source": 0.008
+    }
+  },
+  {
+    "name": "gentle_fine",
+    "params": {
+      "reserve_ml": 3.0,
+      "probe_rate": 0.0025,
+      "pulse_particles": 1,
+      "retract_source": 0.04,
+      "fine_retract_source": 0.006
+    }
+  }
+]

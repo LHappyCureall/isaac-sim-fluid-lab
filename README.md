@@ -15,8 +15,10 @@
 | `robot_target_volume_ai.py` | 支持冻结的 CEM 候选/基准切换，默认使用验证集选定策略 |
 | `train_target_volume_policy.py` | 在实时 PBF 中进行 CEM 策略搜索，分开记录训练、验证和独立测试 |
 | `train_target_volume_policy_full.py` | 固定 54 训练 + 18 验证 + 18 测试的新种子完整轮，不自动部署 GUI 权重 |
+| `robot_target_volume_precision.py` | V2 粗倒、落稳复测与微脉冲补水，保留原基准切换 |
+| `train_target_volume_precision.py` | 18 标定 + 12 验证 + 18 独立测试，比较三组预声明精密配置 |
 
-机器人使用预握试管与 IK 运动学控制，液体由求解器计算。原目标水量入口是手写反馈基准；新 AI 入口支持 CEM 候选与基准切换。首轮候选未胜过基准，验证集选定的默认模型如实标为 `baseline_fallback`。学习对象是三个反馈参数，不是 PPO、神经网络或六关节端到端控制。没有模拟摩擦抓持、液体反力或力矩反馈。mL 来自固定粒子质量与密度，尚未校准为真实定量实验。
+机器人使用预握试管与 IK 运动学控制，液体由求解器计算。原 AI 入口搜索三个停止反馈参数，quick/full 候选均未胜过基准；V2 另用手写粗到细控制与三组有限参数标定，精度提升伴随更长动作时间。两者都不是 PPO、神经网络或六关节端到端控制。没有模拟摩擦抓持、液体反力或力矩反馈。mL 来自固定粒子质量与密度，尚未校准为真实定量实验。
 
 ## 动画演示
 
@@ -58,13 +60,17 @@ exec(compile(script.read_text(encoding="utf-8"), str(script), "exec"),
 
 初始化后，在 **Target volume pouring** 面板选择 **20 / 30 / 40 mL → Play**。Pause 暂停，Reset 复位，Test 20 / 30 / 40 mL 可重新验证三项。文件顶部 `TARGET_VOLUME_ML` 设置初始目标。
 
-`launch.py` 默认启动目标水量基准；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `ai`、`pour`、`milkcrown` 或 `bake-cache`。`ai` 需要已冻结的本地检查点。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
+`launch.py` 默认启动目标水量基准；环境变量 `ISAAC_FLUID_DEMO` 还可设为 `precision`、`ai`、`pour`、`milkcrown` 或 `bake-cache`。`precision` 使用新的 V2 检查点，面板可切换原基准；`ai` 使用旧 CEM 检查点。启动器会先添加仓库导入路径，避免 Kit 的工作目录与项目目录不同。
 
 ## 学习策略与水量显示
 
 目标水量面板默认使用蓝色水流，支持 **Blue water / Clear water** 切换。稀疏水滴以实时求解器的实际空中粒子中心显示，直径为一个粒间距，仅用于观察。新增入杯量、误差、空中余流和流速由仿真粒子测量；目标/实际量导线仅辅助观察等效静态液位，不从透明画面估算 mL。
 
 ![2026-11-21 实时求解得到的蓝色下落水滴](docs/images/ai_visible_flow.png)
+
+### 2026-11-22：精密 V2
+
+完成 **18 标定 + 12 验证 + 18 测试，共 48 次实时执行**。九个同初态配对测试条件下，V2 / 原基准 MAE 为 **0.034208 / 0.141264 mL**，最大绝对误差 **0.063125 / 0.340625 mL**；V2 9/9 在 ±0.1 mL 内。平均物理动作时间 **51.04 / 18.91 秒**，更准但更慢。本轮是手工粗倒、落稳复测和微脉冲控制的有限标定，不是 CEM 或神经策略训练。详见[逐目标误差、耗时及 GUI 复验](docs/PRECISION_V2_20261122.md)与[精选数据](results/precision_v2_20261122.json)；旧 quick/full 结果与权重保留。
 
 ### 2026-11-22：完整预算轮
 

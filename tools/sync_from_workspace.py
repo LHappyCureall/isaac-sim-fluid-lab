@@ -25,25 +25,41 @@ FULL_MODEL_SOURCES = {
     "droplet_out/pour_policy_training/run_20261122_full/recommended_frozen.json":
         ("assets/robot_testtube_pour/policy/full_20261122_recommended.json", "recommended"),
 }
+PRECISION_RUN = "droplet_out/pour_policy_precision_v2/run_20261122_calibrated"
+PRECISION_MODEL_SOURCES = {
+    PRECISION_RUN + "/candidate_frozen.json":
+        ("assets/robot_testtube_pour/policy/precision_v2_20261122_candidate.json", "candidate"),
+    PRECISION_RUN + "/recommended_frozen.json":
+        ("assets/robot_testtube_pour/policy/precision_v2_20261122_recommended.json", "recommended"),
+    "assets/robot_testtube_pour/policy/precision_v2.json":
+        ("assets/robot_testtube_pour/policy/precision_v2.json", "recommended"),
+}
+PRECISION_CONFIG_SOURCE = "projects/pour_policy_training_v2/calibration_configs.json"
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
     "projects/pour_policy_training/plot_full_results.py": "tools/training/plot_full_results.py",
+    "projects/pour_policy_training_v2/audit_precision_run.py": "tools/training/audit_precision_run.py",
+    "projects/pour_policy_training_v2/plot_precision_results.py": "tools/training/plot_precision_results.py",
+    PRECISION_CONFIG_SOURCE: "configs/precision_v2_calibration.json",
     **{source: item[0] for source, item in FULL_MODEL_SOURCES.items()},
+    **{source: item[0] for source, item in PRECISION_MODEL_SOURCES.items()},
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
     "assets/robot_testtube_pour/policy/target_volume_candidate.json",
 )
-CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES)
+CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
     "robot_testtube_pour.py",
     "robot_target_volume_pour.py",
     "robot_target_volume_ai.py",
+    "robot_target_volume_precision.py",
     "train_target_volume_policy.py",
     "train_target_volume_policy_full.py",
+    "train_target_volume_precision.py",
     "assets/robot_testtube_pour/scripts/geometry.py",
     "assets/robot_testtube_pour/scripts/robot.py",
     "assets/robot_testtube_pour/scripts/liquid.py",
@@ -52,6 +68,8 @@ ALLOWLIST = (
     "assets/robot_testtube_pour/scripts/pour_training_env.py",
     "assets/robot_testtube_pour/scripts/learned_policy.py",
     "assets/robot_testtube_pour/scripts/pbf_graph.py",
+    "assets/robot_testtube_pour/scripts/precision_control.py",
+    "assets/robot_testtube_pour/scripts/precision_training_env.py",
     "assets/robot_testtube_pour/scripts/video.py",
     "assets/robot_testtube_pour/README.md",
     "assets/robot_testtube_pour/TARGET_VOLUME.md",
@@ -74,7 +92,11 @@ def _replace(text, old, new, *, count=1):
 
 
 def _validate_checkpoint(relative, text):
-    """Only the explicitly reviewed small three-parameter JSONs may publish."""
+    """Validate the reviewed CEM or distinct precision checkpoint schema."""
+    precision_role = next((role for source, (destination, role) in PRECISION_MODEL_SOURCES.items()
+                           if relative in (source, destination)), None)
+    if precision_role is not None:
+        return _validate_precision_checkpoint(text, precision_role)
     if len(text.encode("utf-8")) > 64 * 1024:
         raise SyncError(f"Unexpectedly large policy checkpoint: {relative}.")
     value = json.loads(text)
@@ -136,6 +158,44 @@ def _validate_checkpoint(relative, text):
     json.dumps(value, allow_nan=False)
 
 
+def _validate_precision_parameters(parameters):
+    bounds = {"reserve_ml": (1.5, 4.0), "probe_rate": (0.001, 0.010),
+              "pulse_particles": (1, 3), "retract_source": (0.02, 0.08),
+              "fine_retract_source": (0.004, 0.02)}
+    if not isinstance(parameters, dict) or set(parameters) != set(bounds):
+        raise SyncError("Precision policy requires exactly its five reviewed parameters.")
+    for name, (low, high) in bounds.items():
+        value = parameters[name]
+        if type(value) not in (int, float) or not math.isfinite(value) or not low <= value <= high:
+            raise SyncError("Invalid precision-policy parameter: " + name)
+        if name == "pulse_particles" and type(value) is not int:
+            raise SyncError("Precision pulse_particles must be an integer.")
+
+
+def _validate_precision_checkpoint(text, role):
+    if len(text.encode("utf-8")) > 64 * 1024:
+        raise SyncError("Unexpectedly large precision-policy checkpoint.")
+    value = json.loads(text)
+    fields = {"schema_version", "policy_kind", "parameters", "observation_units", "termination", "metadata"}
+    if (not isinstance(value, dict) or set(value) != fields
+            or type(value["schema_version"]) is not int or value["schema_version"] != 1
+            or value["policy_kind"] != "closed_loop_particle_pulse_precision_v2"):
+        raise SyncError("Unsupported precision-policy schema or kind; old CEM weights are not interchangeable.")
+    _validate_precision_parameters(value["parameters"])
+    if (value["observation_units"] != {"volume": "mL", "flow": "mL/s", "tilt": "degrees"}
+            or value["termination"] != "nearest_requested_volume_particle_count_plus_or_minus_one"):
+        raise SyncError("Precision-policy units or particle-band semantics changed.")
+    metadata = value["metadata"]
+    if (not isinstance(metadata, dict) or metadata.get("role") != role
+            or metadata.get("algorithm") != "hand_designed_coarse_to_fine_feedback_plus_predeclared_finite_local_calibration"
+            or metadata.get("neural_policy") is not False or metadata.get("ppo") is not False
+            or metadata.get("calibration") is not True or metadata.get("test_used_for_selection") is not False
+            or metadata.get("automatic_gui_deployment") is not False
+            or not re.fullmatch(r"[0-9a-f]{64}", str(metadata.get("protocol_id", "")))):
+        raise SyncError("Precision calibration/role/isolation metadata differs from the reviewed protocol.")
+    json.dumps(value, allow_nan=False)
+
+
 def transform(relative, text):
     """Return the fixed publication variant; never evaluate imported scripts."""
     if relative == "droplet_milkcrown_newton.py":
@@ -165,6 +225,11 @@ def transform(relative, text):
                         "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT\n")
         text = _replace(text, 'INSTALL = Path(os.environ.get("ISAAC_SIM_ROOT", r"C:\\omninverse"))',
                         'INSTALL = PROJECT_ROOT')
+    elif relative == "robot_target_volume_precision.py":
+        text = _replace(text, "from pathlib import Path\n",
+                        "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT\n")
+        text = _replace(text, 'INSTALL = Path(os.environ.get("ISAAC_FLUID_PROJECT_ROOT", r"C:\\omninverse"))',
+                        'INSTALL = PROJECT_ROOT')
     elif relative == "train_target_volume_policy.py":
         text = _replace(text, "from pathlib import Path\n",
                         "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, require_isaac_sim_root\n")
@@ -179,6 +244,15 @@ def transform(relative, text):
         text = _replace(text, "ROOT = Path(__file__).resolve().parent", "ROOT = PROJECT_ROOT")
         text = _replace(text, '    sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT)))',
                         '    sdk = require_isaac_sim_root()')
+    elif relative == "train_target_volume_precision.py":
+        text = _replace(text, "from pathlib import Path\n",
+                        "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT\n")
+        text = _replace(text, "ROOT = Path(__file__).resolve().parent", "ROOT = PROJECT_ROOT")
+        text = _replace(text, '    parser.add_argument("--configs", type=Path, required=True)',
+                        '    parser.add_argument("--configs", type=Path, default=PROJECT_ROOT / "configs/precision_v2_calibration.json")')
+        text = _replace(text,
+                        '    parser.add_argument("--output", type=Path, default=ROOT / "droplet_out/pour_policy_training/run_20261122_precision")',
+                        '    parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "droplet_out/pour_policy_precision_v2/run_20261122_calibrated")')
     elif relative in CHECKPOINT_SOURCES:
         _validate_checkpoint(relative, text)
     elif relative == "projects/pour_policy_training/audit_candidate.py":
@@ -198,6 +272,24 @@ def transform(relative, text):
                  '"""Plot only a completed, internally consistent full-budget pouring run.')
         _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
                  "ROOT = Path(__file__).resolve().parents[2]")
+    elif relative in ("projects/pour_policy_training_v2/audit_precision_run.py",
+                      "projects/pour_policy_training_v2/plot_precision_results.py"):
+        _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                 "ROOT = Path(__file__).resolve().parents[2]")
+    elif relative == PRECISION_CONFIG_SOURCE:
+        configurations = json.loads(text)
+        if not isinstance(configurations, list) or len(configurations) != 3:
+            raise SyncError("Precision calibration requires three predeclared configurations.")
+        names = set()
+        for configuration in configurations:
+            if not isinstance(configuration, dict) or set(configuration) != {"name", "params"}:
+                raise SyncError("Unexpected precision calibration configuration fields.")
+            name = configuration["name"]
+            if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,39}", name) or name in names:
+                raise SyncError("Precision configuration names must be unique short identifiers.")
+            names.add(name)
+            _validate_precision_parameters(configuration["params"])
+        json.dumps(configurations, allow_nan=False)
     elif relative.endswith("/scripts/robot.py"):
         text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, ISAAC_SIM_ROOT\n")
         text = _replace(text,
@@ -311,6 +403,12 @@ def transform(relative, text):
     elif relative.endswith("/pbf_graph.py"):
         _replace(text, '"""Optional CUDA graph dispatch for the existing PourFluid PBF substep.',
                  '"""Optional CUDA graph dispatch for the existing PourFluid PBF substep.')
+    elif relative.endswith("/precision_control.py"):
+        _replace(text, '"""Experimental closed-loop particle-pulse dosing; no liquid-state mutations.',
+                 '"""Experimental closed-loop particle-pulse dosing; no liquid-state mutations.')
+    elif relative.endswith("/precision_training_env.py"):
+        _replace(text, '"""Provenance and complete count logging for live precision-pouring trials.',
+                 '"""Provenance and complete count logging for live precision-pouring trials.')
     elif relative == "textures/table_options/sources.json":
         manifest = json.loads(text)
         if set(manifest) != {"gray_concrete", "pale_oak", "white_marble"}:
@@ -330,6 +428,7 @@ def prepare_sync(workspace):
     """Validate the entire allowlist before returning any content to write."""
     root = Path(workspace).expanduser().resolve()
     prepared = []
+    precision_source_manifest = None
     for relative in ALLOWLIST:
         source = (root / relative).resolve()
         if not source.is_relative_to(root) or not source.is_file():
@@ -339,6 +438,70 @@ def prepare_sync(workspace):
         original = (source.read_bytes().decode("utf-8") if relative in CHECKPOINT_SOURCES
                     else source.read_text(encoding="utf-8"))
         try:
+            if relative in PRECISION_MODEL_SOURCES:
+                summary_path = root / PRECISION_RUN / "summary.json"
+                if not summary_path.is_file():
+                    raise SyncError("Completed precision summary is missing; publication is premature.")
+                summary = json.loads(summary_path.read_text(encoding="utf-8"))
+                checkpoint = json.loads(original)
+                role = PRECISION_MODEL_SOURCES[relative][1]
+                entry = summary.get("models", {}).get(role, {})
+                protocol = summary.get("protocol", {})
+                if (summary.get("complete") is not True
+                        or type(summary.get("total_recorded_episodes")) is not int
+                        or summary["total_recorded_episodes"] != 48
+                        or [protocol.get(key) for key in ("calibration_episodes", "validation_episodes", "test_episodes", "total_live_episodes")]
+                        != [18, 12, 18, 48]):
+                    raise SyncError("Precision checkpoint requires the completed 48-episode protocol.")
+                if (not summary.get("protocol_id")
+                        or summary["protocol_id"] != checkpoint.get("metadata", {}).get("protocol_id")
+                        or hashlib.sha256(original.encode("utf-8")).hexdigest() != entry.get("sha256")
+                        or checkpoint.get("parameters") != entry.get("parameters")
+                        or checkpoint.get("metadata", {}).get("source_sha256") != protocol.get("source_sha256")):
+                    raise SyncError("Precision checkpoint does not match completed protocol/model SHA/parameters.")
+                expected_sources = protocol.get("source_sha256")
+                if precision_source_manifest is None:
+                    if not isinstance(expected_sources, dict) or len(expected_sources) != 11:
+                        raise SyncError("Precision protocol must identify its eleven frozen sources.")
+                    for source_name, expected_sha in expected_sources.items():
+                        if not isinstance(source_name, str) or Path(source_name).is_absolute():
+                            raise SyncError("Unsafe precision source path in completed protocol.")
+                        actual_source = (root / source_name).resolve()
+                        if (not actual_source.is_relative_to(root) or not actual_source.is_file()
+                                or not re.fullmatch(r"[0-9a-f]{64}", str(expected_sha))
+                                or hashlib.sha256(actual_source.read_bytes()).hexdigest() != expected_sha):
+                            raise SyncError("Current workspace precision source differs from the frozen run: " + source_name)
+                    precision_source_manifest = dict(expected_sources)
+                elif expected_sources != precision_source_manifest:
+                    raise SyncError("Precision model source manifests changed during sync preparation.")
+                if relative == "assets/robot_testtube_pour/policy/precision_v2.json":
+                    if summary.get("release_acceptance", {}).get("recommended_passed") is not True:
+                        raise SyncError("GUI precision default requires the frozen recommendation to pass release acceptance.")
+                    gui_path = summary_path.parent / "gui_validation/validation.json"
+                    if not gui_path.is_file():
+                        raise SyncError("GUI precision default requires completed three-target visible validation.")
+                    gui = json.loads(gui_path.read_text(encoding="utf-8"))
+                    results = gui.get("results", [])
+                    if (gui.get("complete") is not True or type(gui.get("additional_gui_episodes")) is not int
+                            or gui["additional_gui_episodes"] != 3
+                            or gui.get("physical_integration_passed") is not True
+                            or gui.get("dose_within_0_1_ml") is not True
+                            or gui.get("checkpoint_sha256") != entry.get("sha256")
+                            or gui.get("protocol_id") != summary["protocol_id"]
+                            or gui.get("cuda_graph") is not False
+                            or gui.get("training_or_heldout_test") is not False
+                            or not isinstance(results, list) or len(results) != 3
+                            or any(not isinstance(result, dict) for result in results)
+                            or {result.get("target_ml") for result in results} != {20, 30, 40}):
+                        raise SyncError("GUI precision default lacks complete matching 20/30/40 mL acceptance.")
+                    for result in results:
+                        error = result.get("error_ml")
+                        if (any(result.get(flag) is not True for flag in
+                                ("success", "complete", "mass_conserved", "physical_integration_passed"))
+                                or result.get("controller", {}).get("done") is not True
+                                or result.get("precision_checkpoint_sha256") != entry["sha256"]
+                                or type(error) not in (int, float) or not math.isfinite(error) or abs(error) > .1):
+                            raise SyncError("A visible precision target failed its original 0.1 mL/physics/model checks.")
             if relative in FULL_MODEL_SOURCES:
                 # These checkpoints are frozen before test. Publish them only
                 # after the isolated full run has actually completed its budget.

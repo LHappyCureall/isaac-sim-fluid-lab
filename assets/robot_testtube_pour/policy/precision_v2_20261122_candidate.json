@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "policy_kind": "closed_loop_particle_pulse_precision_v2",
+  "parameters": {
+    "reserve_ml": 2.75,
+    "probe_rate": 0.003,
+    "pulse_particles": 1,
+    "retract_source": 0.04,
+    "fine_retract_source": 0.008
+  },
+  "observation_units": {
+    "volume": "mL",
+    "flow": "mL/s",
+    "tilt": "degrees"
+  },
+  "termination": "nearest_requested_volume_particle_count_plus_or_minus_one",
+  "metadata": {
+    "frozen_at_utc": "2026-11-22T05:14:07.736932+00:00",
+    "protocol_id": "ea5f8d0fbf836844759fac75895311b97227d4e0b5e32947e97b0fce6ddfb0f9",
+    "algorithm": "hand_designed_coarse_to_fine_feedback_plus_predeclared_finite_local_calibration",
+    "neural_policy": false,
+    "ppo": false,
+    "calibration_configurations": 3,
+    "calibration_episodes": 18,
+    "selected_config_name": "reserve275_micro",
+    "validation_scores": {
+      "candidate": 0.07450236111110999,
+      "baseline": 0.3771267222222244
+    },
+    "test_used_for_selection": false,
+    "source_sha256": {
+      "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+      "train_target_volume_policy_full.py": "1ed01d50113bb6e910e3333e657190c0928d714e4c892c8e78ae4d8447a8f7e7",
+      "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+      "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+      "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+      "assets/robot_testtube_pour/scripts/learned_policy.py": "018ee2783d4c2b65b030a9eef6fd4464c143c922992b94caaec622f8f8c1dedd",
+      "assets/robot_testtube_pour/scripts/pour_training_env.py": "4b6ed41e225de900647c6bb0ed43755a05565fdd922142250e058d9a37b86857",
+      "assets/robot_testtube_pour/scripts/pbf_graph.py": "c73aaf5774a668ab417de79c9b459f595a53daf2853bb3544cffae68ec616e0d",
+      "train_target_volume_precision.py": "758e3d1edb2782b643c8a031de1ea7065199b4722b17e9858ea4635bbe0e91f7",
+      "assets/robot_testtube_pour/scripts/precision_control.py": "57c8ef0b8484dc0848b2af01f3bc7e80a258bd9487a82d9a30995cbd973798f1",
+      "assets/robot_testtube_pour/scripts/precision_training_env.py": "6a194b0b1b682db2040f25f5a190ac36a9c7dca7779d61c1e1c0892d6046f469"
+    },
+    "config_input_sha256": "5b744c82543b8cc10d0cf0629f14a3a99eb7883b2f5b03a8d057e9c92fab8575",
+    "automatic_gui_deployment": false,
+    "role": "candidate",
+    "calibration": true,
+    "parameter_changed_from_precision_default": true,
+    "controller_changed_from_legacy_baseline": true
+  }
+}
