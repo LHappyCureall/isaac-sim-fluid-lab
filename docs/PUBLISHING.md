@@ -18,6 +18,8 @@ AI 升级先发布源码与复现说明。冻结模型及精选训练摘要须�
 
 精密 V2 使用独立的 `closed_loop_particle_pulse_precision_v2` 类型与五参数 schema，不套用旧三参数 `is_trained` 标记。整轮48回合、冻结SHA、验证选择与独立测试通过后，版本化发布 `precision_v2_20261122_candidate/recommended.json`；新入口默认 `precision_v2.json` 还须通过三目标 GUI 复验，保持冻结字节及旧权重。记录手写控制与有限标定的方法、逐目标配对误差和物理/墙钟耗时，原始逐步日志继续本地保留。
 
+五秒 V3 已完成138回合并通过数据完整性审计，但计量/零溢出验收失败；仍可发布如实标记失败的精选结果、三图及版本化 `fast_v3_20261122_candidate/recommended.json` 研究快照，保持冻结字节与SHA。不给它新增default或GUI成功标记，不覆盖quick/full/V2。公开协议只提供去私人路径的 `protocol_summary` 与输入角色→SHA，保留的 `protocol_id` 指原始canonical协议，不能对删减摘要重算并冒充原ID；完整原协议、路径缓存和逐步日志继续本地保留。
+
 可复用审计与画图脚本从原工作区显式映射到 `tools/training/`。本机连接、GUI 测试宿主和临时余流拟合等诊断脚本不进入清单。公开脚本针对在公开源码上重新生成的运行协议使用；源码可移植转换会改变源码 SHA，不能将本机原运行日志当作公开副本的续跑状态。
 
 ## 工作副本和发布副本

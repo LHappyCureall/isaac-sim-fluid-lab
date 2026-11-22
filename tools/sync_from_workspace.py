@@ -7,6 +7,7 @@ anchor count; any mismatch aborts before destination files are changed.
 
 import argparse
 import ast
+from datetime import datetime
 import hashlib
 import json
 import math
@@ -35,6 +36,24 @@ PRECISION_MODEL_SOURCES = {
         ("assets/robot_testtube_pour/policy/precision_v2.json", "recommended"),
 }
 PRECISION_CONFIG_SOURCE = "projects/pour_policy_training_v2/calibration_configs.json"
+FAST_RUN = "droplet_out/pour_policy_fast_v3/run_20261122_cem5s"
+FAST_PROJECT = "projects/pour_policy_training_v3/"
+FAST_TOOL_SOURCES = {FAST_PROJECT + name: "tools/training/" + name for name in (
+    "prepare_fast_path.py", "prepare_smooth_fast_path.py", "verify_fast_path.py",
+    "export_owned_kinematic_bank.py", "pilot_fast.py", "audit_fast_run.py", "plot_fast_results.py")}
+FAST_RUNTIME_SOURCES = ("train_target_volume_fast.py", *["assets/robot_testtube_pour/scripts/" + name
+    for name in ("fast_geometry.py", "fast_control.py", "fast_training_env.py")])
+FAST_MODEL_SOURCES = {
+    FAST_RUN + "/candidate_frozen.json":
+        ("assets/robot_testtube_pour/policy/fast_v3_20261122_candidate.json", "candidate"),
+    FAST_RUN + "/recommended_frozen.json":
+        ("assets/robot_testtube_pour/policy/fast_v3_20261122_recommended.json", "recommended"),
+}
+FAST_PARAMETER_BOUNDS = {
+    "transport_rate_fraction": (0.6, 1.0), "fast_tilt_deg_s": (45.0, 140.0),
+    "meter_tilt_deg_s": (10.0, 80.0), "return_tilt_deg_s": (70.0, 180.0),
+    "tail_lead_s": (0.02, 0.8), "stop_bias_ml": (-5.0, 10.0),
+}
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
@@ -44,12 +63,14 @@ SOURCE_TO_DEST = {
     PRECISION_CONFIG_SOURCE: "configs/precision_v2_calibration.json",
     **{source: item[0] for source, item in FULL_MODEL_SOURCES.items()},
     **{source: item[0] for source, item in PRECISION_MODEL_SOURCES.items()},
+    **FAST_TOOL_SOURCES,
+    **{source: item[0] for source, item in FAST_MODEL_SOURCES.items()},
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
     "assets/robot_testtube_pour/policy/target_volume_candidate.json",
 )
-CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES)
+CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES, *FAST_MODEL_SOURCES)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
@@ -60,6 +81,7 @@ ALLOWLIST = (
     "train_target_volume_policy.py",
     "train_target_volume_policy_full.py",
     "train_target_volume_precision.py",
+    *FAST_RUNTIME_SOURCES,
     "assets/robot_testtube_pour/scripts/geometry.py",
     "assets/robot_testtube_pour/scripts/robot.py",
     "assets/robot_testtube_pour/scripts/liquid.py",
@@ -93,6 +115,10 @@ def _replace(text, old, new, *, count=1):
 
 def _validate_checkpoint(relative, text):
     """Validate the reviewed CEM or distinct precision checkpoint schema."""
+    fast_role = next((role for source, (destination, role) in FAST_MODEL_SOURCES.items()
+                      if relative in (source, destination)), None)
+    if fast_role is not None:
+        return _validate_fast_checkpoint(text, fast_role)
     precision_role = next((role for source, (destination, role) in PRECISION_MODEL_SOURCES.items()
                            if relative in (source, destination)), None)
     if precision_role is not None:
@@ -196,9 +222,139 @@ def _validate_precision_checkpoint(text, role):
     json.dumps(value, allow_nan=False)
 
 
+def _validate_fast_parameters(parameters):
+    if not isinstance(parameters, dict) or set(parameters) != set(FAST_PARAMETER_BOUNDS):
+        raise SyncError("Fast V3 requires exactly six distinct speed/stop parameters.")
+    for name, (low, high) in FAST_PARAMETER_BOUNDS.items():
+        value = parameters[name]
+        if type(value) not in (int, float) or not math.isfinite(value) or not low <= value <= high:
+            raise SyncError("Invalid fast V3 parameter: " + name)
+
+
+def _validate_fast_checkpoint(text, role):
+    if len(text.encode("utf-8")) > 64 * 1024:
+        raise SyncError("Unexpectedly large fast V3 research checkpoint.")
+    value = json.loads(text)
+    fields = {"schema_version", "policy_kind", "parameters", "observation_units", "action_units",
+              "deadline_physical_seconds", "metadata"}
+    if (not isinstance(value, dict) or set(value) != fields or type(value["schema_version"]) is not int
+            or value["schema_version"] != 1 or value["policy_kind"] != "joint_time_fast_pouring_v3"):
+        raise SyncError("Fast V3 has its own six-parameter schema; V1/V2 weights are not interchangeable.")
+    _validate_fast_parameters(value["parameters"])
+    if (value["observation_units"] != {"volume": "mL", "flow": "mL/s", "tilt": "degrees", "physical_time": "seconds"}
+            or value["action_units"] != {"tilt_rates": "degrees/physical-second", "u_rate": "joint-time-u/physical-second"}
+            or value["deadline_physical_seconds"] != 5.0):
+        raise SyncError("Fast V3 physical units/deadline changed.")
+    metadata = value["metadata"]
+    if (not isinstance(metadata, dict) or metadata.get("role") != role
+            or metadata.get("algorithm") != "feasibility_first_CEM_speed_and_stop_feedback_v3"
+            or metadata.get("neural_policy") is not False or metadata.get("ppo") is not False
+            or metadata.get("training_episodes") != 108 or metadata.get("test_used_for_selection") is not False
+            or metadata.get("automatic_gui_deployment") is not False
+            or not re.fullmatch(r"[0-9a-f]{64}", str(metadata.get("protocol_id", "")))
+            or not isinstance(metadata.get("source_sha256"), dict) or len(metadata["source_sha256"]) != 20):
+        raise SyncError("Fast V3 role, completed training, source or isolation metadata differs.")
+    json.dumps(value, allow_nan=False)
+
+
+def _transform_fast_source(relative, text):
+    """Portable research tools; retain all solver/controller calculations."""
+    cache_dir = 'ROOT / "_cache/pour_training/fast_v3"'
+    if relative == "train_target_volume_fast.py":
+        text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\n\nfrom lab_paths import PROJECT_ROOT, require_isaac_sim_root\n")
+        text = _replace(text, "ROOT = Path(__file__).resolve().parent", "ROOT = PROJECT_ROOT")
+        text = _replace(text, 'sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(ROOT)))',
+                        "sdk = require_isaac_sim_root()", count=2)
+        for name in ("prepare_fast_path.py", "prepare_smooth_fast_path.py", "verify_fast_path.py", "export_owned_kinematic_bank.py"):
+            text = _replace(text, FAST_PROJECT + name, FAST_TOOL_SOURCES[FAST_PROJECT + name])
+        text = _replace(text, 'home = ROOT / "projects/pour_policy_training_v3"', "home = " + cache_dir)
+        text = _replace(text, 'home / "prototype_v001/fast_path_cache.npz"', 'home / "fast_path_cache.npz"')
+        text = _replace(text, 'home / "prototype_v001/fast_path_cache.json"', 'home / "fast_path_cache.json"')
+    elif relative.endswith("/fast_geometry.py"):
+        text = _replace(text, "import math\n", "import math\nimport os\n")
+        text = _replace(text, 'PROJECT_ROOT / "projects/pour_policy_training_v3/fast_path_smooth_cache.npz"',
+                        'PROJECT_ROOT / "_cache/pour_training/fast_v3/fast_path_smooth_cache.npz"')
+        text = _replace(text, 'CACHE_SHA256 = "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"',
+                        'CACHE_SHA256 = os.environ.get("ISAAC_FAST_PATH_CACHE_SHA256", "")\n'
+                        'if len(CACHE_SHA256) != 64 or any(c not in "0123456789abcdef" for c in CACHE_SHA256):\n'
+                        '    raise RuntimeError("Rebuild and CPU-verify the local robot path cache, then explicitly set ISAAC_FAST_PATH_CACHE_SHA256 to its new SHA256. The archived research cache is not distributed.")')
+    elif relative.endswith("/fast_control.py") or relative.endswith("/fast_training_env.py"):
+        anchor = ('"""Five-physical-second pouring on a joint-time-parameterized existing path.'
+                  if relative.endswith("/fast_control.py") else
+                  '"""Five-second full-cycle collector using unchanged live PBF and fixed mass.')
+        _replace(text, anchor, anchor)
+    elif relative in FAST_TOOL_SOURCES:
+        name = Path(relative).name
+        if name == "prepare_fast_path.py":
+            text = _replace(text, "import math\n", "import math\nimport sys\n")
+            text = _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                            'ROOT = Path(__file__).resolve().parents[2]\n'
+                            'sys.path.insert(0, str(ROOT))\nfrom lab_paths import require_isaac_sim_root')
+            text = _replace(text, "HERE = Path(__file__).resolve().parent", "HERE = " + cache_dir)
+            text = _replace(text, 'URDF = ROOT / "exts/', 'URDF = require_isaac_sim_root() / "exts/')
+            text = _replace(text, '    if output.exists() or output.with_suffix(".json").exists():',
+                            '    output.parent.mkdir(parents=True, exist_ok=True)\n'
+                            '    if output.exists() or output.with_suffix(".json").exists():')
+        elif name == "prepare_smooth_fast_path.py":
+            text = _replace(text, "DIRECTORY = Path(__file__).resolve().parent",
+                            'ROOT = Path(__file__).resolve().parents[2]\nDIRECTORY = ' + cache_dir)
+            text = _replace(text, 'DIRECTORY / "prototype_v001/fast_path_cache.npz"', 'DIRECTORY / "fast_path_cache.npz"')
+            text = _replace(text, "def prepare():\n", 'def prepare():\n'
+                            '    DIRECTORY.mkdir(parents=True, exist_ok=True)\n'
+                            '    if OUTPUT.exists() or OUTPUT.with_suffix(".json").exists():\n'
+                            '        raise FileExistsError("Preserve existing robot path evidence; use a fresh local cache directory.")\n')
+        elif name == "verify_fast_path.py":
+            text = _replace(text, "DIRECTORY = Path(__file__).resolve().parent", "DIRECTORY = " + cache_dir)
+        elif name == "pilot_fast.py":
+            text = _replace(text, "ROOT = Path(r'C:\\omninverse')",
+                            'ROOT = Path(__file__).resolve().parents[2]\nsys.path.insert(0, str(ROOT))')
+        elif name == "audit_fast_run.py":
+            text = _replace(text, "ROOT = Path(__file__).resolve().parents[2]",
+                            'ROOT = Path(__file__).resolve().parents[2]\n'
+                            'sys.path.insert(0, str(ROOT))\nfrom lab_paths import require_isaac_sim_root')
+            text = _replace(text, 'sdk = Path(os.environ.get("ISAAC_SIM_ROOT", str(root)))', 'sdk = require_isaac_sim_root()')
+        elif name == "plot_fast_results.py":
+            _replace(text, "ROOT = Path(__file__).resolve().parents[2]", "ROOT = Path(__file__).resolve().parents[2]")
+        elif name == "export_owned_kinematic_bank.py":
+            text = _replace(text, "from pathlib import Path\n", "from pathlib import Path\nimport sys\n")
+            text = _replace(text, "demo = omni.kit.app._robot_testtube_demo\n",
+                            'ROOT = Path(__file__).resolve().parents[2]\n'
+                            'sys.path.insert(0, str(ROOT))\n'
+                            'demo = getattr(omni.kit.app, "_robot_testtube_demo", None)\n'
+                            'if demo is None or type(demo).__name__ != "TargetPourDemo" or getattr(demo, "policy", None) is not None:\n'
+                            '    raise RuntimeError("Open this repository baseline target-volume demo and pause it before this read-only export.")\n'
+                            'if (Path(demo.base.__file__).resolve() != ROOT / "robot_testtube_pour.py"\n'
+                            '        or Path(demo.geometry.__file__).resolve() != ROOT / "assets/robot_testtube_pour/scripts/geometry.py"\n'
+                            '        or not demo.scene._owns_scene()):\n'
+                            '    raise RuntimeError("Refusing to export an unknown or stale scene.")\n'
+                            'if not np.allclose([k[0] for k in demo.geometry.MOTION_KNOTS[:5]], [0., 1.4, 4.4, 6.4, 8.4], atol=1e-10):\n'
+                            '    raise RuntimeError("Expected exactly one legacy source-time scale of 2.0.")\n')
+            text = _replace(text, "paths = [str(p.GetPath()) for p in rig.links]\n",
+                            'paths = [str(p.GetPath()) for p in rig.links]\n'
+                            'times, samples = np.asarray(rig.times), np.asarray(rig.samples)\n'
+                            'if (times.ndim != 1 or len(times) < 2 or not np.isfinite(times).all()\n'
+                            '        or not np.all(np.diff(times) > 0) or abs(times[0]) > 1e-10 or times[-1] < 8.4\n'
+                            '        or samples.shape != (len(times), len(paths), 7) or not np.isfinite(samples).all()\n'
+                            '        or not paths or any(not path.startswith("/World/RobotPourDemo/Franka/") for path in paths)):\n'
+                            '    raise RuntimeError("The owned robot kinematic bank has an invalid clock, shape, path or finite state.")\n')
+            text = _replace(text, "out = Path(r'C:\\omninverse\\projects\\pour_policy_training_v3')",
+                            'if not np.isfinite(matrices).all():\n'
+                            '    raise RuntimeError("Nonfinite exported robot FK matrices.")\n'
+                            'out = ROOT / "_cache/pour_training/fast_v3"\n'
+                            'if (out / "legacy_kinematic_bank.npz").exists() or (out / "legacy_kinematic_bank.json").exists():\n'
+                            '    raise FileExistsError("Preserve the existing robot bank; use a clean local preparation directory.")')
+        else:
+            raise SyncError("Unreviewed fast V3 tool: " + name)
+    else:
+        raise SyncError("Unreviewed fast V3 source: " + relative)
+    return text
+
+
 def transform(relative, text):
     """Return the fixed publication variant; never evaluate imported scripts."""
-    if relative == "droplet_milkcrown_newton.py":
+    if relative in FAST_RUNTIME_SOURCES or relative in FAST_TOOL_SOURCES:
+        text = _transform_fast_source(relative, text)
+    elif relative == "droplet_milkcrown_newton.py":
         text = _replace(text, "import os\n", "import os\n\nfrom lab_paths import PROJECT_ROOT\n")
         text = _replace(text, 'WOOD_TEXTURE = r"C:\\omninverse\\textures\\wooden_table.jpg"',
                         'WOOD_TEXTURE = str(PROJECT_ROOT / "textures" / "wooden_table.jpg")')
@@ -424,11 +580,64 @@ def transform(relative, text):
     return text if relative in CHECKPOINT_SOURCES else text.rstrip() + "\n"
 
 
+def _fast_publication_gate(root):
+    """Completed failed research is publishable; it is never a GUI default."""
+    run = root / FAST_RUN
+    required = ("summary.json", "protocol.json", "input_freeze.json", "freeze.json", "episodes.jsonl", "fast_run_audit.json")
+    if any(not (run / name).is_file() for name in required):
+        raise SyncError("Fast V3 publication requires complete summary/freeze/journal and independent raw audit.")
+    summary, envelope, freeze, audit = (json.loads((run / name).read_text(encoding="utf-8")) for name in
+                                        ("summary.json", "protocol.json", "freeze.json", "fast_run_audit.json"))
+    protocol = envelope["protocol"]
+    identity = hashlib.sha256(json.dumps(protocol, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+    budget = {"generations": 3, "population": 6, "elites": 2, "training": 108, "validation": 12, "test": 18, "total": 138}
+    if (summary.get("complete") is not True or summary.get("total_recorded_episodes") != 138
+            or protocol.get("budget") != budget or summary.get("protocol") != protocol
+            or identity != envelope.get("protocol_id") or summary.get("protocol_id") != identity
+            or freeze.get("protocol_id") != identity or audit.get("protocol_id") != identity
+            or audit.get("artifact_integrity_verified") is not True or audit.get("all_failures_retained") is not True
+            or audit.get("episodes_audited") != 138 or audit.get("raw_action_trace_count") != 138
+            or audit.get("summary_sha256") != hashlib.sha256((run / "summary.json").read_bytes()).hexdigest()
+            or audit.get("journal_sha256") != hashlib.sha256((run / "episodes.jsonl").read_bytes()).hexdigest()
+            or summary.get("automatic_gui_deployment") is not False or freeze.get("test_used_for_selection") is not False
+            or summary.get("test_used_for_training_or_selection") is not False):
+        raise SyncError("Fast V3 requires the complete, unchanged, independently audited 108/12/18 experiment.")
+    sources = protocol.get("source_sha256", {})
+    if len(sources) != 20:
+        raise SyncError("Fast V3 must bind exactly twenty frozen sources.")
+    for relative, expected in sources.items():
+        source = (root / relative).resolve()
+        frozen_source = (run / "source_snapshot" / relative).resolve()
+        if (relative not in ALLOWLIST or not source.is_relative_to(root) or not frozen_source.is_relative_to(run)
+                or not source.is_file() or not frozen_source.is_file()
+                or hashlib.sha256(source.read_bytes()).hexdigest() != expected
+                or hashlib.sha256(frozen_source.read_bytes()).hexdigest() != expected):
+            raise SyncError("Fast V3 source changed or is not reviewed: " + relative)
+    lines = [json.loads(line) for line in (run / "episodes.jsonl").read_text(encoding="utf-8").splitlines()]
+    if (len(lines) != 138 or len({row["episode_id"] for row in lines}) != 138
+            or {stage: sum(row["conditions"]["stage"] == stage for row in lines) for stage in ("train", "validation", "test")}
+            != {"train": 108, "validation": 12, "test": 18}
+            or any(datetime.fromisoformat(row["episode_wall_clock_start_utc"]) <= datetime.fromisoformat(freeze["frozen_at_utc"])
+                   for row in lines if row["conditions"]["stage"] == "test")):
+        raise SyncError("Fast V3 journal budgets or pre-test model freeze differ.")
+    for role in ("candidate", "recommended"):
+        path = run / (role + "_frozen.json")
+        raw = path.read_bytes()
+        _validate_fast_checkpoint(raw.decode("utf-8"), role)
+        model, entry = json.loads(raw), summary["models"][role]
+        if (hashlib.sha256(raw).hexdigest() != entry["sha256"] or entry["sha256"] != freeze[role + "_sha256"]
+                or model["parameters"] != entry["parameters"] or model["parameters"] != freeze[role + "_params"]
+                or model["metadata"]["source_sha256"] != sources or model["metadata"]["protocol_id"] != identity):
+            raise SyncError("Fast V3 frozen model SHA/parameters/metadata changed.")
+    return summary
+
+
 def prepare_sync(workspace):
     """Validate the entire allowlist before returning any content to write."""
     root = Path(workspace).expanduser().resolve()
     prepared = []
     precision_source_manifest = None
+    fast_summary = None
     for relative in ALLOWLIST:
         source = (root / relative).resolve()
         if not source.is_relative_to(root) or not source.is_file():
@@ -438,6 +647,13 @@ def prepare_sync(workspace):
         original = (source.read_bytes().decode("utf-8") if relative in CHECKPOINT_SOURCES
                     else source.read_text(encoding="utf-8"))
         try:
+            if relative in FAST_MODEL_SOURCES:
+                if fast_summary is None:
+                    fast_summary = _fast_publication_gate(root)
+                role = FAST_MODEL_SOURCES[relative][1]
+                entry = fast_summary["models"][role]
+                if hashlib.sha256(original.encode("utf-8")).hexdigest() != entry["sha256"]:
+                    raise SyncError("Fast checkpoint changed during publication preparation.")
             if relative in PRECISION_MODEL_SOURCES:
                 summary_path = root / PRECISION_RUN / "summary.json"
                 if not summary_path.is_file():

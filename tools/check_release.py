@@ -367,6 +367,208 @@ def _check_precision_results():
         _published_file(relative)
 
 
+def _check_fast_results():
+    """Verify completed failed V3 research without treating it as a GUI release."""
+    report = json.loads(_published_file("results/fast_v3_20261122.json").read_text(encoding="utf-8"))
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_fast_v3_live_CEM_results"
+    assert report["complete"] is True
+    protocol, counts = report["protocol_summary"], report["counts"]
+    assert protocol["algorithm"] == "feasibility_first_CEM_speed_and_stop_feedback_v3"
+    assert report.get("neural_policy", protocol.get("neural_policy", False)) is False
+    assert report.get("ppo", protocol.get("ppo", False)) is False
+    assert {key: counts[key] for key in ("training", "validation", "test", "total", "generations", "population")} == {
+        "training": 108, "validation": 12, "test": 18, "total": 138, "generations": 3, "population": 6}
+    targets = set(protocol["targets_ml"])
+    train, validation, test = [set(protocol[key+"_seeds"]) for key in ("train", "validation", "test")]
+    assert targets == {20, 30, 40} and [len(group) for group in (train, validation, test)] == [2, 2, 3]
+    assert train.isdisjoint(validation) and train.isdisjoint(test) and validation.isdisjoint(test)
+    assert abs(protocol["physics"]["dt_s"]-1/60) < 1e-12
+    assert protocol["physics"]["action_deadline_s"] == 5 and protocol["physics"]["post_observation_s"] == 2
+    assert protocol["physics"]["tolerance_ml"] == .1 and protocol["physics"]["maximum_absolute_error_ml"] == .2
+    for old in ("results/ai_training.json", "results/ai_training_full_20261122.json"):
+        historical = json.loads(_published_file(old).read_text(encoding="utf-8"))
+        assert test.isdisjoint(historical["seeds"]["heldout_test"])
+    precision = json.loads(_published_file("results/precision_v2_20261122.json").read_text(encoding="utf-8"))
+    assert test.isdisjoint(precision["protocol"]["test_seeds"])
+
+    spec = importlib.util.spec_from_file_location("release_fast_sync_validator", ROOT / "tools/sync_from_workspace.py")
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    assert len(protocol["source_sha256"]) == 20
+    assert set(protocol["cem"]["bounds"]) == set(sync.FAST_PARAMETER_BOUNDS)
+    assert all(tuple(protocol["cem"]["bounds"][key]) == bounds for key, bounds in sync.FAST_PARAMETER_BOUNDS.items())
+    sync._validate_fast_parameters(protocol["cem"]["baseline_params"])
+    assert report["protocol_id"] == report["audit"]["protocol_id"]
+    assert len(report["protocol_id"]) == 64 and report["audit"]["artifact_integrity_verified"] is True
+    assert report["audit"]["budgets"] == {"training": 108, "validation": 12, "test": 18, "total": 138}
+
+    def near(one, two):
+        assert type(one) in (int, float) and math.isfinite(one) and abs(one-two) < 1e-7
+
+    def computed(rows):
+        assert rows
+        for row in rows:
+            result, a, post = row["result"], row["assessment"], row["post_observation"]
+            for flag in ("physical_safe", "home_stable", "completed_by_deadline", "late_drop_passed",
+                         "constraint_feasible", "deadline_dose_measurement_available", "success_within_0_1_ml"):
+                assert type(a[flag]) is bool
+            assert result["physical_steps"] <= 300
+            near(result["physical_time_s"], result["physical_steps"]/60)
+            near(result["received_ml"]-result["target_ml"], result["error_ml"])
+            sample = post.get("deadline_received_ml") if isinstance(post, dict) else None
+            available = type(sample) in (int, float) and math.isfinite(sample)
+            assert a["deadline_dose_measurement_available"] is available
+            near(a["dose_error_ml"], (sample-result["target_ml"]) if available else result["error_ml"])
+            near(a["absolute_error_ml"], abs(a["dose_error_ml"]))
+            assert a["dose_measurement_basis"] == ("physical_5s" if available else "invalid_terminal_fallback_not_a_5s_measurement")
+            assert a["action_result_was_not_modified"] is True
+            if a["physical_safe"]:
+                assert result["valid_physics"] and result["mass_conserved"] and result["all_states_finite"]
+                assert result["max_spilled_ml"] == 0 and result["max_below_table_particles"] == 0
+            if a["completed_by_deadline"]:
+                assert result["complete"] and result["physical_time_s"] <= 5 and a["home_stable"]
+            if a["late_drop_passed"]:
+                assert available and post["passed"] and post["maximum_received_change_ml"] == 0
+                assert post["end_physical_time_s"] >= 7-1e-9 and post["duration_s"] >= 2-1e-9
+                assert post["all_states_finite"] and post["mass_array_unchanged"]
+            feasible = a["physical_safe"] and a["completed_by_deadline"] and a["late_drop_passed"]
+            assert a["constraint_feasible"] == feasible
+            assert a["success_within_0_1_ml"] == (feasible and abs(a["dose_error_ml"]) <= .1)
+        n = len(rows)
+        errors = [row["assessment"]["absolute_error_ml"] for row in rows]
+        return {"episodes": n, "mae_ml": sum(errors)/n, "worst_absolute_error_ml": max(errors),
+            "unsafe_count": sum(not row["assessment"]["physical_safe"] for row in rows),
+            "deadline_or_home_or_late_drop_failures": sum(not (row["assessment"]["completed_by_deadline"]
+                and row["assessment"]["late_drop_passed"]) for row in rows),
+            "feasible_count": sum(row["assessment"]["constraint_feasible"] for row in rows),
+            "missing_deadline_measurements": sum(not row["assessment"]["deadline_dose_measurement_available"] for row in rows),
+            "within_0_1_ml_count": sum(row["assessment"]["success_within_0_1_ml"] for row in rows),
+            "within_0_2_ml_count": sum(row["assessment"]["constraint_feasible"] and error <= .2 for row, error in zip(rows, errors)),
+            "all_mass_conserved": all(row["result"]["mass_conserved"] for row in rows),
+            "mean_action_physical_seconds": sum(row["result"]["physical_time_s"] for row in rows)/n,
+            "physical_steps": sum(row["result"]["physical_steps"] for row in rows),
+            "action_physical_seconds": sum(row["result"]["physical_time_s"] for row in rows),
+            "post_observation_physical_seconds": sum(row["post_observation"].get("duration_s", 0)
+                for row in rows if isinstance(row["post_observation"], dict))}
+
+    def check_metrics(recorded, rows):
+        actual = computed(rows)
+        for key, value in actual.items():
+            if type(value) is bool:
+                assert recorded[key] is value
+            else:
+                near(recorded[key], value)
+        return actual
+
+    def key(rows):
+        value = computed(rows)
+        groups = [rows] + [[row for row in rows if row["result"]["target_ml"] == target] for target in targets]
+        violation = sum(max(0., computed(group)["mae_ml"]-.1)
+                        + max(0., computed(group)["worst_absolute_error_ml"]-.2) for group in groups if group)
+        return [value["unsafe_count"], value["deadline_or_home_or_late_drop_failures"], violation,
+                value["mae_ml"]+.5*value["worst_absolute_error_ml"], value["mean_action_physical_seconds"]]
+
+    def check_key(recorded, actual):
+        assert len(recorded) == len(actual) == 5
+        for a, b in zip(recorded, actual):
+            near(a, b)
+
+    def check_conditions(rows, seeds, parameters):
+        expected = {(target, seed) for target in targets for seed in seeds}
+        assert len(rows) == len(expected) and {(row["result"]["target_ml"], row["result"]["seed"]) for row in rows} == expected
+        assert all(row["result"]["policy_params"] == parameters and row["result"]["randomized"] is True for row in rows)
+
+    all_train, candidates = [], []
+    generations = report["training"]["generations"]
+    assert len(generations) == 3 and [g["generation"] for g in generations] == [0, 1, 2]
+    for generation in generations:
+        assert len(generation["candidates"]) == 6 and {c["index"] for c in generation["candidates"]} == set(range(6))
+        for candidate in generation["candidates"]:
+            sync._validate_fast_parameters(candidate["params"])
+            rows = candidate["cases"]
+            check_conditions(rows, train, candidate["params"])
+            check_metrics(candidate["metrics"], rows)
+            check_key(candidate["selection_key"], key(rows))
+            candidates.append(candidate)
+            all_train.extend(rows)
+    assert len(all_train) == 108
+    assert counts["distinct_parameter_vectors"] == len({json.dumps(c["params"], sort_keys=True) for c in candidates})
+    best = min(candidates, key=lambda candidate: candidate["selection_key"])
+    validation_cases = report["validation"]["cases"]
+    for role in ("candidate", "baseline"):
+        rows = validation_cases[role]
+        check_conditions(rows, validation, best["params"] if role == "candidate" else protocol["cem"]["baseline_params"])
+        check_metrics(report["validation"]["metrics"][role], rows)
+        check_key(report["validation"]["selection_keys"][role], key(rows))
+    expected_role = ("candidate" if best["params"] != protocol["cem"]["baseline_params"]
+                     and key(validation_cases["candidate"]) < key(validation_cases["baseline"]) else "baseline")
+    assert report["validation"]["recommended_role"] == report["recommendation"]["role"] == expected_role
+    assert report["validation"]["test_used_for_selection"] is False
+    assert report["recommendation"]["selected_on_validation_only"] is True
+    assert report["recommendation"]["additional_test_rollouts"] == 0
+
+    pairs = report["test"]["paired_cases"]
+    assert len(pairs) == 9 and {(row["target_ml"], row["seed"]) for row in pairs} == {(t, s) for t in targets for s in test}
+    for role in ("candidate", "baseline"):
+        rows = [pair[role] for pair in pairs]
+        check_conditions(rows, test, best["params"] if role == "candidate" else protocol["cem"]["baseline_params"])
+        for pair, row in zip(pairs, rows):
+            assert pair["recommended_result_role"] == expected_role
+            assert (pair["target_ml"], pair["seed"]) == (row["result"]["target_ml"], row["result"]["seed"])
+        check_metrics(report["test"]["metrics"][role], rows)
+    assert report["test"]["recommended_metrics"] == report["test"]["metrics"][expected_role]
+    for role in ("candidate", "baseline", "recommended"):
+        actual_role = expected_role if role == "recommended" else role
+        rows = [pair[actual_role] for pair in pairs]
+        groups = [rows] + [[row for row in rows if row["result"]["target_ml"] == target] for target in targets]
+        passed = all((lambda m: m["unsafe_count"] == m["deadline_or_home_or_late_drop_failures"] == 0
+                     and m["mae_ml"] <= .1 and m["worst_absolute_error_ml"] <= .2
+                     and m["all_mass_conserved"])(computed(group)) for group in groups)
+        assert report["release_acceptance"][role+"_passed"] is passed
+    assert report["release_acceptance"]["does_not_reselect_model"] is True
+
+    for source, (relative, role) in sync.FAST_MODEL_SOURCES.items():
+        entry = report["models"][role]
+        assert entry["file"] == relative
+        raw = _published_file(relative).read_bytes()
+        sync._validate_checkpoint(relative, raw.decode("utf-8"))
+        model = json.loads(raw)
+        assert hashlib.sha256(raw).hexdigest() == entry["sha256"]
+        assert model["parameters"] == entry["parameters"]
+        assert model["metadata"]["protocol_id"] == report["protocol_id"]
+        assert model["metadata"]["source_sha256"] == protocol["source_sha256"]
+        assert entry["parameters"] == (best["params"] if role == "candidate" or expected_role == "candidate"
+                                       else protocol["cem"]["baseline_params"])
+    mapping = report["publication"]["source_mapping"]
+    assert len(mapping) == 20 and {item["original_file"] for item in mapping} == set(protocol["source_sha256"])
+    for item in mapping:
+        original, published = item["original_file"], item["published_file"]
+        assert item["original_sha256"] == protocol["source_sha256"][original]
+        assert published == sync.SOURCE_TO_DEST.get(original, original)
+        assert hashlib.sha256(_published_file(published).read_bytes()).hexdigest() == item["published_sha256"]
+    comparison = report["per_target_comparison"]
+    assert len(comparison) == 3 and {item["target_ml"] for item in comparison} == targets
+    for item in comparison:
+        subset = [pair for pair in pairs if pair["target_ml"] == item["target_ml"]]
+        if "cases" in item:
+            assert item["cases"] == subset
+        for role in ("candidate", "baseline"):
+            check_metrics(item[role], [pair[role] for pair in subset])
+            near(item[role]["mean_action_wall_seconds"], sum(pair[role]["result"]["wall_seconds"] for pair in subset)/3)
+            near(item[role]["mean_action_plus_post_wall_seconds"], sum(pair[role]["total_action_plus_post_wall_seconds"] for pair in subset)/3)
+    assert report["gui"] == {"new_deployment": False, "fast_gui_entry_implemented": False}
+    assert not (ROOT / "assets/robot_testtube_pour/policy/fast_v3.json").exists()
+    assert not (ROOT / "robot_target_volume_fast.py").exists()
+    for entry in report["plots"].values():
+        assert set(entry) == {"file", "sha256"}
+        raw = _published_file(entry["file"]).read_bytes()
+        assert raw.startswith(b"\x89PNG\r\n\x1a\n") and hashlib.sha256(raw).hexdigest() == entry["sha256"]
+    for source in (*sync.FAST_RUNTIME_SOURCES, *sync.FAST_TOOL_SOURCES):
+        public = _published_file(sync.SOURCE_TO_DEST.get(source, source)).read_text(encoding="utf-8")
+        assert "C:\\omninverse" not in public and "127.0.0.1" not in public and "8226" not in public
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -395,7 +597,8 @@ def main():
     _check_ai_results()
     _check_full_results()
     _check_precision_results()
-    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full and precision results/weights are consistent.")
+    _check_fast_results()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, precision and fast V3 research results/weights are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 
