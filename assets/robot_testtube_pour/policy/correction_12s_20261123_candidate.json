@@ -1,0 +1,18 @@
+{
+  "policy_kind": "timed_correction_closed_loop_v8",
+  "parameters": {
+    "deadline_s": 12.0,
+    "topup_tilt_deg_s": 2.5,
+    "topup_lead_s": 0.15,
+    "enable_topup": true,
+    "coarse": {
+      "prepare_fraction": 1.0,
+      "dose_tilt_deg_s": 25.6,
+      "return_fraction": 1.0,
+      "tail_lead_s": 0.23,
+      "stop_bias_ml": 10.0,
+      "max_dose_u_accel": 6.0
+    }
+  },
+  "role": "candidate"
+}

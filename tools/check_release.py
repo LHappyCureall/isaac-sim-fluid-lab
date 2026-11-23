@@ -709,6 +709,31 @@ def _check_dose_window_v7_results():
     _published_file("docs/DOSE_WINDOW_V7_20261123.md")
 
 
+def _check_correction_12s_results():
+    report = json.loads(_published_file("results/correction_12s_20261123.json").read_text(encoding="utf-8"))
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_timed_correction_12s_results"
+    assert report["complete"] is True and report["deadline_s"] == 12.0
+    assert report["neural_policy"] is False and report["automatic_gui_deployment"] is False
+    assert report["test_used_for_selection"] is False and report["recommended_role"] == "candidate"
+    assert report["counts"] == {"pilot_10s": 6, "pilot_12s": 6, "validation": 12, "test": 18, "total": 42}
+    assert report["protocol_summary"]["ten_second_pilot_passed"] is False
+    assert set(report["protocol_summary"]["test_seeds"]) == {113101, 113102, 113103}
+    previous = json.loads(_published_file("results/dose_window_v7_20261123.json").read_text(encoding="utf-8"))
+    assert set(report["protocol_summary"]["test_seeds"]).isdisjoint(previous["protocol_summary"]["test_seeds"])
+    rows = report["test"]["candidate"]["cases"]
+    errors = [abs(row["error_ml"]) for row in rows]
+    recorded = report["test"]["candidate"]["metrics"]
+    assert len(rows) == 9 and abs(recorded["mean_absolute_error_ml"] - sum(errors) / 9) < 1e-9
+    assert recorded["within_0_2_ml"] == 6 and recorded["full_home_cases"] == 9 and recorded["spill_cases"] == 1
+    assert report["test"]["baseline"]["metrics"]["within_0_2_ml"] == 3
+    for item in report["policies"].values():
+        assert hashlib.sha256(_published_file(item["file"]).read_bytes()).hexdigest() == item["sha256"]
+    for item in report["images"].values():
+        assert hashlib.sha256(_published_file(item["file"]).read_bytes()).hexdigest() == item["sha256"]
+    _published_file("docs/CORRECTION_12S_20261123.md")
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -743,7 +768,8 @@ def main():
     _check_v5_score_only()
     _check_dose_window_results()
     _check_dose_window_v7_results()
-    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, both dose-window results and 14 pure V5 score checks are consistent.")
+    _check_correction_12s_results()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 
