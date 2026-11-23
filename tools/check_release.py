@@ -676,6 +676,39 @@ def _check_dose_window_results():
     _published_file("docs/DOSE_WINDOW_20261123.md")
 
 
+def _check_dose_window_v7_results():
+    """Continuation between the V4 under-pour and the first dose-window over-pour."""
+    report = json.loads(_published_file("results/dose_window_v7_20261123.json").read_text(encoding="utf-8"))
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_dose_window_v7_live_CEM_results"
+    assert report["complete"] is True and report["neural_policy"] is False and report["ppo"] is False
+    assert report["automatic_gui_deployment"] is False and report["test_used_for_selection"] is False
+    assert report["recommended_role"] == "candidate"
+    assert report["counts"] == {"pilot": 6, "training": 72, "validation": 12, "test": 18, "total": 108,
+                                "generations": 3, "population": 4}
+    protocol = report["protocol_summary"]
+    assert protocol["candidate_free_params"] == protocol["search_center"]
+    assert set(protocol["test_seeds"]) == {110101, 110102, 110103}
+    previous = json.loads(_published_file("results/dose_window_20261123.json").read_text(encoding="utf-8"))
+    assert set(protocol["test_seeds"]).isdisjoint(previous["protocol_summary"]["test_seeds"])
+    rows = report["test"]["candidate"]["cases"]
+    errors = [abs(row["error_ml"]) for row in rows]
+    recorded = report["test"]["candidate"]["metrics"]
+    assert abs(recorded["mean_absolute_error_ml"] - sum(errors) / len(errors)) < 1e-9
+    assert recorded["within_0_2_ml"] == 2 and recorded["spill_cases"] == 1 and recorded["full_home_cases"] == 9
+    assert report["test"]["baseline"]["metrics"]["within_0_2_ml"] == 0
+    assert report["test"]["baseline"]["metrics"]["spill_cases"] == 0
+    assert all(row["post_received_change_ml"] == 0 and row["physical_time_s"] <= 5 for row in rows)
+    for path in report["policies"].values():
+        payload = json.loads(_published_file(path["file"]).read_text(encoding="utf-8"))
+        digest = hashlib.sha256(_published_file(path["file"]).read_bytes()).hexdigest()
+        assert digest == path["sha256"] and payload["parameters"] == path["parameters"]
+        assert payload["metadata"]["automatic_gui_deployment"] is False
+    for item in report["images"].values():
+        assert hashlib.sha256(_published_file(item["file"]).read_bytes()).hexdigest() == item["sha256"]
+    _published_file("docs/DOSE_WINDOW_V7_20261123.md")
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -709,7 +742,8 @@ def main():
     _check_pivot_results()
     _check_v5_score_only()
     _check_dose_window_results()
-    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window results and 14 pure V5 score checks are consistent.")
+    _check_dose_window_v7_results()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, both dose-window results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 
