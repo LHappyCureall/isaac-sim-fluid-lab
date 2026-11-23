@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "policy_kind": "upright_lift_fixed_mouth_planned_return_v2",
+  "parameters": {
+    "prepare_fraction": 1.0,
+    "dose_tilt_deg_s": 28.36505593495182,
+    "return_fraction": 1.0,
+    "tail_lead_s": 0.21903600291107583,
+    "stop_bias_ml": 8.25807031651324,
+    "max_dose_u_accel": 6.0
+  },
+  "observation_units": {
+    "volume": "mL",
+    "flow": "mL/s",
+    "tilt_rate": "degrees/physical-second"
+  },
+  "metadata": {
+    "role": "candidate",
+    "frozen_at_utc": "2026-11-23T05:34:17.548139+00:00",
+    "algorithm": "dose_window_volume_first_cem_v6",
+    "neural_policy": false,
+    "test_used_for_selection": false,
+    "automatic_gui_deployment": false
+  }
+}

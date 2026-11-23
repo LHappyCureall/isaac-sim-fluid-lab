@@ -624,6 +624,58 @@ def _check_v5_score_only():
             sys.modules["task_score"] = previous_module
 
 
+def _check_dose_window_results():
+    """The 2026-11-23 dose window is a failed study. Do not treat a lower MAE as success."""
+    report = json.loads(_published_file("results/dose_window_20261123.json").read_text(encoding="utf-8"))
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_dose_window_live_CEM_results"
+    assert report["complete"] is True and report["neural_policy"] is False and report["ppo"] is False
+    assert report["automatic_gui_deployment"] is False and report["test_used_for_selection"] is False
+    assert report["recommended_role"] == "candidate"
+    assert report["counts"] == {"pilot": 6, "training": 48, "validation": 12, "test": 18, "total": 84,
+                                "generations": 2, "population": 4}
+    protocol = report["protocol_summary"]
+    groups = {name: set(protocol[name]) for name in ("pilot_seeds", "train_seeds", "validation_seeds", "test_seeds")}
+    assert groups["test_seeds"] == {104101, 104102, 104103}
+    assert groups["pilot_seeds"].isdisjoint(groups["train_seeds"] | groups["validation_seeds"] | groups["test_seeds"])
+    assert groups["train_seeds"].isdisjoint(groups["validation_seeds"] | groups["test_seeds"])
+    assert groups["validation_seeds"].isdisjoint(groups["test_seeds"])
+    for relative in ("results/pivot_v4_20261122.json", "results/fast_v3_20261122.json", "results/precision_v2_20261122.json"):
+        historical = json.loads(_published_file(relative).read_text(encoding="utf-8"))
+        old = historical.get("protocol_summary", historical.get("protocol", {})).get("test_seeds", [])
+        assert groups["test_seeds"].isdisjoint(old)
+    assert protocol["physics"]["action_deadline_s"] == 5 and protocol["physics"]["error_tolerance_ml"] == .2
+    assert abs(protocol["physics"]["particle_volume_ml"] - .042875) < 1e-12
+
+    def metrics(rows):
+        errors = [abs(row["error_ml"]) for row in rows]
+        return sum(errors) / len(rows), max(errors), sum(row["error_ml"] for row in rows) / len(rows)
+
+    for role in ("candidate", "baseline"):
+        rows = report["test"][role]["cases"]
+        assert len(rows) == 9 and {row["seed"] for row in rows} == groups["test_seeds"]
+        mae, worst, signed = metrics(rows)
+        recorded = report["test"][role]["metrics"]
+        assert abs(recorded["mean_absolute_error_ml"] - mae) < 1e-9
+        assert abs(recorded["worst_absolute_error_ml"] - worst) < 1e-9
+        assert abs(recorded["mean_signed_error_ml"] - signed) < 1e-9
+        assert recorded["within_0_2_ml"] == 0 and recorded["full_home_cases"] == 9
+        assert all(row["error_ml"] > .2 and row["physical_time_s"] <= 5 and row["full_home"] for row in rows)
+        assert all(row["post_received_change_ml"] == 0 for row in rows)
+    assert report["test"]["candidate"]["metrics"]["spill_cases"] == 2
+    assert report["test"]["baseline"]["metrics"]["spill_cases"] == 1
+    for role, path in report["policies"].items():
+        payload = json.loads(_published_file(path["file"]).read_text(encoding="utf-8"))
+        digest = hashlib.sha256(_published_file(path["file"]).read_bytes()).hexdigest()
+        assert digest == path["sha256"] and payload["parameters"] == path["parameters"]
+        assert payload["policy_kind"] == "upright_lift_fixed_mouth_planned_return_v2"
+        assert payload["metadata"]["automatic_gui_deployment"] is False
+        assert payload["metadata"]["test_used_for_selection"] is False
+    for item in report["images"].values():
+        assert hashlib.sha256(_published_file(item["file"]).read_bytes()).hexdigest() == item["sha256"]
+    _published_file("docs/DOSE_WINDOW_20261123.md")
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -656,7 +708,8 @@ def main():
     _check_fast_results()
     _check_pivot_results()
     _check_v5_score_only()
-    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4 archived results and 14 pure V5 score checks are consistent.")
+    _check_dose_window_results()
+    print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
 
 

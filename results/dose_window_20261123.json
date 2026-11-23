@@ -1,0 +1,1290 @@
+{
+  "schema_version": 1,
+  "kind": "curated_dose_window_live_CEM_results",
+  "complete": true,
+  "algorithm": "dose_window_volume_first_cem_v6",
+  "neural_policy": false,
+  "ppo": false,
+  "automatic_gui_deployment": false,
+  "test_used_for_selection": false,
+  "recommended_role": "candidate",
+  "recorded_at_utc": "2026-11-23T05:38:34.917456+00:00",
+  "versions": {
+    "numpy": "2.3.1",
+    "warp": "1.17.0",
+    "newton": "1.6.1",
+    "device": "cuda:0"
+  },
+  "counts": {
+    "pilot": 6,
+    "training": 48,
+    "validation": 12,
+    "test": 18,
+    "total": 84,
+    "generations": 2,
+    "population": 4
+  },
+  "protocol_summary": {
+    "targets_ml": [
+      20,
+      30,
+      40
+    ],
+    "pilot_seeds": [
+      101101,
+      101102
+    ],
+    "train_seeds": [
+      102101,
+      102102
+    ],
+    "validation_seeds": [
+      103101,
+      103102
+    ],
+    "test_seeds": [
+      104101,
+      104102,
+      104103
+    ],
+    "fixed_params": {
+      "prepare_fraction": 1.0,
+      "return_fraction": 1.0,
+      "max_dose_u_accel": 6.0
+    },
+    "rejected_pilot_params": {
+      "prepare_fraction": 1.0,
+      "dose_tilt_deg_s": 40.0,
+      "return_fraction": 1.0,
+      "tail_lead_s": 0.1,
+      "stop_bias_ml": 1.0,
+      "max_dose_u_accel": 6.0
+    },
+    "search_bounds": {
+      "dose_tilt_deg_s": [
+        22.0,
+        40.0
+      ],
+      "stop_bias_ml": [
+        2.0,
+        10.0
+      ],
+      "tail_lead_s": [
+        0.08,
+        0.28
+      ]
+    },
+    "search_center": {
+      "dose_tilt_deg_s": 28.0,
+      "stop_bias_ml": 8.0,
+      "tail_lead_s": 0.18
+    },
+    "candidate_free_params": {
+      "dose_tilt_deg_s": 28.36505593495182,
+      "stop_bias_ml": 8.25807031651324,
+      "tail_lead_s": 0.21903600291107583
+    },
+    "physics": {
+      "dt_s": 0.016666666666666666,
+      "action_deadline_s": 5,
+      "post_observation_s": 2,
+      "error_tolerance_ml": 0.2,
+      "particle_volume_ml": 0.042875
+    },
+    "score": "V5 volume-first: every case |error|<=0.2 mL, all-label spill 0, full home <=5 s; else rank by mean absolute error then total spill. No MAE<=0.1 bar.",
+    "path": "V4 upright 25 mm lift then fixed mouth. Not the V2 prepare path."
+  },
+  "pilot_decision": {
+    "recorded_at_utc": "2026-11-23T05:16:02.280508+00:00",
+    "versions": {
+      "numpy": "2.3.1",
+      "warp": "1.17.0",
+      "newton": "1.6.1",
+      "device": "cuda:0"
+    },
+    "pilot_params": {
+      "prepare_fraction": 1.0,
+      "dose_tilt_deg_s": 40.0,
+      "return_fraction": 1.0,
+      "tail_lead_s": 0.1,
+      "stop_bias_ml": 1.0,
+      "max_dose_u_accel": 6.0
+    },
+    "pilot_rejected": true,
+    "reasons": [
+      "pilot_t20_s101102 spilled",
+      "pilot_t30_s101102 spilled"
+    ],
+    "cem_started": true,
+    "search_center": {
+      "prepare_fraction": 1.0,
+      "dose_tilt_deg_s": 28.0,
+      "return_fraction": 1.0,
+      "tail_lead_s": 0.18,
+      "stop_bias_ml": 8.0,
+      "max_dose_u_accel": 6.0
+    },
+    "search_bounds": {
+      "dose_tilt_deg_s": [
+        22.0,
+        40.0
+      ],
+      "stop_bias_ml": [
+        2.0,
+        10.0
+      ],
+      "tail_lead_s": [
+        0.08,
+        0.28
+      ]
+    },
+    "bound_change": "The 40 deg/s, bias 1 mL corner overshoots by 11-23 mL and spilled one particle on two cases. It is rejected and is not the search mean or the baseline. Search starts at 28 deg/s, bias 8 mL, tail 0.18 s, inside the controller bias cap of 10 mL."
+  },
+  "generations": [
+    {
+      "generation": 0,
+      "candidates": [
+        {
+          "index": 0,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "mean_absolute_error_ml": 4.5429583333333365,
+          "total_spilled_particles": 1,
+          "feasible": false,
+          "score": [
+            1,
+            4.5429583333333365,
+            1
+          ]
+        },
+        {
+          "index": 1,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "mean_absolute_error_ml": 2.9351458333333347,
+          "total_spilled_particles": 0,
+          "feasible": false,
+          "score": [
+            1,
+            2.9351458333333347,
+            0
+          ]
+        },
+        {
+          "index": 2,
+          "free_params": {
+            "dose_tilt_deg_s": 31.022113476612937,
+            "stop_bias_ml": 6.181247934335898,
+            "tail_lead_s": 0.16892048874538743
+          },
+          "mean_absolute_error_ml": 8.523187500000002,
+          "total_spilled_particles": 1,
+          "feasible": false,
+          "score": [
+            1,
+            8.523187500000002,
+            1
+          ]
+        },
+        {
+          "index": 3,
+          "free_params": {
+            "dose_tilt_deg_s": 30.61488403438871,
+            "stop_bias_ml": 10.0,
+            "tail_lead_s": 0.17665520576452207
+          },
+          "mean_absolute_error_ml": 4.414333333333336,
+          "total_spilled_particles": 0,
+          "feasible": false,
+          "score": [
+            1,
+            4.414333333333336,
+            0
+          ]
+        }
+      ],
+      "best_params": {
+        "dose_tilt_deg_s": 28.36505593495182,
+        "stop_bias_ml": 8.25807031651324,
+        "tail_lead_s": 0.21903600291107583
+      },
+      "next_mean": {
+        "dose_tilt_deg_s": 28.521489494634594,
+        "stop_bias_ml": 8.395162305389817,
+        "tail_lead_s": 0.18624596151822964
+      }
+    },
+    {
+      "generation": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "free_params": {
+            "dose_tilt_deg_s": 28.521489494634594,
+            "stop_bias_ml": 8.395162305389817,
+            "tail_lead_s": 0.18624596151822964
+          },
+          "mean_absolute_error_ml": 4.14279166666667,
+          "total_spilled_particles": 1,
+          "feasible": false,
+          "score": [
+            1,
+            4.14279166666667,
+            1
+          ]
+        },
+        {
+          "index": 1,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "mean_absolute_error_ml": 2.9351458333333347,
+          "total_spilled_particles": 0,
+          "feasible": false,
+          "score": [
+            1,
+            2.9351458333333347,
+            0
+          ]
+        },
+        {
+          "index": 2,
+          "free_params": {
+            "dose_tilt_deg_s": 29.40839623637461,
+            "stop_bias_ml": 7.371430208316542,
+            "tail_lead_s": 0.1058873089888021
+          },
+          "mean_absolute_error_ml": 9.35210416666667,
+          "total_spilled_particles": 0,
+          "feasible": false,
+          "score": [
+            1,
+            9.35210416666667,
+            0
+          ]
+        },
+        {
+          "index": 3,
+          "free_params": {
+            "dose_tilt_deg_s": 29.98814534104375,
+            "stop_bias_ml": 6.636692319216816,
+            "tail_lead_s": 0.15383691302792402
+          },
+          "mean_absolute_error_ml": 7.4798958333333365,
+          "total_spilled_particles": 1,
+          "feasible": false,
+          "score": [
+            1,
+            7.4798958333333365,
+            1
+          ]
+        }
+      ],
+      "best_params": {
+        "dose_tilt_deg_s": 28.36505593495182,
+        "stop_bias_ml": 8.25807031651324,
+        "tail_lead_s": 0.21903600291107583
+      },
+      "next_mean": {
+        "dose_tilt_deg_s": 28.494113621690108,
+        "stop_bias_ml": 8.371171207336417,
+        "tail_lead_s": 0.19198421876197772
+      }
+    }
+  ],
+  "validation": {
+    "candidate": {
+      "metrics": {
+        "n": 6,
+        "mean_absolute_error_ml": 2.6850416666666685,
+        "worst_absolute_error_ml": 4.395875,
+        "mean_signed_error_ml": 2.6850416666666685,
+        "within_0_2_ml": 0,
+        "spill_cases": 2,
+        "total_spilled_particles": 2,
+        "full_home_cases": 6,
+        "mean_action_physical_seconds": 4.605555555555555
+      },
+      "per_target": [
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 4.374437500000001,
+          "worst_absolute_error_ml": 4.395875,
+          "mean_signed_error_ml": 4.374437500000001,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.483333333333333,
+          "target_ml": 20,
+          "signed_errors_ml": [
+            4.395875,
+            4.3530000000000015
+          ]
+        },
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 2.9065625000000033,
+          "worst_absolute_error_ml": 2.9280000000000044,
+          "mean_signed_error_ml": 2.9065625000000033,
+          "within_0_2_ml": 0,
+          "spill_cases": 2,
+          "total_spilled_particles": 2,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.641666666666667,
+          "target_ml": 30,
+          "signed_errors_ml": [
+            2.885125000000002,
+            2.9280000000000044
+          ]
+        },
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 0.7741250000000015,
+          "worst_absolute_error_ml": 0.8170000000000002,
+          "mean_signed_error_ml": 0.7741250000000015,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.691666666666666,
+          "target_ml": 40,
+          "signed_errors_ml": [
+            0.7312500000000028,
+            0.8170000000000002
+          ]
+        }
+      ]
+    },
+    "baseline": {
+      "metrics": {
+        "n": 6,
+        "mean_absolute_error_ml": 4.893104166666671,
+        "worst_absolute_error_ml": 5.929250000000003,
+        "mean_signed_error_ml": 4.893104166666671,
+        "within_0_2_ml": 0,
+        "spill_cases": 2,
+        "total_spilled_particles": 3,
+        "full_home_cases": 6,
+        "mean_action_physical_seconds": 4.644444444444445
+      },
+      "per_target": [
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 5.810750000000002,
+          "worst_absolute_error_ml": 5.853625000000001,
+          "mean_signed_error_ml": 5.810750000000002,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.525,
+          "target_ml": 20,
+          "signed_errors_ml": [
+            5.767875000000004,
+            5.853625000000001
+          ]
+        },
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 5.822062500000005,
+          "worst_absolute_error_ml": 5.929250000000003,
+          "mean_signed_error_ml": 5.822062500000005,
+          "within_0_2_ml": 0,
+          "spill_cases": 1,
+          "total_spilled_particles": 1,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.699999999999999,
+          "target_ml": 30,
+          "signed_errors_ml": [
+            5.929250000000003,
+            5.714875000000006
+          ]
+        },
+        {
+          "n": 2,
+          "mean_absolute_error_ml": 3.0465000000000053,
+          "worst_absolute_error_ml": 3.089375000000004,
+          "mean_signed_error_ml": 3.0465000000000053,
+          "within_0_2_ml": 0,
+          "spill_cases": 1,
+          "total_spilled_particles": 2,
+          "full_home_cases": 2,
+          "mean_action_physical_seconds": 4.708333333333334,
+          "target_ml": 40,
+          "signed_errors_ml": [
+            3.0036250000000067,
+            3.089375000000004
+          ]
+        }
+      ]
+    }
+  },
+  "test": {
+    "candidate": {
+      "metrics": {
+        "n": 9,
+        "mean_absolute_error_ml": 2.746972222222224,
+        "worst_absolute_error_ml": 4.524500000000003,
+        "mean_signed_error_ml": 2.746972222222224,
+        "within_0_2_ml": 0,
+        "spill_cases": 2,
+        "total_spilled_particles": 2,
+        "full_home_cases": 9,
+        "mean_action_physical_seconds": 4.5851851851851855
+      },
+      "per_target": [
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 4.438750000000002,
+          "worst_absolute_error_ml": 4.524500000000003,
+          "mean_signed_error_ml": 4.438750000000002,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.483333333333333,
+          "target_ml": 20,
+          "signed_errors_ml": [
+            4.524500000000003,
+            4.481625000000001,
+            4.310125000000003
+          ]
+        },
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 2.899416666666667,
+          "worst_absolute_error_ml": 2.9708749999999995,
+          "mean_signed_error_ml": 2.899416666666667,
+          "within_0_2_ml": 0,
+          "spill_cases": 1,
+          "total_spilled_particles": 1,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.611111111111111,
+          "target_ml": 30,
+          "signed_errors_ml": [
+            2.885125000000002,
+            2.9708749999999995,
+            2.84225
+          ]
+        },
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 0.9027500000000023,
+          "worst_absolute_error_ml": 1.0313750000000041,
+          "mean_signed_error_ml": 0.9027500000000023,
+          "within_0_2_ml": 0,
+          "spill_cases": 1,
+          "total_spilled_particles": 1,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.661111111111111,
+          "target_ml": 40,
+          "signed_errors_ml": [
+            0.8598750000000024,
+            1.0313750000000041,
+            0.8170000000000002
+          ]
+        }
+      ],
+      "cases": [
+        {
+          "episode_id": "test_candidate_t20_s104101",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 20,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 24.524500000000003,
+          "error_ml": 4.524500000000003,
+          "physical_time_s": 4.466666666666667,
+          "physical_steps": 268,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 24.524500000000003,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 12.807199499977287
+        },
+        {
+          "episode_id": "test_candidate_t30_s104101",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 30,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 32.885125,
+          "error_ml": 2.885125000000002,
+          "physical_time_s": 4.716666666666667,
+          "physical_steps": 283,
+          "spill_particles": 1,
+          "spilled_ml": 0.042875,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 32.885125,
+          "post_received_change_ml": 0.0,
+          "post_passed": false,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 18.707051899982616
+        },
+        {
+          "episode_id": "test_candidate_t40_s104101",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 40,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 40.859875,
+          "error_ml": 0.8598750000000024,
+          "physical_time_s": 4.683333333333334,
+          "physical_steps": 281,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 40.859875,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 14.367506899987347
+        },
+        {
+          "episode_id": "test_candidate_t20_s104102",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 20,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 24.481625,
+          "error_ml": 4.481625000000001,
+          "physical_time_s": 4.5,
+          "physical_steps": 270,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 24.481625,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 12.974586400028784
+        },
+        {
+          "episode_id": "test_candidate_t30_s104102",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 30,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 32.970875,
+          "error_ml": 2.9708749999999995,
+          "physical_time_s": 4.55,
+          "physical_steps": 273,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 32.970875,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.592202999978326
+        },
+        {
+          "episode_id": "test_candidate_t40_s104102",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 40,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 41.031375000000004,
+          "error_ml": 1.0313750000000041,
+          "physical_time_s": 4.666666666666667,
+          "physical_steps": 280,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 41.031375000000004,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 14.474474099988583
+        },
+        {
+          "episode_id": "test_candidate_t20_s104103",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 20,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 24.310125000000003,
+          "error_ml": 4.310125000000003,
+          "physical_time_s": 4.483333333333333,
+          "physical_steps": 269,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 24.310125000000003,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 12.935651600011624
+        },
+        {
+          "episode_id": "test_candidate_t30_s104103",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 30,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 32.84225,
+          "error_ml": 2.84225,
+          "physical_time_s": 4.566666666666666,
+          "physical_steps": 274,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 32.84225,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.640801800007466
+        },
+        {
+          "episode_id": "test_candidate_t40_s104103",
+          "stage": "test",
+          "role": "candidate",
+          "target_ml": 40,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.36505593495182,
+            "stop_bias_ml": 8.25807031651324,
+            "tail_lead_s": 0.21903600291107583
+          },
+          "received_ml": 40.817,
+          "error_ml": 0.8170000000000002,
+          "physical_time_s": 4.633333333333333,
+          "physical_steps": 278,
+          "spill_particles": 1,
+          "spilled_ml": 0.042875,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 40.817,
+          "post_received_change_ml": 0.0,
+          "post_passed": false,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 15.564521199965384
+        }
+      ]
+    },
+    "baseline": {
+      "metrics": {
+        "n": 9,
+        "mean_absolute_error_ml": 4.733513888888893,
+        "worst_absolute_error_ml": 5.843500000000006,
+        "mean_signed_error_ml": 4.733513888888893,
+        "within_0_2_ml": 0,
+        "spill_cases": 1,
+        "total_spilled_particles": 1,
+        "full_home_cases": 9,
+        "mean_action_physical_seconds": 4.6
+      },
+      "per_target": [
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 5.753583333333336,
+          "worst_absolute_error_ml": 5.767875000000004,
+          "mean_signed_error_ml": 5.753583333333336,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.5,
+          "target_ml": 20,
+          "signed_errors_ml": [
+            5.767875000000004,
+            5.767875000000004,
+            5.725000000000001
+          ]
+        },
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 5.257541666666671,
+          "worst_absolute_error_ml": 5.843500000000006,
+          "mean_signed_error_ml": 5.257541666666671,
+          "within_0_2_ml": 0,
+          "spill_cases": 0,
+          "total_spilled_particles": 0,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.611111111111111,
+          "target_ml": 30,
+          "signed_errors_ml": [
+            5.843500000000006,
+            4.085625,
+            5.843500000000006
+          ]
+        },
+        {
+          "n": 3,
+          "mean_absolute_error_ml": 3.1894166666666712,
+          "worst_absolute_error_ml": 3.2608750000000057,
+          "mean_signed_error_ml": 3.1894166666666712,
+          "within_0_2_ml": 0,
+          "spill_cases": 1,
+          "total_spilled_particles": 1,
+          "full_home_cases": 3,
+          "mean_action_physical_seconds": 4.688888888888889,
+          "target_ml": 40,
+          "signed_errors_ml": [
+            3.2608750000000057,
+            3.1751250000000013,
+            3.132250000000006
+          ]
+        }
+      ],
+      "cases": [
+        {
+          "episode_id": "test_baseline_t20_s104101",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 20,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 25.767875000000004,
+          "error_ml": 5.767875000000004,
+          "physical_time_s": 4.466666666666667,
+          "physical_steps": 268,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 25.767875000000004,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 12.914498700003605
+        },
+        {
+          "episode_id": "test_baseline_t30_s104101",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 30,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 35.843500000000006,
+          "error_ml": 5.843500000000006,
+          "physical_time_s": 4.616666666666666,
+          "physical_steps": 277,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 35.843500000000006,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.963803299993742
+        },
+        {
+          "episode_id": "test_baseline_t40_s104101",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 40,
+          "seed": 104101,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 43.260875000000006,
+          "error_ml": 3.2608750000000057,
+          "physical_time_s": 4.7,
+          "physical_steps": 282,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 43.260875000000006,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 14.717969399993308
+        },
+        {
+          "episode_id": "test_baseline_t20_s104102",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 20,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 25.767875000000004,
+          "error_ml": 5.767875000000004,
+          "physical_time_s": 4.5,
+          "physical_steps": 270,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 25.767875000000004,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.013854100019671
+        },
+        {
+          "episode_id": "test_baseline_t30_s104102",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 30,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 34.085625,
+          "error_ml": 4.085625,
+          "physical_time_s": 4.6,
+          "physical_steps": 276,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 34.085625,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.721687999961432
+        },
+        {
+          "episode_id": "test_baseline_t40_s104102",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 40,
+          "seed": 104102,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 43.175125,
+          "error_ml": 3.1751250000000013,
+          "physical_time_s": 4.7,
+          "physical_steps": 282,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 43.175125,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 14.510515599977225
+        },
+        {
+          "episode_id": "test_baseline_t20_s104103",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 20,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 25.725,
+          "error_ml": 5.725000000000001,
+          "physical_time_s": 4.533333333333333,
+          "physical_steps": 272,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 25.725,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 13.140982799988706
+        },
+        {
+          "episode_id": "test_baseline_t30_s104103",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 30,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 35.843500000000006,
+          "error_ml": 5.843500000000006,
+          "physical_time_s": 4.616666666666666,
+          "physical_steps": 277,
+          "spill_particles": 0,
+          "spilled_ml": 0.0,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 35.843500000000006,
+          "post_received_change_ml": 0.0,
+          "post_passed": true,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 14.00117159995716
+        },
+        {
+          "episode_id": "test_baseline_t40_s104103",
+          "stage": "test",
+          "role": "baseline",
+          "target_ml": 40,
+          "seed": 104103,
+          "free_params": {
+            "dose_tilt_deg_s": 28.0,
+            "stop_bias_ml": 8.0,
+            "tail_lead_s": 0.18
+          },
+          "received_ml": 43.132250000000006,
+          "error_ml": 3.132250000000006,
+          "physical_time_s": 4.666666666666667,
+          "physical_steps": 280,
+          "spill_particles": 1,
+          "spilled_ml": 0.042875,
+          "valid_physics": true,
+          "mass_conserved": true,
+          "complete": true,
+          "full_home": true,
+          "particle_volume_ml": 0.042875,
+          "post_deadline_received_ml": 43.132250000000006,
+          "post_received_change_ml": 0.0,
+          "post_passed": false,
+          "post_end_physical_time_s": 7.0,
+          "wall_seconds": 18.30599439999787
+        }
+      ]
+    }
+  },
+  "pilot_cases": [
+    {
+      "episode_id": "pilot_t20_s101101",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 20,
+      "seed": 101101,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 43.389500000000005,
+      "error_ml": 23.389500000000005,
+      "physical_time_s": 4.55,
+      "physical_steps": 273,
+      "spill_particles": 0,
+      "spilled_ml": 0.0,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 43.389500000000005,
+      "post_received_change_ml": 0.0,
+      "post_passed": true,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 32.30469479999738
+    },
+    {
+      "episode_id": "pilot_t30_s101101",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 30,
+      "seed": 101101,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 49.520625,
+      "error_ml": 19.520625000000003,
+      "physical_time_s": 4.633333333333333,
+      "physical_steps": 278,
+      "spill_particles": 0,
+      "spilled_ml": 0.0,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 49.520625,
+      "post_received_change_ml": 0.0,
+      "post_passed": true,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 34.76227489998564
+    },
+    {
+      "episode_id": "pilot_t40_s101101",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 40,
+      "seed": 101101,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 51.364250000000006,
+      "error_ml": 11.364250000000006,
+      "physical_time_s": 4.7,
+      "physical_steps": 282,
+      "spill_particles": 0,
+      "spilled_ml": 0.0,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 51.364250000000006,
+      "post_received_change_ml": 0.0,
+      "post_passed": true,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 29.7054229999776
+    },
+    {
+      "episode_id": "pilot_t20_s101102",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 20,
+      "seed": 101102,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 43.47525,
+      "error_ml": 23.475250000000003,
+      "physical_time_s": 4.583333333333333,
+      "physical_steps": 275,
+      "spill_particles": 1,
+      "spilled_ml": 0.042875,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 43.47525,
+      "post_received_change_ml": 0.0,
+      "post_passed": false,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 36.92348509997828
+    },
+    {
+      "episode_id": "pilot_t30_s101102",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 30,
+      "seed": 101102,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 49.349125,
+      "error_ml": 19.349125,
+      "physical_time_s": 4.633333333333333,
+      "physical_steps": 278,
+      "spill_particles": 1,
+      "spilled_ml": 0.042875,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 49.349125,
+      "post_received_change_ml": 0.0,
+      "post_passed": false,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 39.191437600005884
+    },
+    {
+      "episode_id": "pilot_t40_s101102",
+      "stage": "pilot",
+      "role": "pilot",
+      "target_ml": 40,
+      "seed": 101102,
+      "free_params": {
+        "dose_tilt_deg_s": 40.0,
+        "stop_bias_ml": 1.0,
+        "tail_lead_s": 0.1
+      },
+      "received_ml": 51.364250000000006,
+      "error_ml": 11.364250000000006,
+      "physical_time_s": 4.733333333333333,
+      "physical_steps": 284,
+      "spill_particles": 0,
+      "spilled_ml": 0.0,
+      "valid_physics": true,
+      "mass_conserved": true,
+      "complete": true,
+      "full_home": true,
+      "particle_volume_ml": 0.042875,
+      "post_deadline_received_ml": 51.364250000000006,
+      "post_received_change_ml": 0.0,
+      "post_passed": true,
+      "post_end_physical_time_s": 7.0,
+      "wall_seconds": 31.71168080001371
+    }
+  ],
+  "policies": {
+    "candidate": {
+      "file": "assets/robot_testtube_pour/policy/dose_window_20261123_candidate.json",
+      "sha256": "4ea3f4d771896125e16b707d6630780ee8c54af8ad8ebb81550ebcdc0c2c82c8",
+      "parameters": {
+        "prepare_fraction": 1.0,
+        "dose_tilt_deg_s": 28.36505593495182,
+        "return_fraction": 1.0,
+        "tail_lead_s": 0.21903600291107583,
+        "stop_bias_ml": 8.25807031651324,
+        "max_dose_u_accel": 6.0
+      }
+    },
+    "recommended": {
+      "file": "assets/robot_testtube_pour/policy/dose_window_20261123_recommended.json",
+      "sha256": "43a9cff80c412bdfff715ded1585f2f1846ef3a223fc8b622e3fafb88610ca7e",
+      "parameters": {
+        "prepare_fraction": 1.0,
+        "dose_tilt_deg_s": 28.36505593495182,
+        "return_fraction": 1.0,
+        "tail_lead_s": 0.21903600291107583,
+        "stop_bias_ml": 8.25807031651324,
+        "max_dose_u_accel": 6.0
+      }
+    }
+  },
+  "images": {
+    "training": {
+      "file": "docs/images/dose_window_20261123_training.png",
+      "sha256": "7d334f4f733ca2d102c7ee3fc572ef6c2657b619c397552e819fa9e6287a53a7"
+    },
+    "targets": {
+      "file": "docs/images/dose_window_20261123_targets.png",
+      "sha256": "111faa46145d90829c9a711a640117507d422840534bda09caadf3b2a3a2333f"
+    },
+    "pairs": {
+      "file": "docs/images/dose_window_20261123_pairs.png",
+      "sha256": "9f844dadbdc7cf0e2b130de57e5d0749fd81bb7a1e5bf26b0d1e4c72b11d6281"
+    }
+  },
+  "limitations": [
+    "Received volume is privileged particle mass, quantum 0.042875 mL, not a scale reading.",
+    "No grasp torque. Joint acceleration stays inside the simulation envelope.",
+    "The rejected 40 deg/s pilot is not the baseline and was not used to pick the test winner.",
+    "Post observation to 7 s does not rescue a short or late dose.",
+    "This archive is not a GUI default and is not a turnkey rerun without the private geometry cache."
+  ]
+}
