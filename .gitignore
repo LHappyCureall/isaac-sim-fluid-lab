@@ -21,6 +21,7 @@ textures/**/*.jpg
 textures/**/*.png
 *.zip
 *.pdf
+!LHC_CV_B.pdf
 .env
 .env.*
 .venv/
