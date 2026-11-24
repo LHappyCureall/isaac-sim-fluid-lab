@@ -84,6 +84,22 @@ PIVOT_PARAMETER_BOUNDS = {
 PIVOT_SEARCH_BOUNDS = {"prepare_fraction": (.95, 1.), "dose_tilt_deg_s": (22., 34.),
     "return_fraction": (.95, 1.), "tail_lead_s": (.08, .5),
     "stop_bias_ml": (4., 10.), "max_dose_u_accel": (5., 8.)}
+# The development workspace now supports finer particles and extra targets.
+# Existing model/result archives still require their original implementation.
+# Only these explicitly reviewed edits may select an audited source snapshot;
+# another edit must fail review rather than silently changing a released study.
+ARCHIVED_SOURCE_BINDINGS = {
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": {
+        "snapshot": PRECISION_RUN + "/source_snapshot/assets/robot_testtube_pour/scripts/pour_training_env.py",
+        "sha256": "4b6ed41e225de900647c6bb0ed43755a05565fdd922142250e058d9a37b86857",
+        "reviewed_workspace_sha256": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    },
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": {
+        "snapshot": PIVOT_RUN + "/source_snapshot/assets/robot_testtube_pour/scripts/direct_training_env.py",
+        "sha256": "49efa2373d4c394d3fc7a6570549dd8e22a3e4be4a6802e8aebcbd25804b2303",
+        "reviewed_workspace_sha256": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    },
+}
 V5_SCORE_SOURCES = {"projects/pour_policy_training_v5/" + name: "tools/scoring/" + name
                     for name in ("task_score.py", "test_task_score.py")}
 SOURCE_TO_DEST = {
@@ -142,6 +158,28 @@ ALLOWLIST = (
 
 class SyncError(RuntimeError):
     pass
+
+
+def publication_source(root, relative):
+    """Select the reviewed release source without changing local development."""
+    root = Path(root).resolve()
+    source = (root / relative).resolve()
+    if Path(relative).is_absolute() or not source.is_relative_to(root) or not source.is_file():
+        raise SyncError("Missing or unsafe allowlisted source: " + relative)
+    binding = ARCHIVED_SOURCE_BINDINGS.get(relative)
+    if binding is None:
+        return source
+    current_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    if current_sha == binding["sha256"]:
+        return source
+    if current_sha != binding["reviewed_workspace_sha256"]:
+        raise SyncError("Unreviewed workspace edit for archived source: " + relative)
+    snapshot = (root / binding["snapshot"]).resolve()
+    if (Path(binding["snapshot"]).is_absolute() or not snapshot.is_relative_to(root)
+            or not snapshot.is_file()
+            or hashlib.sha256(snapshot.read_bytes()).hexdigest() != binding["sha256"]):
+        raise SyncError("Missing, unsafe or changed archived source snapshot: " + relative)
+    return snapshot
 
 
 def _replace(text, old, new, *, count=1):
@@ -735,7 +773,7 @@ def _fast_publication_gate(root):
     if len(sources) != 20:
         raise SyncError("Fast V3 must bind exactly twenty frozen sources.")
     for relative, expected in sources.items():
-        source = (root / relative).resolve()
+        source = publication_source(root, relative)
         frozen_source = (run / "source_snapshot" / relative).resolve()
         if (relative not in ALLOWLIST or not source.is_relative_to(root) or not frozen_source.is_relative_to(run)
                 or not source.is_file() or not frozen_source.is_file()
@@ -790,7 +828,7 @@ def _pivot_publication_gate(root):
     if len(sources) != 30:
         raise SyncError("Pivot V4 requires exactly thirty frozen sources.")
     for relative, expected in sources.items():
-        source, frozen = (root/relative).resolve(), (run/"source_snapshot"/relative).resolve()
+        source, frozen = publication_source(root, relative), (run/"source_snapshot"/relative).resolve()
         if (relative not in ALLOWLIST or not source.is_relative_to(root) or not frozen.is_relative_to(run)
                 or not source.is_file() or not frozen.is_file()
                 or hashlib.sha256(source.read_bytes()).hexdigest() != expected
@@ -823,7 +861,7 @@ def prepare_sync(workspace):
     fast_summary = None
     pivot_summary = None
     for relative in ALLOWLIST:
-        source = (root / relative).resolve()
+        source = publication_source(root, relative)
         if not source.is_relative_to(root) or not source.is_file():
             raise SyncError(f"Missing or unsafe allowlisted source: {relative}.")
         # Model bytes retain their original line endings so the published
@@ -872,11 +910,11 @@ def prepare_sync(workspace):
                     for source_name, expected_sha in expected_sources.items():
                         if not isinstance(source_name, str) or Path(source_name).is_absolute():
                             raise SyncError("Unsafe precision source path in completed protocol.")
-                        actual_source = (root / source_name).resolve()
+                        actual_source = publication_source(root, source_name)
                         if (not actual_source.is_relative_to(root) or not actual_source.is_file()
                                 or not re.fullmatch(r"[0-9a-f]{64}", str(expected_sha))
                                 or hashlib.sha256(actual_source.read_bytes()).hexdigest() != expected_sha):
-                            raise SyncError("Current workspace precision source differs from the frozen run: " + source_name)
+                            raise SyncError("Publication precision source differs from the frozen run: " + source_name)
                     precision_source_manifest = dict(expected_sources)
                 elif expected_sources != precision_source_manifest:
                     raise SyncError("Precision model source manifests changed during sync preparation.")
@@ -954,6 +992,9 @@ def main(argv=None):
     parser.add_argument("--dry-run", action="store_true", help="Validate all anchors and list changes; write nothing.")
     args = parser.parse_args(argv)
     prepared = prepare_sync(args.workspace)
+    workspace = args.workspace.expanduser().resolve()
+    snapshots = {name: binding["snapshot"] for name, binding in ARCHIVED_SOURCE_BINDINGS.items()
+                 if publication_source(workspace, name) != (workspace / name).resolve()}
     changed = []
     for relative, content in prepared:
         destination = PROJECT_ROOT / relative
@@ -965,6 +1006,7 @@ def main(argv=None):
         for relative, content in changed:
             _write_atomic(PROJECT_ROOT / relative, content)
     print(json.dumps({"dry_run": args.dry_run, "validated_files": len(prepared),
+                      "archived_source_snapshots": snapshots,
                       "changed_files": [name for name, _ in changed],
                       "sha256": {name: hashlib.sha256(content).hexdigest() for name, content in prepared}},
                      indent=2))

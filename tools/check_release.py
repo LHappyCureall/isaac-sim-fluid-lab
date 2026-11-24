@@ -734,6 +734,21 @@ def _check_correction_12s_results():
     _published_file("docs/CORRECTION_12S_20261123.md")
 
 
+def _check_sync_source_bindings():
+    """Exercise reviewed snapshot selection and rejection of unknown edits."""
+    import io
+    import unittest
+    path = _published_file("tools/test_sync_source_bindings.py")
+    spec = importlib.util.spec_from_file_location("release_sync_source_tests", path)
+    tests = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tests)
+    suite = unittest.defaultTestLoader.loadTestsFromModule(tests)
+    assert suite.countTestCases() >= 6
+    output = io.StringIO()
+    result = unittest.TextTestRunner(stream=output, verbosity=0).run(suite)
+    assert result.wasSuccessful(), output.getvalue()
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -769,8 +784,10 @@ def main():
     _check_dose_window_results()
     _check_dose_window_v7_results()
     _check_correction_12s_results()
+    _check_sync_source_bindings()
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
+    print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
 
 
 if __name__ == "__main__":
