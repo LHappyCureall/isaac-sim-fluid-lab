@@ -36,41 +36,59 @@ def _font_candidates() -> list[Path]:
         Path("/Library/Fonts"),
         Path("/System/Library/Fonts/Supplemental"),
     ]
+    # Prefer TrueType/TTC; reportlab TTFont rejects many CFF .otf files.
     names = [
         "wqy-microhei.ttc",
         "WenQuanYi Micro Hei.ttf",
+        "NotoSansCJK-Regular.ttc",   # Debian/Ubuntu fonts-noto-cjk
         "NotoSansCJKsc-Regular.otf",
+        "NotoSansSC-Regular.ttf",    # Google Fonts download
         "NotoSansSC-Regular.otf",
         "SourceHanSansSC-Regular.otf",
-        "msyh.ttc",          # Microsoft YaHei
+        "msyh.ttc",                  # Microsoft YaHei
         "msyh.ttf",
         "simhei.ttf",
         "SimHei.ttf",
         "PingFang.ttc",
         "Hiragino Sans GB.ttc",
     ]
-    out: list[Path] = []
-    if env:
-        out.append(Path(env))
+    discovered: list[Path] = []
     for root in roots:
         if not root.is_dir():
             continue
         for name in names:
             hit = root / name
             if hit.is_file():
-                out.append(hit)
-        # Debian/Ubuntu nested paths
-        for pattern in ("**/wqy-microhei.ttc", "**/NotoSansCJKsc-Regular.otf", "**/NotoSansSC-Regular.otf"):
-            out.extend(p for p in root.glob(pattern) if p.is_file())
-    # de-dupe preserving order
-    seen: set[str] = set()
-    unique: list[Path] = []
-    for p in out:
-        key = str(p.resolve()) if p.exists() else str(p)
-        if key not in seen:
-            seen.add(key)
-            unique.append(p)
-    return unique
+                discovered.append(hit)
+        for pattern in (
+            "**/wqy-microhei.ttc",
+            "**/NotoSansCJK-Regular.ttc",
+            "**/NotoSansSC-Regular.ttf",
+            "**/NotoSansCJK*.ttc",
+        ):
+            discovered.extend(p for p in root.glob(pattern) if p.is_file())
+
+    def _dedupe(paths: list[Path]) -> list[Path]:
+        seen: set[str] = set()
+        unique: list[Path] = []
+        for p in paths:
+            key = str(p.resolve()) if p.exists() else str(p)
+            if key not in seen:
+                seen.add(key)
+                unique.append(p)
+        return unique
+
+    def _prefer_truetype(paths: list[Path]) -> list[Path]:
+        # Stable: keep relative order, but push .otf last (reportlab often rejects CFF).
+        return sorted(
+            paths,
+            key=lambda p: 0 if p.suffix.lower() in {".ttf", ".ttc"} else 1,
+        )
+
+    preferred = _prefer_truetype(_dedupe(discovered))
+    if env:
+        return _dedupe([Path(env), *preferred])
+    return preferred
 
 
 def register_font() -> Path:
@@ -84,11 +102,13 @@ def register_font() -> Path:
         except Exception as exc:  # noqa: BLE001 — try next candidate
             errors.append(f"{path}: {exc}")
     tip = (
-        "No usable CJK font found. Install WenQuanYi / Noto CJK / Microsoft YaHei, "
-        "or set CV_FONT_PATH to a .ttf/.ttc/.otf file."
+        "No usable CJK font found. Install WenQuanYi Micro Hei, fonts-noto-cjk "
+        "(NotoSansCJK-Regular.ttc), or Microsoft YaHei; or set CV_FONT_PATH to a "
+        ".ttf/.ttc file (reportlab often cannot load CFF .otf)."
     )
     detail = ("\n".join(errors[:5]) if errors else "(no candidate files existed)")
     raise SystemExit(f"{tip}\nTried:\n{detail}")
+
 
 
 FONT_PATH = register_font()
