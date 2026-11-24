@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Generate LHC_CV_B.pdf — resume tailored for embodied physics-engine roles."""
 
+from __future__ import annotations
+
+import os
+import sys
 from pathlib import Path
 
-from reportlab.lib.colors import Color, black, HexColor
+from reportlab.lib.colors import black, HexColor
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import cm, mm
+from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
@@ -18,13 +22,81 @@ from reportlab.platypus import (
     HRFlowable,
 )
 
-FONT = "WQY"
-FONT_PATH = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
-pdfmetrics.registerFont(TTFont(FONT, FONT_PATH))
+FONT = "CVSans"
+
+
+def _font_candidates() -> list[Path]:
+    """CJK-capable fonts: repo-local override, then common Linux / Windows / macOS paths."""
+    env = os.environ.get("CV_FONT_PATH")
+    roots = [
+        Path(__file__).resolve().parents[1] / "tools" / "fonts",
+        Path("/usr/share/fonts"),
+        Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts",
+        Path.home() / "Library" / "Fonts",
+        Path("/Library/Fonts"),
+        Path("/System/Library/Fonts/Supplemental"),
+    ]
+    names = [
+        "wqy-microhei.ttc",
+        "WenQuanYi Micro Hei.ttf",
+        "NotoSansCJKsc-Regular.otf",
+        "NotoSansSC-Regular.otf",
+        "SourceHanSansSC-Regular.otf",
+        "msyh.ttc",          # Microsoft YaHei
+        "msyh.ttf",
+        "simhei.ttf",
+        "SimHei.ttf",
+        "PingFang.ttc",
+        "Hiragino Sans GB.ttc",
+    ]
+    out: list[Path] = []
+    if env:
+        out.append(Path(env))
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for name in names:
+            hit = root / name
+            if hit.is_file():
+                out.append(hit)
+        # Debian/Ubuntu nested paths
+        for pattern in ("**/wqy-microhei.ttc", "**/NotoSansCJKsc-Regular.otf", "**/NotoSansSC-Regular.otf"):
+            out.extend(p for p in root.glob(pattern) if p.is_file())
+    # de-dupe preserving order
+    seen: set[str] = set()
+    unique: list[Path] = []
+    for p in out:
+        key = str(p.resolve()) if p.exists() else str(p)
+        if key not in seen:
+            seen.add(key)
+            unique.append(p)
+    return unique
+
+
+def register_font() -> Path:
+    errors: list[str] = []
+    for path in _font_candidates():
+        if not path.is_file():
+            continue
+        try:
+            pdfmetrics.registerFont(TTFont(FONT, str(path)))
+            return path
+        except Exception as exc:  # noqa: BLE001 — try next candidate
+            errors.append(f"{path}: {exc}")
+    tip = (
+        "No usable CJK font found. Install WenQuanYi / Noto CJK / Microsoft YaHei, "
+        "or set CV_FONT_PATH to a .ttf/.ttc/.otf file."
+    )
+    detail = ("\n".join(errors[:5]) if errors else "(no candidate files existed)")
+    raise SystemExit(f"{tip}\nTried:\n{detail}")
+
+
+FONT_PATH = register_font()
 
 PAGE_W, PAGE_H = A4
 MARGIN_X = 1.35 * cm
 MARGIN_Y = 1.0 * cm
+CONTENT_W = PAGE_W - 2 * MARGIN_X
 ACCENT = HexColor("#1a365d")
 LINE = HexColor("#2c5282")
 MUTED = HexColor("#2d3748")
@@ -114,7 +186,10 @@ def build(out: Path):
         ["2020.09 – 2023.06", "新疆大学", "计算数学 硕士研究生　GPA 3.61/4.0"],
         ["2016.09 – 2020.06", "山东师范大学", "数学与应用数学 本科　GPA 3.48/4.0"],
     ]
-    t = Table(edu, colWidths=[4.2 * cm, 3.2 * cm, 11.2 * cm])
+    # Keep columns within the printable frame (CONTENT_W ≈ 18.3 cm on A4).
+    col_a, col_b = 4.0 * cm, 3.0 * cm
+    col_c = CONTENT_W - col_a - col_b
+    t = Table(edu, colWidths=[col_a, col_b, col_c])
     t.setStyle(TableStyle([
         ("FONTNAME", (0, 0), (-1, -1), FONT),
         ("FONTSIZE", (0, 0), (-1, -1), 8.5),
@@ -233,12 +308,13 @@ def build(out: Path):
 
 
 if __name__ == "__main__":
+    print(f"Using font: {FONT_PATH}", file=sys.stderr)
     root = Path(__file__).resolve().parents[1]
     out = root / "LHC_CV_B.pdf"
     build(out)
-    # Also drop a copy under artifacts if present
     art = Path("/opt/cursor/artifacts")
     if art.is_dir():
         import shutil
         shutil.copy2(out, art / "LHC_CV_B.pdf")
         print(f"Copied to {art / 'LHC_CV_B.pdf'}")
+
