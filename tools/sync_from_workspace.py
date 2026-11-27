@@ -9,6 +9,7 @@ import argparse
 import ast
 from datetime import datetime
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -117,6 +118,43 @@ DEVELOPMENT_RELATIVES = (*["projects/pour_policy_training_v8/"+name for name in 
                          "dependencies/pour_training_env.py", "dependencies/direct_training_env.py")
 DEVELOPMENT_SOURCES = {DEVELOPMENT_CAPTURE+name: DEVELOPMENT_PUBLIC+name
                        for name in (*DEVELOPMENT_RELATIVES, "source_manifest.json", "README.md")}
+FINE_RUN = "droplet_out/pour_policy_fine_v9/run_20261127"
+FINE_PUBLIC = "research/fine_particle_v9_20261127/"
+FINE_REPORT = "results/fine_v9_20261127.json"
+FINE_ORIGINAL_SOURCES = ("train_target_volume_policy.py", *["assets/robot_testtube_pour/scripts/"+name for name in (
+    "geometry.py", "liquid.py", "target_control.py", "robot.py", "pour_training_env.py", "fast_geometry.py",
+    "fast_control.py", "fast_training_env.py", "direct_fast_geometry.py", "direct_fast_control.py", "direct_training_env.py",
+    "mouth_pivot_fast_geometry.py", "mouth_pivot_lift_geometry.py", "mouth_pivot_lift_control_v2.py")],
+    *["projects/pour_policy_training_v9/"+name for name in ("legacy_control.py","fine_control.py","fine_env.py","run_fine_search.py")])
+FINE_RUNTIME_SOURCES = {FINE_RUN+"/source_snapshot/"+name: FINE_PUBLIC+name for name in FINE_ORIGINAL_SOURCES}
+FINE_TOOL_SOURCES = {"projects/pour_policy_training_v9/"+name: FINE_PUBLIC+"projects/pour_policy_training_v9/"+name
+    for name in ("audit_fine_run.py","plot_fine_results.py","test_contract.py","curate_fine_results.py")}
+FINE_MODEL_SOURCES = {FINE_RUN+"/"+role+"_frozen.json": (FINE_PUBLIC+"models/"+role+"_frozen.json",role)
+                      for role in ("candidate","recommended")}
+FINE_RAW_SOURCES = (*FINE_RUNTIME_SOURCES,*FINE_TOOL_SOURCES,*FINE_MODEL_SOURCES)
+FINE_ROBOT_SOURCE = "assets/robot_testtube_pour/scripts/robot.py"
+FINE_ROBOT_ORIGINAL_SHA256 = "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d"
+FINE_ROBOT_PUBLISHED_SHA256 = "972bab813c3caa0f8a1d68e96652594de36b77644183bb737cb86d23877975b3"
+FINE_ATTRIBUTES = ("# Preserve reviewed source/model bytes, including the single robot path derivative.\n"
+                   ".gitattributes text eol=lf\n"
+                   "README.md text eol=lf\n"
+                   "*.py -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol\n"
+                   "models/*.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol\n")
+FINE_README = ("# V9 frozen research source bundle\n\n"
+    "This version keeps 18 effective runtime source files at their frozen raw bytes, including the two development collectors. "
+    "Only robot.py has two machine-specific paths converted to ISAAC_SIM_ROOT and its research-tree root, plus the required os import. "
+    "Its original/public SHA values therefore differ; solver/control calculations and original literal guards are not rebound. "
+    "They are independent copies and do not replace the released root assets or GUI models. The four audit/plot/test/curation tools "
+    "are post-hoc tools, not part of the 19 runtime sources. Original and public SHA values are recorded separately in "
+    "[the selected results](../../results/fine_v9_20261127.json).\n\n"
+    "The module layout and literal provenance guards are preserved. The public path derivative is a different source version and "
+    "cannot resume this original run. Local robot-path NPZ inputs, the original dependency layout and "
+    "Isaac Sim SDK are still required; none are distributed here. Rebuilding inputs does not promise the same cache bytes. "
+    "Use a fresh engineering validation and protocol for a changed implementation/input; never resume the original journal or "
+    "rebind hashes to pretend that changed code is the original experiment. This bundle is not a turnkey GUI entry or a default deployment.\n\n"
+    "Only a complete 18/6/18 live experiment with its independent final artifact audit can enter this publication. "
+    "The test set accepts/rejects the already frozen validation choice; it never chooses a policy. "
+    "See the selected results for the actual outcome and limitations; budget completion alone does not establish task success.\n")
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
@@ -132,13 +170,16 @@ SOURCE_TO_DEST = {
     **{source: item[0] for source, item in PIVOT_MODEL_SOURCES.items()},
     **V5_SCORE_SOURCES,
     **DEVELOPMENT_SOURCES,
+    **FINE_RUNTIME_SOURCES,
+    **FINE_TOOL_SOURCES,
+    **{source:item[0] for source,item in FINE_MODEL_SOURCES.items()},
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
     "assets/robot_testtube_pour/policy/target_volume_candidate.json",
 )
 CHECKPOINT_SOURCES = (*MODEL_FILES, *FULL_MODEL_SOURCES, *PRECISION_MODEL_SOURCES,
-                      *FAST_MODEL_SOURCES, *PIVOT_MODEL_SOURCES)
+                      *FAST_MODEL_SOURCES, *PIVOT_MODEL_SOURCES, *FINE_MODEL_SOURCES)
 ALLOWLIST = (
     "droplet_milkcrown_newton.py",
     "droplet_milkcrown_newton_surface.py",
@@ -244,6 +285,9 @@ def _replace(text, old, new, *, count=1):
 
 def _validate_checkpoint(relative, text):
     """Validate the reviewed CEM or distinct precision checkpoint schema."""
+    fine_role = next((role for source,(destination,role) in FINE_MODEL_SOURCES.items() if relative in (source,destination)),None)
+    if fine_role is not None:
+        return _validate_fine_checkpoint(text,fine_role)
     pivot_role = next((role for source, (destination, role) in PIVOT_MODEL_SOURCES.items()
                        if relative in (source, destination)), None)
     if pivot_role is not None:
@@ -430,6 +474,148 @@ def _validate_pivot_checkpoint(text, role):
     json.dumps(value, allow_nan=False)
 
 
+def _validate_fine_checkpoint(text, role):
+    if len(text.encode("utf-8")) > 128*1024:
+        raise SyncError("Unexpectedly large V9 research model.")
+    value = json.loads(text)
+    implementation = value.get("implementation")
+    if (value.get("schema_version") != 1 or value.get("role") != role or implementation not in ("candidate","baseline")
+            or (role == "candidate" and implementation != "candidate")
+            or value.get("policy_kind") != ("fine_particle_settled_micro_correction_v9" if implementation == "candidate"
+                                             else "timed_correction_closed_loop_v8")
+            or value.get("deadline_s") != 24. or value.get("spacing_m") != .0027
+            or value.get("particle_trim") is not True or value.get("test_used_for_selection") is not False
+            or value.get("gui_deployment") is not False):
+        raise SyncError("V9 model schema/implementation/deadline or isolation changed.")
+    multiplier = value.get("coarse_speed_multiplier")
+    if (type(multiplier) not in (int,float) or not math.isfinite(multiplier) or not .92 <= multiplier <= 1.02
+            or (implementation == "baseline" and multiplier != 1.)):
+        raise SyncError("Invalid V9 coarse-only multiplier.")
+    if (value.get("coarse_base_parameters") != {"prepare_fraction":1.,"dose_tilt_deg_s":25.6,"return_fraction":1.,
+            "tail_lead_s":.26,"stop_bias_ml":10.,"max_dose_u_accel":6.}
+            or value.get("topup_tilt_deg_s") != 2.2 or value.get("topup_lead_s") != .12
+            or value.get("fixed_main_topup_margin_ml") != (.15 if implementation == "candidate" else 0.)
+            or value.get("fixed_micro_backoff_deg_s") != (6. if implementation == "candidate" else 2.)):
+        raise SyncError("V9 fixed engineering settings differ from its declared implementation.")
+    if (set(value.get("source_sha256",{})) != set(FINE_ORIGINAL_SOURCES)
+            or any(not re.fullmatch(r"[0-9a-f]{64}",str(digest)) for digest in value.get("source_sha256",{}).values())
+            or not re.fullmatch(r"[0-9a-f]{64}",str(value.get("protocol_id","")))):
+        raise SyncError("V9 must bind exactly its nineteen frozen runtime sources.")
+    json.dumps(value,allow_nan=False)
+
+
+def _fine_helpers(path):
+    """Load only the reviewed plotter's stdlib I/O/assessment helpers, no SDK."""
+    raw = path.read_bytes()
+    before = hashlib.sha256(raw).hexdigest()
+    spec = importlib.util.spec_from_file_location("fine_publication_pure_helpers",path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    # Execute exactly the hashed source, bypassing both cached bytecode reads
+    # and writes inside an otherwise immutable research bundle.
+    exec(compile(raw.decode("utf-8"),str(path),"exec"),module.__dict__)
+    if hashlib.sha256(path.read_bytes()).hexdigest() != before:
+        raise SyncError("V9 post-hoc helper changed while being loaded.")
+    return module
+
+
+def fine_source_bytes(original_file, raw):
+    """Only the reviewed robot resource paths change; preserve line endings."""
+    if original_file != FINE_ROBOT_SOURCE:
+        return raw
+    text = raw.decode("utf-8")
+    newline = "\r\n" if b"\r\n" in raw else "\n"
+    text = _replace(text,"from pathlib import Path"+newline,"from pathlib import Path"+newline+"import os"+newline)
+    text = _replace(text,"FRANKA_PACKAGE = Path(r'C:\\omninverse\\exts\\isaacsim.asset.importer.urdf\\data\\urdf\\robots\\franka_description')",
+                    "FRANKA_PACKAGE = Path(os.environ['ISAAC_SIM_ROOT']) / 'exts' / 'isaacsim.asset.importer.urdf' / 'data' / 'urdf' / 'robots' / 'franka_description'")
+    text = _replace(text,"FRANKA_CACHE = Path(r'C:\\omninverse\\assets\\robot_testtube_pour\\franka')",
+                    "FRANKA_CACHE = Path(__file__).resolve().parents[3] / 'assets' / 'robot_testtube_pour' / 'franka'")
+    return text.encode("utf-8")
+
+
+def _fine_publication_gate(root):
+    """Reject partial V9 before decoding a journal or selecting any results."""
+    root = Path(root).resolve()
+    run = root/FINE_RUN
+    summary_path = run/"summary.json"
+    if not summary_path.is_file():
+        raise SyncError("V9 publication is premature: complete 42-case summary is absent; no test data was decoded.")
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    if summary.get("complete") is not True or summary.get("counts") != {"train":18,"validation":6,"test":18}:
+        raise SyncError("V9 publication requires the entire 18/6/18 experiment before test decoding.")
+    audit_path = run/"fine_run_audit.json"
+    if not audit_path.is_file():
+        raise SyncError("V9 publication needs the completed independent final artifact audit.")
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    if (audit.get("artifact_integrity_verified") is not True or audit.get("all_failures_retained") is not True
+            or audit.get("episodes_audited") != 42 or audit.get("raw_action_trace_count") != 42
+            or audit.get("budgets") != {"train":18,"validation":6,"test":18,"total":42}
+            or audit.get("source_count") != 19 or audit.get("input_count") != 6
+            or audit.get("summary_sha256") != hashlib.sha256(summary_path.read_bytes()).hexdigest()
+            or audit.get("journal_sha256") != hashlib.sha256((run/"episodes.jsonl").read_bytes()).hexdigest()):
+        raise SyncError("V9 final audit does not bind this complete experiment's bytes.")
+    report_path = PROJECT_ROOT/FINE_REPORT
+    if not report_path.is_file():
+        raise SyncError("V9 complete selected report must be prepared and reviewed before source/model publication.")
+    report_text = report_path.read_text(encoding="utf-8")
+    if re.search(r"[A-Za-z]:[\\/]|file://|127\.0\.0\.1|AppData",report_text):
+        raise SyncError("Private absolute locations in V9 selected report.")
+    report = json.loads(report_text)
+    if (report.get("schema_version") != 1 or report.get("kind") != "curated_fine_particle_v9_live_CEM_results"
+            or report.get("complete") is not True or report.get("counts") != {"train":18,"validation":6,"test":18,"total":42}
+            or report.get("protocol_id") != audit["protocol_id"]):
+        raise SyncError("V9 selected report schema/identity/budget changed.")
+    tools = report["publication"]["tool_mapping"]
+    if len(tools) != 4 or {entry["original_file"] for entry in tools} != set(FINE_TOOL_SOURCES):
+        raise SyncError("V9 post-hoc tools must be separate from the nineteen runtime sources.")
+    for entry in tools:
+        path = publication_source(root,entry["original_file"])
+        expected = hashlib.sha256(path.read_bytes()).hexdigest()
+        if (entry["original_sha256"] != expected or entry["published_sha256"] != expected
+                or entry["published_file"] != FINE_TOOL_SOURCES[entry["original_file"]]):
+            raise SyncError("V9 post-hoc tool bytes/mapping changed.")
+    helper = _fine_helpers(publication_source(root,"projects/pour_policy_training_v9/plot_fine_results.py"))
+    data = helper.load_run(run)
+    protocol = data["protocol"]
+    if set(protocol["source_sha256"]) != set(FINE_ORIGINAL_SOURCES):
+        raise SyncError("V9 runtime source set differs from the reviewed nineteen files.")
+    if protocol["source_sha256"][FINE_ROBOT_SOURCE] != FINE_ROBOT_ORIGINAL_SHA256:
+        raise SyncError("V9 robot source version differs from the reviewed two-path conversion.")
+    selected_protocol = report["protocol_summary"]
+    if (selected_protocol["source_sha256"] != protocol["source_sha256"]
+            or {entry["original_file"]:entry["sha256"] for entry in selected_protocol["input_roles"].values()}
+            != protocol["input_sha256"]):
+        raise SyncError("V9 selected source/input-role provenance differs from its frozen protocol.")
+    mapping = report["publication"]["source_mapping"]
+    if len(mapping) != 19 or {entry["original_file"] for entry in mapping} != set(FINE_ORIGINAL_SOURCES):
+        raise SyncError("V9 source mapping must preserve the full effective module layout.")
+    for entry in mapping:
+        original = entry["original_file"]
+        expected = protocol["source_sha256"][original]
+        alias = FINE_RUN+"/source_snapshot/"+original
+        raw = publication_source(root,alias).read_bytes()
+        if (entry["original_sha256"] != expected
+                or entry["published_sha256"] != hashlib.sha256(fine_source_bytes(original,raw)).hexdigest()
+                or entry["published_file"] != FINE_RUNTIME_SOURCES[alias]
+                or hashlib.sha256(raw).hexdigest() != expected):
+            raise SyncError("V9 source archive differs from its frozen bytes or the single reviewed robot path derivative.")
+        if original == FINE_ROBOT_SOURCE and entry["published_sha256"] != FINE_ROBOT_PUBLISHED_SHA256:
+            raise SyncError("V9 robot public path derivative differs from the reviewed bytes.")
+    robot_sha = protocol["source_sha256"][FINE_ROBOT_SOURCE].encode()
+    if any(robot_sha in publication_source(root,FINE_RUN+"/source_snapshot/"+name).read_bytes() for name in FINE_ORIGINAL_SOURCES):
+        raise SyncError("A runtime source directly pins robot.py; stop before deriving its public paths.")
+    if report["all_cases"] != data["rows"]:
+        raise SyncError("V9 selected cases differ from the complete audited journal.")
+    for source,(destination,role) in FINE_MODEL_SOURCES.items():
+        raw = publication_source(root,source).read_bytes()
+        _validate_fine_checkpoint(raw.decode("utf-8"),role)
+        entry = report["models"][role]
+        if (entry["file"] != destination or entry["sha256"] != hashlib.sha256(raw).hexdigest()
+                or entry["sha256"] != data["freeze"]["models_sha256"][role+"_frozen.json"]):
+            raise SyncError("V9 research model bytes/mapping differ from its pre-test freeze.")
+    return data,report
+
+
 def _transform_pivot_source(relative, text):
     """Archive failed research with original pins, not an open-box rerun claim."""
     if relative in PIVOT_UNCHANGED_SOURCES:
@@ -563,7 +749,15 @@ def _transform_fast_source(relative, text):
 
 def transform(relative, text):
     """Return the fixed publication variant; never evaluate imported scripts."""
-    if relative in DEVELOPMENT_SOURCES:
+    if relative in FINE_RAW_SOURCES:
+        if relative in FINE_RUNTIME_SOURCES:
+            original_file = relative.removeprefix(FINE_RUN+"/source_snapshot/")
+            text = fine_source_bytes(original_file,text.encode("utf-8")).decode("utf-8")
+        if relative in FINE_MODEL_SOURCES:
+            _validate_checkpoint(relative,text)
+        # Exact frozen runtime and reviewed post-hoc tools. All source imports,
+        # literal hashes and calculations retain their original raw bytes.
+    elif relative in DEVELOPMENT_SOURCES:
         # Reference sources only: keep source guards/calculations unchanged.
         # The manifest binds the raw capture and this LF-only derivative.
         if "\r" in text:
@@ -802,7 +996,7 @@ def transform(relative, text):
         raise SyncError(f"Unmapped machine-specific path or username in {relative}.")
     if relative.endswith(".py"):
         ast.parse(text, filename=relative)
-    return text if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES, *DEVELOPMENT_SOURCES) else text.rstrip() + "\n"
+    return text if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES, *DEVELOPMENT_SOURCES, *FINE_RAW_SOURCES) else text.rstrip() + "\n"
 
 
 def _fast_publication_gate(root):
@@ -915,6 +1109,10 @@ def prepare_sync(workspace):
     """Validate the entire allowlist before returning any content to write."""
     root = Path(workspace).expanduser().resolve()
     development_archive_manifest(root)
+    fine_data,fine_report = _fine_publication_gate(root)
+    fine_expected = {FINE_RUN+"/source_snapshot/"+name:digest for name,digest in fine_data["protocol"]["source_sha256"].items()}
+    fine_expected.update({entry["original_file"]:entry["original_sha256"] for entry in fine_report["publication"]["tool_mapping"]})
+    fine_expected.update({source:fine_data["freeze"]["models_sha256"][role+"_frozen.json"] for source,(_,role) in FINE_MODEL_SOURCES.items()})
     prepared = []
     precision_source_manifest = None
     fast_summary = None
@@ -925,9 +1123,11 @@ def prepare_sync(workspace):
             raise SyncError(f"Missing or unsafe allowlisted source: {relative}.")
         # Model bytes retain their original line endings so the published
         # checkpoint has exactly the same SHA as the frozen local artifact.
-        original = (source.read_bytes().decode("utf-8") if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES)
+        original = (source.read_bytes().decode("utf-8") if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES, *FINE_RAW_SOURCES)
                     else source.read_text(encoding="utf-8"))
         try:
+            if relative in FINE_RAW_SOURCES and hashlib.sha256(original.encode("utf-8")).hexdigest() != fine_expected[relative]:
+                raise SyncError("V9 source/model bytes changed during publication preparation.")
             if relative in PIVOT_MODEL_SOURCES:
                 if pivot_summary is None:
                     pivot_summary = _pivot_publication_gate(root)
@@ -1029,6 +1229,8 @@ def prepare_sync(workspace):
             raise SyncError(f"{relative}: {error}") from error
         destination_relative = SOURCE_TO_DEST.get(relative, relative)
         prepared.append((destination_relative, published.encode("utf-8")))
+    prepared.extend(((FINE_PUBLIC+".gitattributes",FINE_ATTRIBUTES.encode("utf-8")),
+                     (FINE_PUBLIC+"README.md",FINE_README.encode("utf-8"))))
     return prepared
 
 

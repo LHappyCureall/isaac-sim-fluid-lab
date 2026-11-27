@@ -14,6 +14,12 @@ def _published_file(relative):
     return path
 
 
+def _bundle_files(relative):
+    """Keep strict source allowlists while ignoring only ordinary local pyc."""
+    return {path.relative_to(ROOT).as_posix() for path in (ROOT/relative).rglob("*")
+            if path.is_file() and not (path.parent.name == "__pycache__" and path.suffix == ".pyc")}
+
+
 def _check_ai_results():
     report = json.loads(_published_file("results/ai_training.json").read_text(encoding="utf-8"))
     json.dumps(report, allow_nan=False)
@@ -784,7 +790,7 @@ def _check_development_archive():
             py_count += 1
         expected.add(entry["published_file"])
     assert py_count == 18
-    actual = {path.relative_to(ROOT).as_posix() for path in (ROOT/sync.DEVELOPMENT_PUBLIC).rglob("*") if path.is_file()}
+    actual = _bundle_files(sync.DEVELOPMENT_PUBLIC)
     assert actual == expected, "Only reviewed self-written reference text belongs in this archive."
     assert hashlib.sha256(_published_file(sync.DEVELOPMENT_PUBLIC+"README.md").read_bytes()).hexdigest() == sync.DEVELOPMENT_README_SHA256
     for source, binding in sync.ARCHIVED_SOURCE_BINDINGS.items():
@@ -876,6 +882,153 @@ def _check_development_archive():
     _published_file("docs/DEVELOPMENT_PILOTS_20261124.md")
 
 
+def _check_fine_v9_results():
+    """Consistency of the finished audited V9 study, never new physics proof."""
+    import re
+    spec = importlib.util.spec_from_file_location("release_fine_v9_sync",ROOT/"tools/sync_from_workspace.py")
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    report = json.loads(_published_file(sync.FINE_REPORT).read_text(encoding="utf-8"))
+    json.dumps(report,allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_fine_particle_v9_live_CEM_results"
+    assert report["complete"] is True and report["counts"] == {"train":18,"validation":6,"test":18,"total":42}
+    assert report["gui_deployment"] is False
+    protocol,audit,freeze = report["protocol_summary"],report["audit"],report["freeze"]
+    assert audit["artifact_integrity_verified"] is audit["all_failures_retained"] is True
+    assert audit["episodes_audited"] == audit["raw_action_trace_count"] == 42
+    assert audit["budgets"] == report["counts"]
+    assert audit["source_count"] == 19 and audit["input_count"] == 6
+    assert audit["protocol_id"] == report["protocol_id"] == freeze["protocol_id"]
+    assert set(protocol["source_sha256"]) == set(sync.FINE_ORIGINAL_SOURCES)
+    assert len(protocol["input_sha256"]) == 6
+    assert protocol["user_criterion"] == {"deadline_s":24.,"relative_error":.001,"max_all_label_spill_particles":1,
+                                         "full_original_home_and_12_quiet_frames":True}
+    assert protocol["initial_particle_count"] == 11625 and protocol["initial_source_particles"] == 2880
+    assert abs(protocol["particle_ml"]-.019683) < 1e-12
+    assert abs(protocol["initial_source_ml"]-56.68704) < 1e-8
+    sources = report["publication"]["source_mapping"]
+    assert len(sources) == 19 and {entry["original_file"] for entry in sources} == set(sync.FINE_ORIGINAL_SOURCES)
+    for entry in sources:
+        assert entry["original_sha256"] == protocol["source_sha256"][entry["original_file"]]
+        if entry["original_file"] != sync.FINE_ROBOT_SOURCE:
+            assert entry["published_sha256"] == entry["original_sha256"]
+        else:
+            assert entry["original_sha256"] == sync.FINE_ROBOT_ORIGINAL_SHA256
+            assert entry["published_sha256"] == sync.FINE_ROBOT_PUBLISHED_SHA256
+        alias = sync.FINE_RUN+"/source_snapshot/"+entry["original_file"]
+        assert entry["published_file"] == sync.FINE_RUNTIME_SOURCES[alias]
+        raw = _published_file(entry["published_file"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == entry["published_sha256"]
+        assert not re.search(rb"[A-Za-z]:[\\/]|file://|127\.0\.0\.1|AppData",raw)
+        compile(raw.decode("utf-8"),entry["published_file"],"exec")
+    tools = report["publication"]["tool_mapping"]
+    assert len(tools) == 4 and {entry["original_file"] for entry in tools} == set(sync.FINE_TOOL_SOURCES)
+    for entry in tools:
+        assert entry["published_file"] == sync.FINE_TOOL_SOURCES[entry["original_file"]]
+        assert entry["original_sha256"] == entry["published_sha256"]
+        raw = _published_file(entry["published_file"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == entry["published_sha256"]
+        compile(raw.decode("utf-8"),entry["published_file"],"exec")
+    assert _published_file(sync.FINE_PUBLIC+".gitattributes").read_bytes() == sync.FINE_ATTRIBUTES.encode()
+    assert _published_file(sync.FINE_PUBLIC+"README.md").read_bytes() == sync.FINE_README.encode()
+    helper = sync._fine_helpers(_published_file(sync.FINE_TOOL_SOURCES["projects/pour_policy_training_v9/plot_fine_results.py"]))
+    rows = report["all_cases"]
+    assert len(rows) == 42 and len({row["episode_id"] for row in rows}) == 42
+    assert {stage:sum(row["stage"] == stage for row in rows) for stage in ("train","validation","test")} == {
+        "train":18,"validation":6,"test":18}
+    for row in rows:
+        assert row["assessment"] == helper.task_assessment(row)
+        assert (row["result"]["target_ml"],row["result"]["seed"]) == (row["target_ml"],row["seed"])
+        helper.near(row["result"]["received_ml"]-row["target_ml"],row["result"]["error_ml"])
+        if row["stage"] == "test":
+            from datetime import datetime
+            assert datetime.fromisoformat(row["started_at_utc"]) > datetime.fromisoformat(freeze["frozen_at_utc"])
+    generations = report["generations"]
+    assert len(generations) == 2
+    candidates = []
+    for number,generation in enumerate(generations):
+        assert generation["generation"] == number and len(generation["candidates"]) == 3
+        for index,candidate in enumerate(generation["candidates"]):
+            selected = [row for row in rows if row["stage"] == "train" and row["episode_id"].startswith(f"train_candidate_g{number}c{index}_")]
+            helper.conditions(selected,protocol["train_seeds"],candidate["multiplier"],"candidate")
+            helper.check_metrics(candidate["metrics"],selected)
+            assert candidate["key"] == helper.selection_key(selected)
+            candidates.append(candidate)
+    best = min((candidate for candidate in candidates if candidate["key"][0] < 2),key=lambda c:c["key"])
+    validation = {role:[row for row in rows if row["stage"] == "validation" and row["role"] == role]
+                  for role in ("candidate","baseline")}
+    for role in ("candidate","baseline"):
+        helper.conditions(validation[role],protocol["validation_seeds"],best["multiplier"] if role == "candidate" else 1.,role)
+        helper.check_metrics(report["validation"]["original_metrics"][role],validation[role])
+    recommended = "candidate" if helper.selection_key(validation["candidate"]) <= helper.selection_key(validation["baseline"]) else "baseline"
+    assert report["recommended_role"] == freeze["recommendation"] == recommended
+    assert freeze["validation_only_selection"] is True and freeze["test_used_for_selection"] is False
+    for role in ("candidate","baseline"):
+        selected = [row for row in rows if row["stage"] == "test" and row["role"] == role]
+        helper.conditions(selected,protocol["test_seeds"],best["multiplier"] if role == "candidate" else 1.,role)
+        helper.check_metrics(report["test"]["original_metrics"][role],selected)
+    assert report["task_passed"] is all(row["assessment"]["feasible"] for row in rows if row["stage"] == "test" and row["role"] == recommended)
+
+    def descriptive(recorded,selected):
+        actual = helper.descriptive(selected)
+        mapped = {"n":"n","mae_ml":"mae_ml","worst_absolute_error_ml":"worst_ml",
+            "dose_only_success_count":"dose_passed","joint_task_success_count":"feasible",
+            "valid_evidence_count":"valid","peak_all_label_spill_particles":"peak_all_label_spill_including_post",
+            "mean_action_physical_seconds_including_home_and_quiet":"mean_physical_s",
+            "mean_action_wall_seconds":"mean_action_wall_seconds",
+            "mean_case_wall_seconds_including_post_and_overhead":"mean_case_wall_seconds_including_post"}
+        for name,key in mapped.items():
+            helper.near(recorded[name],actual[key])
+        assert recorded["signed_errors_ml"] == actual["signed_errors_ml"]
+        assert recorded["old_footer_success_is_not_the_strict_percentage_task"] is True
+
+    for stage in ("validation","test"):
+        for role in ("candidate","baseline"):
+            descriptive(report[stage]["metrics"][role],[row for row in rows if row["stage"] == stage and row["role"] == role])
+    per_target = report["per_target"]
+    assert len(per_target) == 3 and {entry["target_ml"] for entry in per_target} == {20,30,40}
+    for entry in per_target:
+        assert entry["tolerance_ml"] == entry["target_ml"]*.001
+        for role in ("candidate","baseline"):
+            descriptive(entry[role],[row for row in rows if row["stage"] == "test" and row["role"] == role and row["target_ml"] == entry["target_ml"]])
+    pairs = report["test"]["paired_cases"]
+    assert len(pairs) == 9 and {(pair["target_ml"],pair["seed"]) for pair in pairs} == {
+        (target,seed) for target in (20,30,40) for seed in protocol["test_seeds"]}
+    by_id = {row["episode_id"]:row for row in rows}
+    for pair in pairs:
+        assert pair["recommended_result_role"] == recommended
+        for role in ("candidate","baseline"):
+            view = pair[role]
+            row = by_id[view["case_id"]]
+            assert (row["stage"],row["role"],row["target_ml"],row["seed"]) == ("test",role,pair["target_ml"],pair["seed"])
+            helper.near(view["received_ml"],row["result"]["received_ml"])
+            helper.near(view["signed_error_ml"],row["result"]["error_ml"])
+            assert view["assessment"] == row["assessment"]
+    for source,(destination,role) in sync.FINE_MODEL_SOURCES.items():
+        entry = report["models"][role]
+        assert entry["file"] == destination
+        raw = _published_file(destination).read_bytes()
+        sync._validate_fine_checkpoint(raw.decode("utf-8"),role)
+        assert hashlib.sha256(raw).hexdigest() == entry["sha256"] == freeze["models_sha256"][role+"_frozen.json"]
+        model = json.loads(raw)
+        expected_role = "candidate" if role == "candidate" else recommended
+        assert model["implementation"] == expected_role
+        assert model["source_sha256"] == protocol["source_sha256"] and model["protocol_id"] == report["protocol_id"]
+        assert model["coarse_speed_multiplier"] == (best["multiplier"] if expected_role == "candidate" else 1.)
+    # Exact bundle allowlist: reference sources, tools, two research models and
+    # local byte-preservation/provenance metadata; no raw/NPZ/SDK/default entry.
+    expected = {entry["published_file"] for entry in (*sources,*tools)}
+    expected.update(entry["file"] for entry in report["models"].values())
+    expected.update((sync.FINE_PUBLIC+".gitattributes",sync.FINE_PUBLIC+"README.md"))
+    assert _bundle_files(sync.FINE_PUBLIC) == expected
+    text = json.dumps(report,ensure_ascii=False)
+    assert not re.search(r"[A-Za-z]:[\\/]|file://|127\.0\.0\.1|AppData",text)
+    assert not (ROOT/"assets/robot_testtube_pour/policy/fine_v9.json").exists()
+    for entry in report.get("plots",{}).values():
+        raw = _published_file(entry["file"]).read_bytes()
+        assert raw.startswith(b"\x89PNG\r\n\x1a\n") and hashlib.sha256(raw).hexdigest() == entry["sha256"]
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -913,10 +1066,12 @@ def main():
     _check_correction_12s_results()
     _check_sync_source_bindings()
     _check_development_archive()
+    _check_fine_v9_results()
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
     print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
     print("Development archive: 19 reference files, 192 committed cases + 3 partial attempts; no new physics acceptance.")
+    print("V9: complete audited 18/6/18 study, frozen raw research sources/models; no default GUI deployment.")
 
 
 if __name__ == "__main__":
