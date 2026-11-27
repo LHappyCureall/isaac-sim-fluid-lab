@@ -1,0 +1,667 @@
+{
+  "complete": true,
+  "kind": "adaptive_coarse_prefix_calibration_v13",
+  "record_created_at_utc": "2026-11-27T15:56:52.105782+00:00",
+  "actual_started_at_utc": "2026-11-27T15:47:28.939702+00:00",
+  "actual_completed_at_utc": "2026-11-27T15:51:57.345658+00:00",
+  "protocol_id": "c5eaf9b6a2f8e6ac9823182e20936ccf31e6ecd287705075b3bd5c5483cd47d4",
+  "independent_audit_raw_sha256": "46e06a157efb04d591a410a57002dda44ee58642934b2cc9e42d1ce834b935ed",
+  "audit_tool_sha256": "d0e6acc33e93baa57edb6e8b689f79d7b5d251821bc20a8167b192ee49d9aec6",
+  "top_artifact_sha256": {
+    "protocol.json": "38faa9f473ee9cfc70ed980a6d6a0897abba4ade7347104084d75383649804d0",
+    "summary.json": "1e0e9e2a708c1ea952d6f6124eaafd0f91089425342ce002f877344a88aab190",
+    "job_state.json": "39f512ba73fd2bc3cf9f836ec50a22b289ea037d46a1788fe2f0a93bbafe3d70",
+    "episodes.jsonl": "5ae82d3adc06a1f18dc175bdb18e6a8c1101ffbc94ca5e4dc1e29ef7146248e8",
+    "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "matrix.json": "a5bba7bfa6e107218b1294641cd3aee810b83a69f00ed258cb7c3fb8fbc8d83c",
+    "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d"
+  },
+  "completed_sidecar_sha256": {
+    "prefix_t25_oN05_s193101": "e479564221df04f2d8c9d053d11bfc2452d4829eb53ee7f139c706919c7bb359",
+    "prefix_t25_oN10_s193101": "b244550ffe720c4bc165a258bd4900a68b8dc2a8f5fb86246ff39aa95dac37e3",
+    "prefix_t35_oZ00_s193101": "af2244141b12a77e2b56a0b963b503c109ffc88cd06dc6e6daf1d69164c5abd1",
+    "prefix_t35_oP05_s193101": "85ca102f62923174507a23da8a7e26c03e6c815d1a004f270b98450211ea79e1",
+    "prefix_t40_oP10_s193101": "3a0cc0470ec75e23b7c2e28e8e66c26c862482d4f896d40536f43ced4a79eb01",
+    "prefix_t40_oP15_s193101": "ad98449a8dcccb1f1f30205336d85f751334364a20df73d97eed52a19247fe14",
+    "prefix_t25_oN05_s193102": "659c34aa4140d4b1a82971420583675f7b16250a5900775bb21cccb2e8715afb",
+    "prefix_t25_oN10_s193102": "54d0ee0c891f544c49245bcd4c2406a94ed4b04ce8799f955071e1f2871a38d1",
+    "prefix_t35_oZ00_s193102": "80e10afd597ccd2de8a2357bdca7d3e1ee312ec76095a4b88c0781fdb56455db",
+    "prefix_t35_oP05_s193102": "1b788588426fed1ea2cedb1d22513c1ed6dad1fab97c8f6e1f0077afa8866dc1",
+    "prefix_t40_oP10_s193102": "4bede7c808b16e79284f5ac8dea54ec8148662fd0283b00dd619d8c3fbe53917",
+    "prefix_t40_oP15_s193102": "37347fd1a1d1e3f1a9cf67d955f32fa0bf8ccb72369e19b1318cedfdbb897cd7"
+  },
+  "raw_artifact_sha256": {
+    "traces/prefix_t25_oN05_s193101.steps.jsonl.gz": "105a42e91629cc2d24f0220177f19e43a87a067dfb566d7423a4bc90b5ed097e",
+    "traces/prefix_t25_oN05_s193101.post.jsonl.gz": "2a4da84ba1cf40d8a606d07415807aa0146162fb0a342953ecac5868664dc565",
+    "traces/prefix_t25_oN10_s193101.steps.jsonl.gz": "112ed43374d3c83d5c301af9e057a44114d46951c77010a4edc928dbef6732d4",
+    "traces/prefix_t25_oN10_s193101.post.jsonl.gz": "2e1b8912ab80f322ff76f83a6d9d8c7f7e5c8e574c5d5f4ca39e1e919539756c",
+    "traces/prefix_t35_oZ00_s193101.steps.jsonl.gz": "a8d343e594316d25a1c55351ababff35737d895fc46d732fdf6c73e99e323ce9",
+    "traces/prefix_t35_oZ00_s193101.post.jsonl.gz": "60eed46a55d3dfc27f764beef857108c94974facef1a618869d9ad766016092d",
+    "traces/prefix_t35_oP05_s193101.steps.jsonl.gz": "4da8c610a3cf8dbcf5cac3b51cab842c6afd2ee4d0944ea404dcc31dc222bf8a",
+    "traces/prefix_t35_oP05_s193101.post.jsonl.gz": "2c3e9fb3f18f94919d6575ca62cce94a7831b8fe5bcb779e44d7baf255c6596c",
+    "traces/prefix_t40_oP10_s193101.steps.jsonl.gz": "e49b0e7492687a5f49ddb16dcd7df8fdae79b836e0311923015aba22bc3aaf84",
+    "traces/prefix_t40_oP10_s193101.post.jsonl.gz": "7284eb0abb10b4313b7acf9d86a5e369078f5db49405e18a98d3dbd62fd9f4c0",
+    "traces/prefix_t40_oP15_s193101.steps.jsonl.gz": "41382826460c679bbb9cf35ad7556a53853e5290cae94909360ac4ddf5755282",
+    "traces/prefix_t40_oP15_s193101.post.jsonl.gz": "966cba169dbefe5db0c58166f73b538040a4dc3345d17b5b83e73d148a8ebb7f",
+    "traces/prefix_t25_oN05_s193102.steps.jsonl.gz": "82768448764fbacbb1eadb61e500c623ec3af0e44c109046b216c61559893854",
+    "traces/prefix_t25_oN05_s193102.post.jsonl.gz": "fc4ea35b912c9aacce9fa2f7b83a7308f7841131cd07cfe38a9138360a0711dd",
+    "traces/prefix_t25_oN10_s193102.steps.jsonl.gz": "790137b6158b5be71db2c9319b7921852ebed04190211cc1088c9db986a00d12",
+    "traces/prefix_t25_oN10_s193102.post.jsonl.gz": "b959ced3440800ffacdf6ad355c9412c683c806003b60eb1ee3252382bc8f701",
+    "traces/prefix_t35_oZ00_s193102.steps.jsonl.gz": "d0620230ca6803f5595a0fe730011a229cf470bae125b02dcb2f8d9d3774ebd0",
+    "traces/prefix_t35_oZ00_s193102.post.jsonl.gz": "0b16b3507f8f83796a563e2f4458bd1a2091f4c9b057e739b45d0f2a6512a1fc",
+    "traces/prefix_t35_oP05_s193102.steps.jsonl.gz": "435ff94b8fa11fd1cb51f07fcdcc96807bebe892f8287e1b9404bfc688573705",
+    "traces/prefix_t35_oP05_s193102.post.jsonl.gz": "81331e2de33b9baf2927c5d5c4cd56de2d7d4763b1b36d3bf8e3d367965bfe79",
+    "traces/prefix_t40_oP10_s193102.steps.jsonl.gz": "36580cd641ac251d6d0f018ea2987bda6d7da87f69362d32b1ce549c1df8b73b",
+    "traces/prefix_t40_oP10_s193102.post.jsonl.gz": "e351b12821825192ee134ad5fb9908225a3990f19a043b7e63376de021e622dd",
+    "traces/prefix_t40_oP15_s193102.steps.jsonl.gz": "b565381099b3f6e169851f98f0a5a3352f3f02f967608fc3534924b87a7545c5",
+    "traces/prefix_t40_oP15_s193102.post.jsonl.gz": "729963ed99139afdc9357ecb0de10388f8eddb1cb187d0af80e2693d7b2acb41"
+  },
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/prefix_control.py": "7fd23b7d35bc1de8b181a8a2784231b0c6812a6a426211a8a000cb0f83dea699",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_adaptive_learning/run_prefix_calibration.py": "d9b892bbea6dd392f06c6b16c2e88de1ccaa1f4d5c7cf2ce2efdd1fbaa67bccf"
+  },
+  "input_fingerprints_sha256": [
+    "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+    "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+    "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae",
+    "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40"
+  ],
+  "gui_policy_sha256_unchanged": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2"
+  },
+  "fixed_coarse_parameters": {
+    "prepare_fraction": 1.0,
+    "dose_tilt_deg_s": 25.6,
+    "return_fraction": 1.0,
+    "tail_lead_s": 0.26,
+    "stop_bias_ml": 10.0,
+    "max_dose_u_accel": 6.0
+  },
+  "task_contract": {
+    "deadline_physical_s": 24.0,
+    "relative_tolerance": 0.001,
+    "max_peak_spill_particles": 1,
+    "full_original_home_quiet_frames": 12,
+    "post_observation_s": 2.0
+  },
+  "cases": [
+    {
+      "episode_id": "prefix_t25_oN05_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 25,
+      "internal_control_target_ml": 24.5,
+      "control_target_offset_ml": -0.5,
+      "received_ml": 25.489485000000002,
+      "signed_error_ml": 0.48948500000000195,
+      "shortfall_ml": -0.48948500000000195,
+      "physical_action_seconds": 4.683333333333334,
+      "wall_seconds_including_post": 20.674282899941318,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.025,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 2.9833333333333334,
+        "received_ml": 25.489485000000002,
+        "tube_remaining_ml": 31.197555000000005,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.11493975203103028
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t25_oN10_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 25,
+      "internal_control_target_ml": 24.0,
+      "control_target_offset_ml": -1.0,
+      "received_ml": 23.855796,
+      "signed_error_ml": -1.1442039999999984,
+      "shortfall_ml": 1.1442039999999984,
+      "physical_action_seconds": 4.683333333333334,
+      "wall_seconds_including_post": 19.306396699976176,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.025,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 2.9833333333333334,
+        "received_ml": 23.855796,
+        "tube_remaining_ml": 32.831244000000005,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.10832463938443938
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t35_oZ00_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 35,
+      "internal_control_target_ml": 35.0,
+      "control_target_offset_ml": 0.0,
+      "received_ml": 33.87444300000001,
+      "signed_error_ml": -1.1255569999999935,
+      "shortfall_ml": 1.1255569999999935,
+      "physical_action_seconds": 4.783333333333333,
+      "wall_seconds_including_post": 20.376764700049534,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.035,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0833333333333335,
+        "received_ml": 33.87444300000001,
+        "tube_remaining_ml": 22.812597000000004,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.13735647684806931
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t35_oP05_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 35,
+      "internal_control_target_ml": 35.5,
+      "control_target_offset_ml": 0.5,
+      "received_ml": 33.87444300000001,
+      "signed_error_ml": -1.1255569999999935,
+      "shortfall_ml": 1.1255569999999935,
+      "physical_action_seconds": 4.783333333333333,
+      "wall_seconds_including_post": 20.345120400073938,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.035,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0833333333333335,
+        "received_ml": 33.87444300000001,
+        "tube_remaining_ml": 22.812597000000004,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.13735647684806931
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t40_oP10_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 40,
+      "internal_control_target_ml": 41.0,
+      "control_target_offset_ml": 1.0,
+      "received_ml": 37.20087,
+      "signed_error_ml": -2.799129999999998,
+      "shortfall_ml": 2.799129999999998,
+      "physical_action_seconds": 4.8,
+      "wall_seconds_including_post": 25.85128679999616,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 1,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.04,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.1,
+        "received_ml": 37.20087,
+        "tube_remaining_ml": 19.466487000000004,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.15942088532197027
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t40_oP15_s193101",
+      "seed": 193101,
+      "split": "development",
+      "target_ml": 40,
+      "internal_control_target_ml": 41.5,
+      "control_target_offset_ml": 1.5,
+      "received_ml": 38.834559000000006,
+      "signed_error_ml": -1.1654409999999942,
+      "shortfall_ml": 1.1654409999999942,
+      "physical_action_seconds": 4.883333333333333,
+      "wall_seconds_including_post": 26.41092920000665,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 1,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.04,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.183333333333333,
+        "received_ml": 38.834559000000006,
+        "tube_remaining_ml": 17.832798000000004,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.13597897006297546
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t25_oN05_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 25,
+      "internal_control_target_ml": 24.5,
+      "control_target_offset_ml": -0.5,
+      "received_ml": 23.993577000000002,
+      "signed_error_ml": -1.006422999999998,
+      "shortfall_ml": 1.006422999999998,
+      "physical_action_seconds": 4.7,
+      "wall_seconds_including_post": 21.942056700005196,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.025,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0,
+        "received_ml": 23.993577000000002,
+        "tube_remaining_ml": 32.693463,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.10299999982020856
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t25_oN10_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 25,
+      "internal_control_target_ml": 24.0,
+      "control_target_offset_ml": -1.0,
+      "received_ml": 23.993577000000002,
+      "signed_error_ml": -1.006422999999998,
+      "shortfall_ml": 1.006422999999998,
+      "physical_action_seconds": 4.7,
+      "wall_seconds_including_post": 21.541266199899837,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.025,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0,
+        "received_ml": 23.993577000000002,
+        "tube_remaining_ml": 32.693463,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.10299999982020856
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t35_oZ00_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 35,
+      "internal_control_target_ml": 35.0,
+      "control_target_offset_ml": 0.0,
+      "received_ml": 34.031907000000004,
+      "signed_error_ml": -0.9680929999999961,
+      "shortfall_ml": 0.9680929999999961,
+      "physical_action_seconds": 4.783333333333333,
+      "wall_seconds_including_post": 22.6042340999702,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.035,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0833333333333335,
+        "received_ml": 34.031907000000004,
+        "tube_remaining_ml": 22.655133000000003,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.13377624436000835
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t35_oP05_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 35,
+      "internal_control_target_ml": 35.5,
+      "control_target_offset_ml": 0.5,
+      "received_ml": 34.031907000000004,
+      "signed_error_ml": -0.9680929999999961,
+      "shortfall_ml": 0.9680929999999961,
+      "physical_action_seconds": 4.783333333333333,
+      "wall_seconds_including_post": 22.414255899959244,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.035,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.0833333333333335,
+        "received_ml": 34.031907000000004,
+        "tube_remaining_ml": 22.655133000000003,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.13377624436000835
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t40_oP10_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 40,
+      "internal_control_target_ml": 41.0,
+      "control_target_offset_ml": 1.0,
+      "received_ml": 37.279602000000004,
+      "signed_error_ml": -2.720397999999996,
+      "shortfall_ml": 2.720397999999996,
+      "physical_action_seconds": 4.816666666666666,
+      "wall_seconds_including_post": 23.1345394999953,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.04,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.1166666666666667,
+        "received_ml": 37.279602000000004,
+        "tube_remaining_ml": 19.407438000000003,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.14260538321234228
+      },
+      "home_additional_received_ml": 0.0
+    },
+    {
+      "episode_id": "prefix_t40_oP15_s193102",
+      "seed": 193102,
+      "split": "development",
+      "target_ml": 40,
+      "internal_control_target_ml": 41.5,
+      "control_target_offset_ml": 1.5,
+      "received_ml": 39.031389000000004,
+      "signed_error_ml": -0.9686109999999957,
+      "shortfall_ml": 0.9686109999999957,
+      "physical_action_seconds": 4.833333333333333,
+      "wall_seconds_including_post": 22.90598060004413,
+      "strict_assessment": {
+        "valid_evidence": true,
+        "dose_passed": false,
+        "full_home_within_deadline": true,
+        "maximum_all_label_spilled_particles": 0,
+        "spill_passed": true,
+        "no_late_dose_change": true,
+        "tolerance_ml": 0.04,
+        "feasible": false
+      },
+      "actual_anchor": {
+        "physical_time_s": 3.1333333333333333,
+        "received_ml": 39.031389000000004,
+        "tube_remaining_ml": 17.655651000000002,
+        "tilt_deg": 77.99999999956967,
+        "quiet_measured_seconds": 0.25,
+        "source_airborne_particles": 0,
+        "source_inside_velocity_rms_m_s": 0.15003803780248798
+      },
+      "home_additional_received_ml": 0.0
+    }
+  ],
+  "per_condition": [
+    {
+      "target_ml": 25.0,
+      "control_target_offset_ml": -0.5,
+      "internal_control_target_ml": 24.5,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        25.489485000000002,
+        23.993577000000002
+      ],
+      "minimum_received_ml": 23.993577000000002,
+      "maximum_received_ml": 25.489485000000002,
+      "shortfalls_ml": [
+        -0.48948500000000195,
+        1.006422999999998
+      ],
+      "mean_physical_action_seconds": 4.691666666666666,
+      "mean_wall_seconds_including_post": 21.308169799973257,
+      "peak_spill_particles": 0,
+      "both_actual_anchor_doses_below_goal": false
+    },
+    {
+      "target_ml": 25.0,
+      "control_target_offset_ml": -1.0,
+      "internal_control_target_ml": 24.0,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        23.855796,
+        23.993577000000002
+      ],
+      "minimum_received_ml": 23.855796,
+      "maximum_received_ml": 23.993577000000002,
+      "shortfalls_ml": [
+        1.1442039999999984,
+        1.006422999999998
+      ],
+      "mean_physical_action_seconds": 4.691666666666666,
+      "mean_wall_seconds_including_post": 20.423831449938007,
+      "peak_spill_particles": 0,
+      "both_actual_anchor_doses_below_goal": true
+    },
+    {
+      "target_ml": 35.0,
+      "control_target_offset_ml": 0.0,
+      "internal_control_target_ml": 35.0,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        33.87444300000001,
+        34.031907000000004
+      ],
+      "minimum_received_ml": 33.87444300000001,
+      "maximum_received_ml": 34.031907000000004,
+      "shortfalls_ml": [
+        1.1255569999999935,
+        0.9680929999999961
+      ],
+      "mean_physical_action_seconds": 4.783333333333333,
+      "mean_wall_seconds_including_post": 21.490499400009867,
+      "peak_spill_particles": 0,
+      "both_actual_anchor_doses_below_goal": true
+    },
+    {
+      "target_ml": 35.0,
+      "control_target_offset_ml": 0.5,
+      "internal_control_target_ml": 35.5,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        33.87444300000001,
+        34.031907000000004
+      ],
+      "minimum_received_ml": 33.87444300000001,
+      "maximum_received_ml": 34.031907000000004,
+      "shortfalls_ml": [
+        1.1255569999999935,
+        0.9680929999999961
+      ],
+      "mean_physical_action_seconds": 4.783333333333333,
+      "mean_wall_seconds_including_post": 21.37968815001659,
+      "peak_spill_particles": 0,
+      "both_actual_anchor_doses_below_goal": true
+    },
+    {
+      "target_ml": 40.0,
+      "control_target_offset_ml": 1.0,
+      "internal_control_target_ml": 41.0,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        37.20087,
+        37.279602000000004
+      ],
+      "minimum_received_ml": 37.20087,
+      "maximum_received_ml": 37.279602000000004,
+      "shortfalls_ml": [
+        2.799129999999998,
+        2.720397999999996
+      ],
+      "mean_physical_action_seconds": 4.808333333333334,
+      "mean_wall_seconds_including_post": 24.49291314999573,
+      "peak_spill_particles": 1,
+      "both_actual_anchor_doses_below_goal": true
+    },
+    {
+      "target_ml": 40.0,
+      "control_target_offset_ml": 1.5,
+      "internal_control_target_ml": 41.5,
+      "cases": 2,
+      "seeds": [
+        193101,
+        193102
+      ],
+      "received_ml": [
+        38.834559000000006,
+        39.031389000000004
+      ],
+      "minimum_received_ml": 38.834559000000006,
+      "maximum_received_ml": 39.031389000000004,
+      "shortfalls_ml": [
+        1.1654409999999942,
+        0.9686109999999957
+      ],
+      "mean_physical_action_seconds": 4.8583333333333325,
+      "mean_wall_seconds_including_post": 24.65845490002539,
+      "peak_spill_particles": 1,
+      "both_actual_anchor_doses_below_goal": true
+    }
+  ],
+  "strict_task_passes": 0,
+  "all_cases_finite_mass_home_post_valid": true,
+  "prefix_only_no_fine_dosing": true,
+  "new_goal_policy_trained": false,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false,
+  "limitation": "Paired developmental prefix measurements only; dose failures retained, not precision training or held-out acceptance."
+}

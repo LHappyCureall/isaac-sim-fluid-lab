@@ -12,6 +12,12 @@
 
 目标特征、课程采样及工程记录完整性工具仅为标准库CPU准备组件，允许按明确清单发布到 `tools/training/`；其测试通过不代表完成真实reset恢复、响应模型训练或物理验收。官方文档只链接，不复制SDK代码、第三方资产或reset数据集。
 
+V12实际响应研究另存 `research/adaptive_response_v12_20261127/`。`tools/adaptive_response_bundle.py` 按独立明确清单追加26份采集运行快照、两份后续目标评估新增运行源码、六份事后工具/CPU依赖及候选/拟合元数据两个小JSON，保留原121项同步映射。必须等60次采集、响应拟合和10次目标开发验收均完成并经独立审计，精选报告与真实三图就绪后才同步；失败结果如实归档，不代表54次留出全区间或任意连续目标通过。26份原始来源SHA和后续新增角色分别记录，只有robot.py采用既有两处资源路径转换，原始/公开SHA在source_manifest.json逐项区分；其余源码和模型保留原字节。该公开派生版本须重新准备资源并建立新协议，不能改绑SHA续跑原日志。原GUI默认、旧权重、SDK、机器人资产、NPZ及原始轨迹都不进入此新清单。该候选属于 `empirical_anchor_approach_micro_cutoff_cycle_v1` 监督响应模型，独立验证schema/来源/原目标闭区间误差与实验边界，不套用旧CEM检查点校验。
+
+V13另用 `tools/prefix_calibration_bundle.py` 追加六个明确源码/测试文件与独立 `prefix_source_manifest.json`；原V12的source_manifest字节保持不变。27份有效运行来源中25份复用V12同版依赖，只新增prefix控制器与入口，六个输入和旧GUI未改。十二个成对开发案例完整审计后可发布精选 `results/prefix_calibration_v13_20261127.json`：仅偏置粗倒控制器内部停止信号，原始目标、±0.1%验收、速度、粒子量纲和计时不变；不发布新模型，也不把粗倒前段开发数据当作精密倒水或留出测试通过。
+
+上述两份精选JSON由清单绑定原始字节SHA，`.gitattributes` 对它们禁用换行转换。发布前应核对实际暂存Git对象的SHA，不能只检查工作区文件，否则Windows换行规范化可能破坏克隆后的校验。
+
 ## 保留在本地
 
 Isaac Sim 的 `kit` / `exts` / `extscache`、第三方转换模型、物理缓存 NPZ、逐帧 PNG、完整视频、运行日志、论文 PDF、个人路径和凭据。训练的 `_cache/`、逐物理步 `JSONL` / `JSONL.GZ`、进行中的回合和模型也留在本地。可选桌面贴图通过来源清单下载，避免复制来源不明的旧木纹图片。

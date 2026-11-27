@@ -1239,6 +1239,18 @@ def prepare_sync(workspace):
         prepared.append((destination_relative, published.encode("utf-8")))
     prepared.extend(((FINE_PUBLIC+".gitattributes",FINE_ATTRIBUTES.encode("utf-8")),
                      (FINE_PUBLIC+"README.md",FINE_README.encode("utf-8"))))
+    # Independent explicit versioned allowlist; never changes any of the121
+    # established source aliases, default GUI files, or historical model pins.
+    bundle_path = PROJECT_ROOT / "tools/adaptive_response_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_adaptive_response_bundle", bundle_path)
+    bundle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bundle)
+    prepared.extend(bundle.prepare(root, PROJECT_ROOT))
+    prefix_path = PROJECT_ROOT / "tools/prefix_calibration_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_prefix_calibration_bundle", prefix_path)
+    prefix = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(prefix)
+    prepared.extend(prefix.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

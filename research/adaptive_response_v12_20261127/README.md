@@ -1,0 +1,9 @@
+# V12 real-response research bundle
+
+This is supervised identification of measured anchor-to-anchor liquid responses and a frozen goal-conditioned controller experiment, not PPO and not a default GUI upgrade. Consult [the actual results](../../docs/ADAPTIVE_RESPONSE_V12_20261127.md).
+
+The26 collection runtime sources come from the completed collection's source snapshots. The evaluation factory and learned-model implementation were frozen separately for the subsequent goal experiment; six post-hoc tools/dependencies are distinct from the runtime. source_manifest.json records roles and every original/published SHA. Only robot.py converts two machine-specific resource locations to ISAAC_SIM_ROOT and this research-tree root. All other source bytes and both model JSONs remain unchanged.
+
+The model was fitted only on declared training responses; the validation split selected its configuration. Its local empirical uncertainty and abstention are not a certified dosing guarantee. Real settled measurements still decide dose, full-home completion, deadline, peak all-label spill and late-water acceptance. The source solver remains livePBF with privileged particle-mass truth and kinematic pregrasp.
+
+No SDK, robot mesh/URDF, particle or robot-path NPZ, raw step log, reset bank or video is distributed. Prepare licensed robot resources under your ISAAC_SIM_ROOT and rebuild the required local geometric path inputs using the separately documented preparation tools. Geometry caches are robot trajectories, not fluid replay. Rebuilt inputs and the portable robot source are new versions: retain literal guards, use a fresh protocol and engineering validation, and never rebind hashes or resume the private original journals. This provenance-preserving bundle is not an out-of-box replay or a validated real-robot controller.

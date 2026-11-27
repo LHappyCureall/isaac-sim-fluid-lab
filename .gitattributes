@@ -7,3 +7,6 @@
 assets/robot_testtube_pour/policy/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # This single archived controller retains the exact frozen study bytes/SHA.
 assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# These selected reports are raw-SHA-bound by their research manifests.
+results/adaptive_response_v12_20261127.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+results/prefix_calibration_v13_20261127.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
