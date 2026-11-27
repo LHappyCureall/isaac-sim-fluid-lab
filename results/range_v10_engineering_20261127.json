@@ -1,0 +1,511 @@
+{
+  "schema_version": 1,
+  "kind": "V10_completed_development_integrity_summary",
+  "actual_case_count": 12,
+  "independent_physics_audit": false,
+  "new_simulation_run": false,
+  "formal_training_180_started": false,
+  "trained_or_deployed_model": false,
+  "source_measurement": "fixed_particle_mass_simulation_truth_not_scale_or_torque",
+  "criterion": {
+    "deadline_physical_s": 24.0,
+    "relative_error": 0.001,
+    "max_peak_all_label_spill_particles": 1
+  },
+  "reference_validator_sha256": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+  "runs": [
+    {
+      "run_id": "pilot_001",
+      "protocol_id": "a72b60f795a9be066b4e49ad61cfa0671039863cac81cd68005df9f9b28730f3",
+      "protocol_sha256": "88758d962e97b0414fd3523dc131bd3f312429eda51a9340d58f1777b2878802",
+      "journal_sha256": "184febbce8b541a67f0df2539df977534c0de15c240b0eeb425dcfe07ab13ef8",
+      "controller_sha256": "228061ceddc3b63e893092b774ff88d9bd96199c94a03ffb86896eb22c5abc39",
+      "sources": {
+        "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+        "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+        "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+        "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+        "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+        "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+        "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+        "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+        "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+        "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+        "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+        "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+        "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+        "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+        "projects/pour_policy_training_v10/range_control.py": "228061ceddc3b63e893092b774ff88d9bd96199c94a03ffb86896eb22c5abc39",
+        "projects/pour_policy_training_v10/range_env.py": "071201203094132147c38cdd60c89ca96674b75d10066be0926d4cbc5df2a89c",
+        "projects/pour_policy_training_v10/run_range_pilot.py": "5b264981ed2b4370e1f4751a9b8f189d09b1c4cf94fcac6055e66427ba7206d9"
+      },
+      "inputs": {
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+        "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+        "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"
+      },
+      "cases": [
+        {
+          "episode_id": "pilot_candidate_t20_s181101",
+          "target_ml": 20.0,
+          "seed": 181101,
+          "received_ml": 55.91940300000001,
+          "signed_error_ml": 35.91940300000001,
+          "action_physical_s": 18.916666666666668,
+          "case_wall_s": 79.79997660010122,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.02,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t20_s181101.steps.jsonl.gz": "f48be34051a3c659564ed2a192ee73296f7e7019559727d256ab306f7d969b29",
+            "traces/pilot_candidate_t20_s181101.post.jsonl.gz": "c960dc9a9afd2c0b4e0515039aad4ba742d26aac94531a578ceddc8de0b0a906"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t30_s181101",
+          "target_ml": 30.0,
+          "seed": 181101,
+          "received_ml": 56.68704000000001,
+          "signed_error_ml": 26.68704000000001,
+          "action_physical_s": 16.816666666666666,
+          "case_wall_s": 47.65760410006624,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.03,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t30_s181101.steps.jsonl.gz": "3b159d70f0801581cee3f68a70828ea4db7e2025fe1b1a3dc7c09a5ddb0d867d",
+            "traces/pilot_candidate_t30_s181101.post.jsonl.gz": "af5c851a525d24addd6dcf14094988973af05ba6c78f98aa2bc92044057dd706"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t40_s181101",
+          "target_ml": 40.0,
+          "seed": 181101,
+          "received_ml": 56.68704000000001,
+          "signed_error_ml": 16.68704000000001,
+          "action_physical_s": 17.766666666666666,
+          "case_wall_s": 46.23026119999122,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.04,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t40_s181101.steps.jsonl.gz": "5fefcfcfec97c5f1a637cb4d10e2ba29aa7acd88ae0653c5d21f904b58ab55cd",
+            "traces/pilot_candidate_t40_s181101.post.jsonl.gz": "4f704e9d894752df790ff555aad97b08543999cd1c4258615525b661b6ad07b4"
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "pilot_002",
+      "protocol_id": "7b6c41e471c4461e76731a7318035f24c701c41d5d9fde03a07c1df38e8ecc13",
+      "protocol_sha256": "f685c934a4843dea40901913d6192f5b0bfe5d596bd23db8b1c71b620615c26d",
+      "journal_sha256": "93fafac9c0cbd9fbd16ec9ee732874836d74587196105bf885e7e43e74c0aa19",
+      "controller_sha256": "036513cf0466fb4b76ff23233f5931dd3f7c2528bd1e397c3ea1fc4da84e7e30",
+      "sources": {
+        "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+        "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+        "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+        "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+        "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+        "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+        "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+        "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+        "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+        "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+        "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+        "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+        "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+        "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+        "projects/pour_policy_training_v10/range_control.py": "036513cf0466fb4b76ff23233f5931dd3f7c2528bd1e397c3ea1fc4da84e7e30",
+        "projects/pour_policy_training_v10/range_env.py": "071201203094132147c38cdd60c89ca96674b75d10066be0926d4cbc5df2a89c",
+        "projects/pour_policy_training_v10/run_range_pilot.py": "5b264981ed2b4370e1f4751a9b8f189d09b1c4cf94fcac6055e66427ba7206d9"
+      },
+      "inputs": {
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+        "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+        "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"
+      },
+      "cases": [
+        {
+          "episode_id": "pilot_candidate_t20_s181101",
+          "target_ml": 20.0,
+          "seed": 181101,
+          "received_ml": 19.230291,
+          "signed_error_ml": -0.7697089999999989,
+          "action_physical_s": 23.833333333333332,
+          "case_wall_s": 63.698651000042446,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.02,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t20_s181101.steps.jsonl.gz": "fc868bd8af2649b3d55aedcaf500b7bf0254719a0a5bdde3a4ce2e04bab7e052",
+            "traces/pilot_candidate_t20_s181101.post.jsonl.gz": "cd79e3835266e8c230777dd5cf962207103f88b4d6c420fb71b9237411b29259"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t30_s181101",
+          "target_ml": 30.0,
+          "seed": 181101,
+          "received_ml": 28.796229000000004,
+          "signed_error_ml": -1.2037709999999961,
+          "action_physical_s": 23.766666666666666,
+          "case_wall_s": 63.72351610008627,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.03,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t30_s181101.steps.jsonl.gz": "8452b625a00d9d6df29869ca8b96e123803a1c5e1156ee98508aa3daf1d4ba1b",
+            "traces/pilot_candidate_t30_s181101.post.jsonl.gz": "f6fd416bdfefce732fca7843faa47a708d78b353e13aba456b5408d55523b9b2"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t40_s181101",
+          "target_ml": 40.0,
+          "seed": 181101,
+          "received_ml": 37.181187,
+          "signed_error_ml": -2.8188129999999987,
+          "action_physical_s": 23.9,
+          "case_wall_s": 64.85113840003032,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.04,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t40_s181101.steps.jsonl.gz": "592a0d7e36744c0567560d581197d9011a9c25e4f3c7d9dc45fbcd2f2e41a1c7",
+            "traces/pilot_candidate_t40_s181101.post.jsonl.gz": "0a7a0b81ce33aba479dc0a196e098fbb41c4b79bdec12d21de23c8db824f1907"
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "pilot_003",
+      "protocol_id": "a1fba017b478705466a480be6161097753f94dac12b61a7080024d51661cc386",
+      "protocol_sha256": "e4cb340ba5f59aafad090deaf5946aef586fae6e74603ecb5aa2c4d0e4eaae19",
+      "journal_sha256": "9fede19efd83eab744c3d8340d68897db31b1befba97f74eb5539aecde9b5b27",
+      "controller_sha256": "e9906acb17127855284beaffc5fa4c42bae8f9f2ad014ea53c880d5af904d582",
+      "sources": {
+        "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+        "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+        "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+        "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+        "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+        "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+        "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+        "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+        "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+        "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+        "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+        "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+        "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+        "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+        "projects/pour_policy_training_v10/range_control.py": "e9906acb17127855284beaffc5fa4c42bae8f9f2ad014ea53c880d5af904d582",
+        "projects/pour_policy_training_v10/range_env.py": "071201203094132147c38cdd60c89ca96674b75d10066be0926d4cbc5df2a89c",
+        "projects/pour_policy_training_v10/run_range_pilot.py": "5b264981ed2b4370e1f4751a9b8f189d09b1c4cf94fcac6055e66427ba7206d9"
+      },
+      "inputs": {
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+        "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+        "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"
+      },
+      "cases": [
+        {
+          "episode_id": "pilot_candidate_t20_s181101",
+          "target_ml": 20.0,
+          "seed": 181101,
+          "received_ml": 19.230291,
+          "signed_error_ml": -0.7697089999999989,
+          "action_physical_s": 23.866666666666667,
+          "case_wall_s": 68.41260000003967,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.02,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t20_s181101.steps.jsonl.gz": "dcd0feb6114a54f56de9236aa0b92466da52e018c38f1c9c3351893e672e4816",
+            "traces/pilot_candidate_t20_s181101.post.jsonl.gz": "320e97093c0fbe764db9191de8a639ee1f3457e373913beed9619d7f6ceda911"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t30_s181101",
+          "target_ml": 30.0,
+          "seed": 181101,
+          "received_ml": 29.800062000000004,
+          "signed_error_ml": -0.19993799999999595,
+          "action_physical_s": 24.0,
+          "case_wall_s": 68.98707909998484,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": false,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.03,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": false,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t30_s181101.steps.jsonl.gz": "84e05a42f1610e789916cfebdc86c42b0d536fc0e5580cf2d609c71708266015",
+            "traces/pilot_candidate_t30_s181101.post.jsonl.gz": "b8a5ca26f9d726097b608dfc8f1693d02083c80c3770656bc29121eb1bbef554"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t40_s181101",
+          "target_ml": 40.0,
+          "seed": 181101,
+          "received_ml": 38.519631000000004,
+          "signed_error_ml": -1.480368999999996,
+          "action_physical_s": 24.0,
+          "case_wall_s": 77.81720010004938,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": false,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.04,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": false,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t40_s181101.steps.jsonl.gz": "0036ff3f5b84a28f86bb1a06b5a9aaa8619075583a4a9de59d1993cafee9865d",
+            "traces/pilot_candidate_t40_s181101.post.jsonl.gz": "84d40bba3ec1547eaa2b0e2a4812d5482479ffc2050c8ccfe1bba7797bda11e9"
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "pilot_004",
+      "protocol_id": "8f594daf4245ea08809cec314f113209fa54284d6a9264c6c3502c7b497836ab",
+      "protocol_sha256": "66ce866ea5f068dcbc4b5311ea65453b3b17de4656af36de3feafe796090a441",
+      "journal_sha256": "514f6e48253d34a25e8b6dfb80edf8e9df6545e7940ab5714bb017b3a4858163",
+      "controller_sha256": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+      "sources": {
+        "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+        "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+        "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+        "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+        "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+        "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+        "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+        "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+        "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+        "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+        "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+        "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+        "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+        "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+        "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+        "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+        "projects/pour_policy_training_v10/range_env.py": "071201203094132147c38cdd60c89ca96674b75d10066be0926d4cbc5df2a89c",
+        "projects/pour_policy_training_v10/run_range_pilot.py": "5b264981ed2b4370e1f4751a9b8f189d09b1c4cf94fcac6055e66427ba7206d9"
+      },
+      "inputs": {
+        "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+        "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+        "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+        "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+        "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+        "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"
+      },
+      "cases": [
+        {
+          "episode_id": "pilot_candidate_t20_s181101",
+          "target_ml": 20.0,
+          "seed": 181101,
+          "received_ml": 19.230291,
+          "signed_error_ml": -0.7697089999999989,
+          "action_physical_s": 24.0,
+          "case_wall_s": 67.50233540008776,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": false,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.02,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": false,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t20_s181101.steps.jsonl.gz": "88e8389fb0728b3a783fc33322e33688828449ef94a11ffb11221f5790385e35",
+            "traces/pilot_candidate_t20_s181101.post.jsonl.gz": "34a1e0d347689c140237c6e74b48e8bdb4cedb412cd8d030ab6866cc4ea80346"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t30_s181101",
+          "target_ml": 30.0,
+          "seed": 181101,
+          "received_ml": 29.130840000000003,
+          "signed_error_ml": -0.8691599999999973,
+          "action_physical_s": 24.0,
+          "case_wall_s": 69.23641370004043,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": false,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.03,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": false,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t30_s181101.steps.jsonl.gz": "55d9b9df2d0507d1fa19f9e96ecb0ef5bf54e594d0f856fb9c66fc979c4917af",
+            "traces/pilot_candidate_t30_s181101.post.jsonl.gz": "83843be41f8bd5af4e33278461dd6ec33ceea4c48df0bd61d151666adb4c9a29"
+          }
+        },
+        {
+          "episode_id": "pilot_candidate_t40_s181101",
+          "target_ml": 40.0,
+          "seed": 181101,
+          "received_ml": 37.61421300000001,
+          "signed_error_ml": -2.3857869999999934,
+          "action_physical_s": 23.766666666666666,
+          "case_wall_s": 70.24976000003517,
+          "assessment": {
+            "valid_evidence": true,
+            "dose_passed": false,
+            "full_home_within_deadline": true,
+            "maximum_all_label_spilled_particles": 0,
+            "spill_passed": true,
+            "no_late_dose_change": true,
+            "tolerance_ml": 0.04,
+            "feasible": false
+          },
+          "mass_conserved_reported": true,
+          "finite_reported": true,
+          "complete": true,
+          "measurement_basis": "liquid_measurement_at_reported_sample_time",
+          "artifacts_sha256": {
+            "traces/pilot_candidate_t40_s181101.steps.jsonl.gz": "061dd34a8eab353773ec0822108e074322ee6e7b490e456cc99b54d94b55b6fc",
+            "traces/pilot_candidate_t40_s181101.post.jsonl.gz": "c2b802e67e8d61355fabe719829fd7e09f6d43b8ed89193ca2bdbc617aedea6f"
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Same development seed across four different controller revisions; not independent evaluation.",
+    "Raw logs and geometry caches stay local; hashes bind their original bytes.",
+    "Numerical flags are the original run reports, not a new audit of complete GPU state arrays."
+  ]
+}

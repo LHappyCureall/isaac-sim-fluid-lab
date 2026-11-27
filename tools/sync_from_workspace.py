@@ -155,6 +155,10 @@ FINE_README = ("# V9 frozen research source bundle\n\n"
     "Only a complete 18/6/18 live experiment with its independent final artifact audit can enter this publication. "
     "The test set accepts/rejects the already frozen validation choice; it never chooses a policy. "
     "See the selected results for the actual outcome and limitations; budget completion alone does not establish task success.\n")
+ADAPTIVE_HELPER_SOURCES = {
+    "projects/pour_policy_adaptive_learning/" + name: "tools/training/" + name
+    for name in ("adaptive_curriculum.py", "test_adaptive_curriculum.py", "summarize_range_engineering.py")
+}
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
@@ -173,6 +177,7 @@ SOURCE_TO_DEST = {
     **FINE_RUNTIME_SOURCES,
     **FINE_TOOL_SOURCES,
     **{source:item[0] for source,item in FINE_MODEL_SOURCES.items()},
+    **ADAPTIVE_HELPER_SOURCES,
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
@@ -757,6 +762,9 @@ def transform(relative, text):
             _validate_checkpoint(relative,text)
         # Exact frozen runtime and reviewed post-hoc tools. All source imports,
         # literal hashes and calculations retain their original raw bytes.
+    elif relative in ADAPTIVE_HELPER_SOURCES:
+        # New standard-library preparation tools, not a deployed water policy.
+        pass
     elif relative in DEVELOPMENT_SOURCES:
         # Reference sources only: keep source guards/calculations unchanged.
         # The manifest binds the raw capture and this LF-only derivative.
