@@ -749,6 +749,133 @@ def _check_sync_source_bindings():
     assert result.wasSuccessful(), output.getvalue()
 
 
+def _check_development_archive():
+    """Check reference bytes and selected records, without new physics claims."""
+    import ast
+    from collections import Counter
+    import re
+    spec = importlib.util.spec_from_file_location("release_development_sources", ROOT/"tools/sync_from_workspace.py")
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    manifest_path = _published_file(sync.DEVELOPMENT_PUBLIC+"source_manifest.json")
+    assert hashlib.sha256(manifest_path.read_bytes()).hexdigest() == sync.DEVELOPMENT_MANIFEST_SHA256
+    manifest = json.loads(manifest_path.read_bytes())
+    assert manifest["source_file_count"] == 19 and manifest["self_written_v8_python_files"] == 16
+    assert manifest["notes_files"] == 1 and manifest["development_dependencies"] == 2
+    assert manifest["capture_session_date"] == "2026-11-27"
+    for key in ("historical_trial_source_binding_established", "independent_physics_audit", "turnkey_reproduction",
+                "gui_default", "models_included", "raw_traces_included", "npz_or_sdk_included"):
+        assert manifest[key] is False
+    entries = manifest["entries"]
+    assert len(entries) == 19 and {entry["capture_relative"] for entry in entries} == set(sync.DEVELOPMENT_RELATIVES)
+    expected = {sync.DEVELOPMENT_PUBLIC+"source_manifest.json", sync.DEVELOPMENT_PUBLIC+"README.md"}
+    py_count = 0
+    for entry in entries:
+        assert entry["source_alias"] == sync.DEVELOPMENT_CAPTURE+entry["capture_relative"]
+        assert entry["published_file"] == sync.DEVELOPMENT_SOURCES[entry["source_alias"]]
+        raw = _published_file(entry["published_file"]).read_bytes()
+        assert b"\r" not in raw and len(raw) == entry["published_lf_bytes"]
+        assert hashlib.sha256(raw).hexdigest() == entry["published_lf_sha256"]
+        assert re.fullmatch(r"[0-9a-f]{64}", entry["raw_sha256"])
+        assert not Path(entry["original_workspace_relative"]).is_absolute()
+        assert ".." not in Path(entry["original_workspace_relative"]).parts
+        if entry["published_file"].endswith(".py"):
+            ast.parse(raw.decode("utf-8"), filename=entry["published_file"])
+            py_count += 1
+        expected.add(entry["published_file"])
+    assert py_count == 18
+    actual = {path.relative_to(ROOT).as_posix() for path in (ROOT/sync.DEVELOPMENT_PUBLIC).rglob("*") if path.is_file()}
+    assert actual == expected, "Only reviewed self-written reference text belongs in this archive."
+    assert hashlib.sha256(_published_file(sync.DEVELOPMENT_PUBLIC+"README.md").read_bytes()).hexdigest() == sync.DEVELOPMENT_README_SHA256
+    for source, binding in sync.ARCHIVED_SOURCE_BINDINGS.items():
+        assert hashlib.sha256(_published_file(source).read_bytes()).hexdigest() == binding["sha256"]
+
+    path = _published_file("results/development_pilots_20261123_24.json")
+    text = path.read_text(encoding="utf-8")
+    assert not re.search(r"[A-Za-z]:[\\/]|file://|127\.0\.0\.1|AppData", text)
+    report = json.loads(text)
+    json.dumps(report, allow_nan=False)
+    assert report["schema_version"] == 1 and report["kind"] == "curated_unfrozen_timed_correction_development_archive"
+    assert report["archive_complete"] is True
+    assert report["experiment_release_accepted"] is report["automatic_gui_deployment"] is False
+    counts, runs = report["counts"], report["runs"]
+    assert counts["runs"] == len(runs) == 21
+    assert counts["committed_case_records"] == 192 and counts["total_attempts"] == 195
+    assert counts["orphaned_partial_attempts"] == 3
+    assert report["scope"]["excluded_previously_published_cases"] == 42
+    assert report["scope"]["evaluation_status"] == "all cases exploratory and already seen; no fresh holdout claim"
+    assert report["scope"]["new_simulation_run"] is False
+    assert report["scope"]["raw_step_traces_decoded_by_curator"] is False
+    all_cases = []
+
+    def near(actual, expected_value):
+        assert type(actual) in (int, float) and math.isfinite(actual)
+        assert abs(actual-expected_value) < 1e-8
+
+    def check_group(value, cases):
+        n = len(cases)
+        assert n and value["case_count"] == n
+        assert value["case_ids"] == [case["case_id"] for case in cases]
+        errors = [case["result"]["error_ml"] for case in cases]
+        assert value["signed_errors_ml"] == errors
+        near(value["mean_signed_error_ml"], sum(errors)/n)
+        near(value["mae_ml"], sum(abs(error) for error in errors)/n)
+        near(value["worst_absolute_error_ml"], max(abs(error) for error in errors))
+        assert value["within_0_2_ml_descriptive_count"] == sum(abs(error) <= .2 for error in errors)
+        near(value["mean_action_physical_seconds"], sum(case["result"]["physical_time_s"] for case in cases)/n)
+        near(value["mean_action_wall_seconds"], sum(case["result"]["wall_seconds"] for case in cases)/n)
+        assert value["case_footer_complete_count"] == sum(case["result"]["complete"] for case in cases)
+        assert value["case_footer_valid_physics_count"] == sum(case["result"]["valid_physics"] for case in cases)
+        assert value["full_home_true_recorded_count"] == sum(case["full_home_recorded"] is True for case in cases)
+        assert value["case_with_any_maximum_spill_count"] == sum(case["result"]["max_spilled_ml"] > 0 for case in cases)
+        assert value["end_spill_positive_recorded_count"] == sum((case["end_spilled_particles_recorded"] or 0) > 0 for case in cases)
+        assert value["summary_is_descriptive_not_a_new_scoring_or_acceptance_rule"] is True
+
+    for run in runs:
+        assert run["run_id"] != "run_20261123"
+        for flag in ("source_snapshot_present", "protocol_present", "input_freeze_present", "freeze_record_present",
+                     "independently_audited_experiment", "verified_source_bound_frozen_model"):
+            assert run[flag] is False
+        cases = run["cases"]
+        assert run["case_count"] == len(cases) and len({case["case_id"] for case in cases}) == len(cases)
+        assert run["stage_counts"] == dict(Counter(case["stage"] for case in cases))
+        for case in cases:
+            result = case["result"]
+            assert result["target_ml"] == case["target_ml"] and result["seed"] == case["seed"]
+            near(result["received_ml"]-case["target_ml"], result["error_ml"])
+            near(case["signed_error_percent_from_footer"], 100*result["error_ml"]/case["target_ml"])
+            near(case["absolute_error_percent_from_footer"], 100*abs(result["error_ml"])/case["target_ml"])
+            assert case["evidence_use"] == "exploratory_seen_not_fresh_holdout"
+        check_group(run["statistics_all_cases_descriptive"], cases)
+        for group in run["per_target_descriptive"]:
+            check_group(group["metrics"], [case for case in cases if case["target_ml"] == group["target_ml"]])
+        for group in run["per_stage_role_target"]:
+            check_group(group["metrics"], [case for case in cases if all(case[key] == group[key] for key in ("stage", "role", "target_ml"))])
+        assert "SOURCE-label" in run["legacy_field_semantics"]["cases.result.max_spilled_ml"]
+        assert all(re.fullmatch(r"[0-9a-f]{64}", digest) for digest in run["artifacts_sha256"].values())
+        all_cases.extend(cases)
+    assert len(all_cases) == 192
+    assert counts["unique_target_seed_pairs"] == len({(case["target_ml"], case["seed"]) for case in all_cases}) == 146
+    assert counts["stage_counts"] == dict(Counter(case["stage"] for case in all_cases))
+    assert counts["case_termination_counts"] == dict(Counter(case["result"]["termination_reason"] for case in all_cases))
+    assert counts["case_footer_complete_count"] == sum(case["result"]["complete"] for case in all_cases) == 185
+    assert counts["case_footer_valid_physics_count"] == sum(case["result"]["valid_physics"] for case in all_cases) == 190
+    assert counts["legacy_case_footer_success_count"] == sum(case["result"]["success"] for case in all_cases) == 43
+    assert counts["source_label_maximum_spill_positive_cases"] == 13 and counts["all_label_final_spill_positive_cases"] == 15
+    orphans = report["orphaned_attempts"]
+    assert len(orphans) == 3 and len({row["attempt_id"] for row in orphans}) == 3
+    for orphan in orphans:
+        assert orphan["result"] is None
+        assert orphan["result_footer_present"] is orphan["committed_journal_row_present"] is False
+        assert re.fullmatch(r"[0-9a-f]{64}", orphan["trace_sha256"])
+        near(orphan["last_logged_physical_time_s"], orphan["last_logged_physics_step"]/60)
+    assert report["metadata_conflicts"][0]["inherited_value"] == 5.0
+    assert report["metadata_conflicts"][0]["actual_policy_deadlines_recorded_s"] == [12., 24., 36.]
+    curator = _published_file(sync.DEVELOPMENT_PUBLIC+"projects/pour_policy_training_v8/curate_development_archive.py")
+    assert hashlib.sha256(curator.read_bytes()).hexdigest() == report["archive_tool"]["sha256"]
+    _published_file("docs/DEVELOPMENT_PILOTS_20261124.md")
+
+
 def main():
     sources = list(ROOT.glob("*.py")) + list((ROOT / "tools").rglob("*.py"))
     sources += list((ROOT / "assets/robot_testtube_pour/scripts").glob("*.py"))
@@ -785,9 +912,11 @@ def main():
     _check_dose_window_v7_results()
     _check_correction_12s_results()
     _check_sync_source_bindings()
+    _check_development_archive()
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
     print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
+    print("Development archive: 19 reference files, 192 committed cases + 3 partial attempts; no new physics acceptance.")
 
 
 if __name__ == "__main__":

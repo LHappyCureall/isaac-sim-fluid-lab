@@ -102,6 +102,21 @@ ARCHIVED_SOURCE_BINDINGS = {
 }
 V5_SCORE_SOURCES = {"projects/pour_policy_training_v5/" + name: "tools/scoring/" + name
                     for name in ("task_score.py", "test_task_score.py")}
+DEVELOPMENT_CAPTURE = "projects/pour_policy_development_archive_20261127/"
+DEVELOPMENT_PUBLIC = "research/timed_correction_development_20261124/"
+DEVELOPMENT_MANIFEST_SHA256 = "02e8325a5f0c576f98520e5794f5ce42eba7b4d8a6365e7b15d3e76c2fb51ff6"
+DEVELOPMENT_README_SHA256 = "94df9799f45f2dcc57f05f5070a3ae87ef2caac866837186d6ef8792f8ef4a8b"
+DEVELOPMENT_V8_FILES = (
+    "curate_correction.py", "curate_development_archive.py", "run_bump.py", "run_early.py",
+    "run_fill26.py", "run_fill26_eval.py", "run_fine_particle.py", "run_fine_trim.py",
+    "run_lead_probe.py", "run_percent.py", "run_reserve.py", "run_scale.py",
+    "run_scale_pulse.py", "run_span.py", "run_timed_correction.py", "timed_correction_control.py",
+    "SCALE_FEEDBACK.md",
+)
+DEVELOPMENT_RELATIVES = (*["projects/pour_policy_training_v8/"+name for name in DEVELOPMENT_V8_FILES],
+                         "dependencies/pour_training_env.py", "dependencies/direct_training_env.py")
+DEVELOPMENT_SOURCES = {DEVELOPMENT_CAPTURE+name: DEVELOPMENT_PUBLIC+name
+                       for name in (*DEVELOPMENT_RELATIVES, "source_manifest.json", "README.md")}
 SOURCE_TO_DEST = {
     "projects/pour_policy_training/audit_candidate.py": "tools/training/audit_candidate.py",
     "projects/pour_policy_training/plot_results.py": "tools/training/plot_results.py",
@@ -116,6 +131,7 @@ SOURCE_TO_DEST = {
     **PIVOT_TOOL_SOURCES,
     **{source: item[0] for source, item in PIVOT_MODEL_SOURCES.items()},
     **V5_SCORE_SOURCES,
+    **DEVELOPMENT_SOURCES,
 }
 MODEL_FILES = (
     "assets/robot_testtube_pour/policy/target_volume_policy.json",
@@ -180,6 +196,43 @@ def publication_source(root, relative):
             or hashlib.sha256(snapshot.read_bytes()).hexdigest() != binding["sha256"]):
         raise SyncError("Missing, unsafe or changed archived source snapshot: " + relative)
     return snapshot
+
+
+def development_archive_manifest(root):
+    """Validate an immutable current-code capture, never historical trial pins."""
+    root = Path(root).resolve()
+    path = publication_source(root, DEVELOPMENT_CAPTURE+"source_manifest.json")
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != DEVELOPMENT_MANIFEST_SHA256:
+        raise SyncError("Development source manifest changed; review a new capture instead of overwriting this archive.")
+    manifest = json.loads(raw)
+    if (manifest.get("schema_version") != 1 or manifest.get("source_file_count") != 19
+            or manifest.get("self_written_v8_python_files") != 16 or manifest.get("notes_files") != 1
+            or manifest.get("development_dependencies") != 2 or manifest.get("capture_session_date") != "2026-11-27"
+            or any(manifest.get(key) is not False for key in ("historical_trial_source_binding_established",
+                "independent_physics_audit", "turnkey_reproduction", "gui_default", "models_included",
+                "raw_traces_included", "npz_or_sdk_included"))):
+        raise SyncError("Development archive counts or evidence boundaries changed.")
+    entries = manifest.get("entries", [])
+    if len(entries) != 19 or {entry["capture_relative"] for entry in entries} != set(DEVELOPMENT_RELATIVES):
+        raise SyncError("Development archive must contain exactly the nineteen reviewed reference files.")
+    for entry in entries:
+        relative = entry["capture_relative"]
+        alias = DEVELOPMENT_CAPTURE+relative
+        if entry["source_alias"] != alias or entry["published_file"] != DEVELOPMENT_SOURCES[alias]:
+            raise SyncError("Development archive source/destination alias changed.")
+        source = publication_source(root, alias)
+        original = source.read_bytes()
+        public = original.decode("utf-8").replace("\r\n", "\n").encode("utf-8")
+        if (hashlib.sha256(original).hexdigest() != entry["raw_sha256"]
+                or hashlib.sha256(public).hexdigest() != entry["published_lf_sha256"]
+                or len(original) != entry["raw_bytes"] or len(public) != entry["published_lf_bytes"]
+                or b"\r" in public):
+            raise SyncError("Captured development source or LF derivative changed: "+relative)
+    readme = publication_source(root, DEVELOPMENT_CAPTURE+"README.md")
+    if hashlib.sha256(readme.read_bytes()).hexdigest() != DEVELOPMENT_README_SHA256:
+        raise SyncError("Development archive provenance README changed.")
+    return manifest
 
 
 def _replace(text, old, new, *, count=1):
@@ -510,7 +563,12 @@ def _transform_fast_source(relative, text):
 
 def transform(relative, text):
     """Return the fixed publication variant; never evaluate imported scripts."""
-    if relative in PIVOT_RUNTIME_SOURCES or relative in PIVOT_TOOL_SOURCES:
+    if relative in DEVELOPMENT_SOURCES:
+        # Reference sources only: keep source guards/calculations unchanged.
+        # The manifest binds the raw capture and this LF-only derivative.
+        if "\r" in text:
+            raise SyncError("Development reference publication requires LF text.")
+    elif relative in PIVOT_RUNTIME_SOURCES or relative in PIVOT_TOOL_SOURCES:
         text = _transform_pivot_source(relative, text)
     elif relative in V5_SCORE_SOURCES:
         _replace(text, 'from dataclasses import ', 'from dataclasses import ')
@@ -744,7 +802,7 @@ def transform(relative, text):
         raise SyncError(f"Unmapped machine-specific path or username in {relative}.")
     if relative.endswith(".py"):
         ast.parse(text, filename=relative)
-    return text if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES) else text.rstrip() + "\n"
+    return text if relative in (*CHECKPOINT_SOURCES, *PIVOT_UNCHANGED_SOURCES, *DEVELOPMENT_SOURCES) else text.rstrip() + "\n"
 
 
 def _fast_publication_gate(root):
@@ -856,6 +914,7 @@ def _pivot_publication_gate(root):
 def prepare_sync(workspace):
     """Validate the entire allowlist before returning any content to write."""
     root = Path(workspace).expanduser().resolve()
+    development_archive_manifest(root)
     prepared = []
     precision_source_manifest = None
     fast_summary = None
