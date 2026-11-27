@@ -1,0 +1,67 @@
+{
+  "draft": false,
+  "stage": "train",
+  "parent_plan_sha256": "db124b685beba509ffa82991ffd92d4cac0b3bc4522334726773e1506130b275",
+  "cases": [
+    {
+      "case_id": "train_o0_s194101",
+      "target_ml": 20.0,
+      "seed": 194101,
+      "split": "train",
+      "role": "offset_0",
+      "policy": {
+        "control_target_offset_ml": 0.0
+      }
+    },
+    {
+      "case_id": "train_o0_s194102",
+      "target_ml": 20.0,
+      "seed": 194102,
+      "split": "train",
+      "role": "offset_0",
+      "policy": {
+        "control_target_offset_ml": 0.0
+      }
+    },
+    {
+      "case_id": "train_o5_s194101",
+      "target_ml": 20.0,
+      "seed": 194101,
+      "split": "train",
+      "role": "offset_0.5",
+      "policy": {
+        "control_target_offset_ml": 0.5
+      }
+    },
+    {
+      "case_id": "train_o5_s194102",
+      "target_ml": 20.0,
+      "seed": 194102,
+      "split": "train",
+      "role": "offset_0.5",
+      "policy": {
+        "control_target_offset_ml": 0.5
+      }
+    },
+    {
+      "case_id": "train_o10_s194101",
+      "target_ml": 20.0,
+      "seed": 194101,
+      "split": "train",
+      "role": "offset_1",
+      "policy": {
+        "control_target_offset_ml": 1.0
+      }
+    },
+    {
+      "case_id": "train_o10_s194102",
+      "target_ml": 20.0,
+      "seed": 194102,
+      "split": "train",
+      "role": "offset_1",
+      "policy": {
+        "control_target_offset_ml": 1.0
+      }
+    }
+  ]
+}

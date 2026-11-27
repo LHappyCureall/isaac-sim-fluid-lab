@@ -1075,6 +1075,10 @@ def main():
     prefix_bundle = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(prefix_bundle)
     prefix_bundle.verify_public(ROOT)
+    spec = importlib.util.spec_from_file_location("check_easy20_bundle", ROOT / "tools/easy20_bundle.py")
+    easy_bundle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(easy_bundle)
+    easy_bundle.verify_public(ROOT)
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
     print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
@@ -1082,6 +1086,7 @@ def main():
     print("V9: complete audited 18/6/18 study, frozen raw research sources/models; no default GUI deployment.")
     print("V12: audited60 response collection plus10 development goals; empirical model schema/source/plots bound, no full-range acceptance or GUI default.")
     print("V13: twelve paired prefix-only cases archived separately; original goals unchanged, no new model/default/range claim.")
+    print("Easy20: separate6/4/10 beginner task, original strict criterion retained; baseline/candidate/recommendation and paired tests bound, no GUI/default or arbitrary-range claim.")
 
 
 if __name__ == "__main__":

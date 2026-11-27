@@ -10,3 +10,4 @@ assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py -text whitespa
 # These selected reports are raw-SHA-bound by their research manifests.
 results/adaptive_response_v12_20261127.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 results/prefix_calibration_v13_20261127.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+results/easy20_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

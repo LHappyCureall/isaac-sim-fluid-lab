@@ -1251,6 +1251,11 @@ def prepare_sync(workspace):
     prefix = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(prefix)
     prepared.extend(prefix.prepare(root, PROJECT_ROOT, prepared))
+    easy_path = PROJECT_ROOT / "tools/easy20_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_easy20_bundle", easy_path)
+    easy = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(easy)
+    prepared.extend(easy.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

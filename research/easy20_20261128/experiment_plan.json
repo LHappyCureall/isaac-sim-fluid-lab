@@ -1,0 +1,36 @@
+{
+  "kind": "easy20_bounded_curriculum_preregistration_v1",
+  "draft": false,
+  "budget": 20,
+  "target_ml": 20.0,
+  "absolute_tolerance_ml": 1.0,
+  "deadline_s": 24.0,
+  "peak_all_label_spill_limit": 1,
+  "post_seconds": 2.0,
+  "train_offsets_ml": [
+    0.0,
+    0.5,
+    1.0
+  ],
+  "train_seeds": [
+    194101,
+    194102
+  ],
+  "validation_seeds": [
+    194201,
+    194202
+  ],
+  "test_seeds": [
+    194301,
+    194302,
+    194303,
+    194304,
+    194305
+  ],
+  "selection": "all_cases_feasible_then_mean_physical_time_else_MAE_then_total_peak_spill; exact_tie_insertion_order",
+  "training_method": "finite_one_parameter_actual_fluid_calibration_not_neural_or_PPO",
+  "original_strict_target_relative_tolerance": 0.001,
+  "default_model_deployment": false,
+  "test_may_not_select_or_update_model": true,
+  "narrow_randomization_not_arbitrary_goal_guarantee": true
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "easy20_validation_recommendation_v1",
+  "created_at_utc": "2026-11-27T16:22:56.761720+00:00",
+  "task_kind": "fixed20ml_absolute1ml_24s_onegrain_v1",
+  "recommended_role": "baseline",
+  "policy": {
+    "control_target_offset_ml": 0.0
+  },
+  "checkpoint_sha256": "b57cf5383f1c7473f15f049bd97c4fd3cb04bece7b2ff6d2e2f599aa5a8fc44e",
+  "validation_protocol_id": "685c570493dba27efc2240d83cf290958fcb8a04ea633c1429aa2ea930c56c5b",
+  "validation_journal_sha256": "1b2908eb2a2ca4b52eaad2671d748260ec9ab99582224e32a0494cfdeaf0bf96",
+  "validation_audit_sha256": "c6f8858a9b94f723c6d36b621e61cdc88956cac680c16bee2b27267b294c57a8",
+  "selection_scores": {
+    "baseline": [
+      0,
+      4.925
+    ],
+    "candidate": [
+      0,
+      4.925
+    ]
+  },
+  "selection_tool_sha256": "0941bd58646e7b3d50dbe1ade2c0c328ba2229c73472df6342a5fc86cc6b5ed8",
+  "test_used_for_selection": false
+}

@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "kind": "fixed20_beginner_research_publication_v1",
+  "report_file": "results/easy20_20261128.json",
+  "report_sha256": "5022784d6455fd23cb49859af8d48d6a35d074394af4c31f4ca81a8acbe42367",
+  "independent_audit_raw_sha256": "b776a25b0a50a00aeb9758e98e1eba2a1d8ed6c4cc44a1286cfda31cb58d8eb4",
+  "experiment_plan_sha256": "db124b685beba509ffa82991ffd92d4cac0b3bc4522334726773e1506130b275",
+  "budget": {
+    "train": 6,
+    "validation": 4,
+    "test": 10,
+    "total": 20
+  },
+  "source_count": 28,
+  "shared_source_count": 26,
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/prefix_control.py": "7fd23b7d35bc1de8b181a8a2784231b0c6812a6a426211a8a000cb0f83dea699",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_easy20/run_easy_search.py": "49000e366d868acfa18a9c9b9e7f82c8e9b3571b42ca15cfff67ee1cdf177bf9",
+    "projects/pour_policy_easy20/task_score.py": "0f1eb2d017c3836a1aa5c54d25c4378be967b3f165475ae8f2195f4f54e6c3bb"
+  },
+  "stage_artifact_sha256": {
+    "train": {
+      "protocol.json": "0fd9fa56a9993441da6d999634debed72a151971c6ee8c3a6e7f5b695520fbbb",
+      "summary.json": "5e2336dbfec286be5ceda7874f51b7f98a75b648da3dcdc68756589356a26ae3",
+      "job_state.json": "8a834d38541675ea0f3c1fbd7bcd5edaa7d6548bddae414907f32d269f96e857",
+      "episodes.jsonl": "066a6af930f450500e05c25e56167094118caff03f9c38c056d77ca3d590d86f",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "8411a873f23e8c8d237cb060e45def0f6372b41a238fc3025b7733bf99c8b744",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d",
+      "audit.json": "6b70cf99cb48fd0968c7b6b768a097c4092bcfd612e39204c7eed473b7423b82"
+    },
+    "validation": {
+      "protocol.json": "2e89a9c625fec0b1e6a2ec9fb29bfd25b7c2401283ffd344286059e8f6ec750e",
+      "summary.json": "e6ca1bba758a1720e29cb5a343ec4db99e0d0044b60fcd84775760a038bd1268",
+      "job_state.json": "69b49d9a08a20f3c56fad2c8e0a32fe7654e0ec86322dd702cf3a9a37303f275",
+      "episodes.jsonl": "1b2908eb2a2ca4b52eaad2671d748260ec9ab99582224e32a0494cfdeaf0bf96",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "0ea2bcd4aa0613116f24f0c5878c6c8ac888830da78f390700cc83ebcfa21f47",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d",
+      "audit.json": "c6f8858a9b94f723c6d36b621e61cdc88956cac680c16bee2b27267b294c57a8"
+    },
+    "test": {
+      "protocol.json": "bb846f1a685b42e9cb97ce8da58f718cf3ace51447f63552ecedd4ff18ff64ed",
+      "summary.json": "06a3ea5a4907e04b58e184fc751ec9000a68dbb17d466f9d76ab7dc793c02655",
+      "job_state.json": "3d2145d46e9604f5ee6e790724fcbb1d4afc19266e7fe80b91299ac1bb85a59e",
+      "episodes.jsonl": "443086678d248f13cf67c357beda6008597129f57f246250555d198072e7bfef",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "d39aff14dce77cad9c9f77fcee9c87c043046ea99fd087a140c31c24537af0e3",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d",
+      "audit.json": "9206f356d7a15888e71cbaccd3e60b928b7be9d772cc10ee78c072c9b0218c0e"
+    }
+  },
+  "files": [
+    {
+      "role": "runtime",
+      "original_file": "projects/pour_policy_easy20/run_easy_search.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/run_easy_search.py",
+      "original_sha256": "49000e366d868acfa18a9c9b9e7f82c8e9b3571b42ca15cfff67ee1cdf177bf9",
+      "published_sha256": "49000e366d868acfa18a9c9b9e7f82c8e9b3571b42ca15cfff67ee1cdf177bf9",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "runtime",
+      "original_file": "projects/pour_policy_easy20/task_score.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/task_score.py",
+      "original_sha256": "0f1eb2d017c3836a1aa5c54d25c4378be967b3f165475ae8f2195f4f54e6c3bb",
+      "published_sha256": "0f1eb2d017c3836a1aa5c54d25c4378be967b3f165475ae8f2195f4f54e6c3bb",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/select_stage.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/select_stage.py",
+      "original_sha256": "0941bd58646e7b3d50dbe1ade2c0c328ba2229c73472df6342a5fc86cc6b5ed8",
+      "published_sha256": "0941bd58646e7b3d50dbe1ade2c0c328ba2229c73472df6342a5fc86cc6b5ed8",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/audit_easy_run.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/audit_easy_run.py",
+      "original_sha256": "3ba8464416df2d7d02e9b533c11dd0f599dc76da7de5c809db791d3020709855",
+      "published_sha256": "3ba8464416df2d7d02e9b533c11dd0f599dc76da7de5c809db791d3020709855",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/audit_easy_experiment.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/audit_easy_experiment.py",
+      "original_sha256": "062fecc638d169a1fb0603491ac8c873c593c708e58ebd9ba15a76b0e8d9530e",
+      "published_sha256": "062fecc638d169a1fb0603491ac8c873c593c708e58ebd9ba15a76b0e8d9530e",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/curate_easy_results.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/curate_easy_results.py",
+      "original_sha256": "eabc43d2b9647fd0be44d02f9331324e101ce27a9db4b2c6f2ed14d61a913368",
+      "published_sha256": "eabc43d2b9647fd0be44d02f9331324e101ce27a9db4b2c6f2ed14d61a913368",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/plot_easy_results.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/plot_easy_results.py",
+      "original_sha256": "5d1398062892b3853d60c429c74a82267d165ec7649b564754e5a0f7494dfa21",
+      "published_sha256": "5d1398062892b3853d60c429c74a82267d165ec7649b564754e5a0f7494dfa21",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/test_task_score.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/test_task_score.py",
+      "original_sha256": "5b4d3c03bbed75b3037aea700ca58f58261304b5067696c8ffab245a9c1fa4e0",
+      "published_sha256": "5b4d3c03bbed75b3037aea700ca58f58261304b5067696c8ffab245a9c1fa4e0",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/test_curate_easy_results.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/test_curate_easy_results.py",
+      "original_sha256": "93a87d27ab65306a93a136ca689ed028c39d2e6b0080e6c89d2545dc5be7ba23",
+      "published_sha256": "93a87d27ab65306a93a136ca689ed028c39d2e6b0080e6c89d2545dc5be7ba23",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "posthoc_selector_audit_or_test",
+      "original_file": "projects/pour_policy_easy20/test_audit_easy_run.py",
+      "published_file": "research/easy20_20261128/projects/pour_policy_easy20/test_audit_easy_run.py",
+      "original_sha256": "90ad4adcd9e7d77486c26048abe11bac4f6705289b43186c0fb591a7a36cd047",
+      "published_sha256": "90ad4adcd9e7d77486c26048abe11bac4f6705289b43186c0fb591a7a36cd047",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "preregistered_plan_or_schedule",
+      "original_file": "experiment_plan.json",
+      "published_file": "research/easy20_20261128/experiment_plan.json",
+      "original_sha256": "db124b685beba509ffa82991ffd92d4cac0b3bc4522334726773e1506130b275",
+      "published_sha256": "db124b685beba509ffa82991ffd92d4cac0b3bc4522334726773e1506130b275",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "preregistered_plan_or_schedule",
+      "original_file": "train_matrix.json",
+      "published_file": "research/easy20_20261128/train_matrix.json",
+      "original_sha256": "8411a873f23e8c8d237cb060e45def0f6372b41a238fc3025b7733bf99c8b744",
+      "published_sha256": "8411a873f23e8c8d237cb060e45def0f6372b41a238fc3025b7733bf99c8b744",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "frozen_research_baseline",
+      "original_file": "baseline.json",
+      "published_file": "research/easy20_20261128/models/baseline.json",
+      "original_sha256": "b57cf5383f1c7473f15f049bd97c4fd3cb04bece7b2ff6d2e2f599aa5a8fc44e",
+      "published_sha256": "b57cf5383f1c7473f15f049bd97c4fd3cb04bece7b2ff6d2e2f599aa5a8fc44e",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "frozen_research_candidate",
+      "original_file": "candidate.json",
+      "published_file": "research/easy20_20261128/models/candidate.json",
+      "original_sha256": "7e629a2d3768049071a7b9c074bde8cf3d14fcb84f00a3045dc65f2ab3237f87",
+      "published_sha256": "7e629a2d3768049071a7b9c074bde8cf3d14fcb84f00a3045dc65f2ab3237f87",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "frozen_research_recommended",
+      "original_file": "recommended.json",
+      "published_file": "research/easy20_20261128/models/recommended.json",
+      "original_sha256": "73fb4a2c4f28a53543f876f2183fb9bfb4c33590f4b3df603b7ae6eb0fb7780c",
+      "published_sha256": "73fb4a2c4f28a53543f876f2183fb9bfb4c33590f4b3df603b7ae6eb0fb7780c",
+      "transform": "unchanged_raw_bytes"
+    }
+  ],
+  "shared_source_bindings": [
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/direct_fast_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/direct_fast_control.py",
+      "original_sha256": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+      "published_sha256": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/direct_fast_geometry.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/direct_fast_geometry.py",
+      "original_sha256": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+      "published_sha256": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/direct_training_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/direct_training_env.py",
+      "original_sha256": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+      "published_sha256": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/fast_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/fast_control.py",
+      "original_sha256": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+      "published_sha256": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/fast_geometry.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/fast_geometry.py",
+      "original_sha256": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+      "published_sha256": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/fast_training_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/fast_training_env.py",
+      "original_sha256": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+      "published_sha256": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/geometry.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/geometry.py",
+      "original_sha256": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+      "published_sha256": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/liquid.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/liquid.py",
+      "original_sha256": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+      "published_sha256": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py",
+      "original_sha256": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+      "published_sha256": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py",
+      "original_sha256": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+      "published_sha256": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py",
+      "original_sha256": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+      "published_sha256": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/pour_training_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/pour_training_env.py",
+      "original_sha256": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+      "published_sha256": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/robot.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/robot.py",
+      "original_sha256": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+      "published_sha256": "972bab813c3caa0f8a1d68e96652594de36b77644183bb737cb86d23877975b3",
+      "transform": "two_robot_resource_paths"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "assets/robot_testtube_pour/scripts/target_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/assets/robot_testtube_pour/scripts/target_control.py",
+      "original_sha256": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+      "published_sha256": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/cycle_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/cycle_control.py",
+      "original_sha256": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+      "published_sha256": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/cycle_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/cycle_env.py",
+      "original_sha256": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+      "published_sha256": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "prefix_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/prefix_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/prefix_control.py",
+      "original_sha256": "7fd23b7d35bc1de8b181a8a2784231b0c6812a6a426211a8a000cb0f83dea699",
+      "published_sha256": "7fd23b7d35bc1de8b181a8a2784231b0c6812a6a426211a8a000cb0f83dea699"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/response_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/response_control.py",
+      "original_sha256": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+      "published_sha256": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/response_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/response_env.py",
+      "original_sha256": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+      "published_sha256": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_adaptive_learning/response_samples.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_adaptive_learning/response_samples.py",
+      "original_sha256": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+      "published_sha256": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_training_v10/range_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_training_v10/range_control.py",
+      "original_sha256": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+      "published_sha256": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_training_v9/fine_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_training_v9/fine_control.py",
+      "original_sha256": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+      "published_sha256": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_training_v9/fine_env.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_training_v9/fine_env.py",
+      "original_sha256": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+      "published_sha256": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_training_v9/legacy_control.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_training_v9/legacy_control.py",
+      "original_sha256": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+      "published_sha256": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "projects/pour_policy_training_v9/run_fine_search.py",
+      "published_file": "research/adaptive_response_v12_20261127/projects/pour_policy_training_v9/run_fine_search.py",
+      "original_sha256": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+      "published_sha256": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+      "transform": "unchanged_raw_bytes"
+    },
+    {
+      "role": "collection_runtime",
+      "original_file": "train_target_volume_policy.py",
+      "published_file": "research/adaptive_response_v12_20261127/train_target_volume_policy.py",
+      "original_sha256": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+      "published_sha256": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+      "transform": "unchanged_raw_bytes"
+    }
+  ],
+  "parent_adaptive_manifest_sha256": "17d8336b0e5cabafe674b32ff76fa73a207816091a7c58edf44ac1a24b15dbd7",
+  "parent_prefix_manifest_sha256": "e70721e31e178b84c69c7d06036b2df2560d1a18ad8f8b3fe908ce8981f64a76",
+  "parent_manifests_unchanged": true,
+  "plots": [
+    {
+      "file": "results/easy20_20261128/easy20_results.png",
+      "sha256": "2bc9a1ba1f1218acc117bd9e05ac12af6e944087844febca4ac56668e97ea2ee"
+    }
+  ],
+  "gui_default_sha256_unchanged": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2"
+  },
+  "original_strict_standard_unchanged": true,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false,
+  "raw_logs_or_assets_distributed": false
+}
