@@ -1,0 +1,63 @@
+{
+  "kind": "refine20_settled_angle_v1",
+  "created_at_utc": "2026-11-28T02:29:16.395931+00:00",
+  "task_kind": "fixed20ml_absolute05ml_24s_onegrain_v1",
+  "role": "candidate",
+  "policy": {
+    "approach_tilt_deg": 84.0,
+    "enable_correction": true
+  },
+  "selected_group": "angle_84",
+  "selection_scores": {
+    "angle_84": [
+      0,
+      12.024999999999999
+    ],
+    "angle_84.1": [
+      0,
+      12.116666666666667
+    ],
+    "angle_84.2": [
+      1,
+      0.5588935000000035,
+      0
+    ]
+  },
+  "training_protocol_id": "483ee9b130710dce10889bdc4c5af508d1921f65a6ca6be6b94f7e91bf68ea1a",
+  "training_journal_sha256": "d31ebd1d54abd4bb1f235f99055dcc0a4cc8bf25c022e15042fe5e3e012cd119",
+  "training_audit_sha256": "4cd670869abff75f73af836e5bd7f7528b8d9183fd3cb8e5a8f0ab7e7ecea864",
+  "engineering_audit_sha256": "263a8c62630b12efb936d18c3ae553d2de33909b56d0bc39965a9e5c25ffee21",
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_refine20/run_refine_search.py": "cea8e0e57310feb5b15ee778aee0a9c0386f9382c42b4866faf649dc8ae86dba",
+    "projects/pour_policy_refine20/task_score.py": "28f40bedd47ffbb60931d1d6798a4d15f344a3a6e209ce18307e6f142109b992",
+    "projects/pour_policy_refine20/refine_control.py": "cb0644d3dade50cfe150964ddf2a2c4a487ab4b1bf6d2431b82975df4900672c"
+  },
+  "selection_tool_sha256": "1b2cb90009e97289003f9983bfb1e4e67153ac2b6d1bbea6bbe5674d7bdf56fe",
+  "is_neural_policy": false,
+  "default_gui_deployment": false
+}

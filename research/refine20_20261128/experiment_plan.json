@@ -1,0 +1,54 @@
+{
+  "kind": "refine20_bounded_settled_correction_preregistration_v1",
+  "draft": false,
+  "budget": 23,
+  "budgets": {
+    "engineering": 3,
+    "train": 6,
+    "validation": 4,
+    "test": 10
+  },
+  "target_ml": 20.0,
+  "absolute_tolerance_ml": 0.5,
+  "easy_absolute_tolerance_ml": 1.0,
+  "deadline_s": 24.0,
+  "peak_all_label_spill_limit": 1,
+  "post_seconds": 2.0,
+  "approach_angles_deg": [
+    84.0,
+    84.1,
+    84.2
+  ],
+  "engineering_seed": 195001,
+  "train_seeds": [
+    195101,
+    195102
+  ],
+  "validation_seeds": [
+    195201,
+    195202
+  ],
+  "test_seeds": [
+    195301,
+    195302,
+    195303,
+    195304,
+    195305
+  ],
+  "baseline_policy": {
+    "enable_correction": false,
+    "approach_tilt_deg": 84.0
+  },
+  "maximum_correction_cycles": 1,
+  "all_motion_speeds_fixed": true,
+  "selection": "all_cases_feasible_then_mean_physical_time_else_MAE_then_total_peak_spill; exact_tie_insertion_order",
+  "engineering_is_not_training_or_selection": true,
+  "engineering_gate": "valid evidence, home within24s,peakspill<=1,no late changes; dose failure retained",
+  "training_method": "finite_one_angle_actual_settled_response_calibration_not_neural_or_PPO",
+  "v2_feedback_principle_not_original_v2_implementation": true,
+  "historical_v2_not_same_path_or_paired_baseline": true,
+  "original_strict_target_relative_tolerance": 0.001,
+  "default_model_deployment": false,
+  "test_may_not_select_or_update_model": true,
+  "narrow_randomization_not_arbitrary_goal_guarantee": true
+}

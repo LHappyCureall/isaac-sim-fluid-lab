@@ -1,0 +1,73 @@
+{
+  "draft": false,
+  "stage": "train",
+  "parent_plan_sha256": "204f5c94c95555da719cae1678e9f0d932f1881c6f288b1ce9fb8a3c44dc27c3",
+  "cases": [
+    {
+      "case_id": "train_a8400_s195101",
+      "target_ml": 20.0,
+      "seed": 195101,
+      "split": "train",
+      "role": "angle_84",
+      "policy": {
+        "approach_tilt_deg": 84.0,
+        "enable_correction": true
+      }
+    },
+    {
+      "case_id": "train_a8400_s195102",
+      "target_ml": 20.0,
+      "seed": 195102,
+      "split": "train",
+      "role": "angle_84",
+      "policy": {
+        "approach_tilt_deg": 84.0,
+        "enable_correction": true
+      }
+    },
+    {
+      "case_id": "train_a8410_s195101",
+      "target_ml": 20.0,
+      "seed": 195101,
+      "split": "train",
+      "role": "angle_84.1",
+      "policy": {
+        "approach_tilt_deg": 84.1,
+        "enable_correction": true
+      }
+    },
+    {
+      "case_id": "train_a8410_s195102",
+      "target_ml": 20.0,
+      "seed": 195102,
+      "split": "train",
+      "role": "angle_84.1",
+      "policy": {
+        "approach_tilt_deg": 84.1,
+        "enable_correction": true
+      }
+    },
+    {
+      "case_id": "train_a8420_s195101",
+      "target_ml": 20.0,
+      "seed": 195101,
+      "split": "train",
+      "role": "angle_84.2",
+      "policy": {
+        "approach_tilt_deg": 84.2,
+        "enable_correction": true
+      }
+    },
+    {
+      "case_id": "train_a8420_s195102",
+      "target_ml": 20.0,
+      "seed": 195102,
+      "split": "train",
+      "role": "angle_84.2",
+      "policy": {
+        "approach_tilt_deg": 84.2,
+        "enable_correction": true
+      }
+    }
+  ]
+}

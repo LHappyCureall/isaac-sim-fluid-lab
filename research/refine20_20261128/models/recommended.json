@@ -1,0 +1,27 @@
+{
+  "kind": "refine20_validation_recommendation_v1",
+  "created_at_utc": "2026-11-28T02:31:47.119894+00:00",
+  "task_kind": "fixed20ml_absolute05ml_24s_onegrain_v1",
+  "recommended_role": "candidate",
+  "policy": {
+    "approach_tilt_deg": 84.0,
+    "enable_correction": true
+  },
+  "checkpoint_sha256": "7b77f36ca95ca88253bb9e129058835a95ba59b4b6418a34820c7ad98417e779",
+  "validation_protocol_id": "e3c4c2180d79eaae5a7a72b1befd79b11429ebedeed4c1e836b2b9b08d31aac6",
+  "validation_journal_sha256": "eed44485e9a1dd1161d4bb4269c81ee84204dc2a8fc454ae1df07d7ce3e80f3c",
+  "validation_audit_sha256": "b4b27d5720cad288ccfdc2defba37e57f491b7e150d4e719f2d2b132a1c9b7f7",
+  "selection_scores": {
+    "baseline": [
+      1,
+      0.7401844999999962,
+      0
+    ],
+    "candidate": [
+      0,
+      11.925
+    ]
+  },
+  "selection_tool_sha256": "1b2cb90009e97289003f9983bfb1e4e67153ac2b6d1bbea6bbe5674d7bdf56fe",
+  "test_used_for_selection": false
+}

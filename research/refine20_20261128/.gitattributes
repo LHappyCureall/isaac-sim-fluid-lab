@@ -1,0 +1,10 @@
+# Preserve the frozen study source/model bytes and their SHA.
+* -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+.gitattributes text eol=lf
+README.md text eol=lf
+source_manifest.json text eol=lf
+*.py -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+models/*.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+experiment_plan.json -text
+engineering_matrix.json -text
+train_matrix.json -text

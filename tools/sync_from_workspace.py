@@ -1256,6 +1256,11 @@ def prepare_sync(workspace):
     easy = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(easy)
     prepared.extend(easy.prepare(root, PROJECT_ROOT, prepared))
+    refine_path = PROJECT_ROOT / "tools/refine20_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_refine20_bundle", refine_path)
+    refine = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(refine)
+    prepared.extend(refine.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 
