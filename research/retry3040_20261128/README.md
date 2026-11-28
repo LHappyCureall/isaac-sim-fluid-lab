@@ -1,0 +1,15 @@
+# Bounded 30 and 40 mL feedback expansion
+
+This study targets 30 and 40 mL within +/-0.5 mL in 24 raw physical seconds, including return to the original pregrasp position and 12 stable frames. Peak spill across all particle labels must remain at most 1 particle; another 2 seconds checks late water. The +/-1 mL secondary criterion and original +/-0.1% criteria (0.03/0.04 mL) remain separate. See [the actual selected results](../../results/retry3040_20261128.json).
+
+Both modes use the same target-specific first approach. Baseline permits one correction cycle; candidate additionally permits one conditional retry after an actual settled undershoot, current spill check and conservative full-home time check. All motion speeds remain fixed. Retry intent, actual cycle starts, approach drainage and skipped micro actions are recorded separately. A time budget rejection is not an executed second cycle, and an overdose cannot be removed by adding water.
+
+All eight development cases are retained, including the failed first 40 mL proposal. Only the preregistered signed 0.1 degree adjustment is allowed: retain a passing goal, lower an overdosing goal or raise an underdosing goal. Both angles move together. After the second four-case stage passes its gate, one fixed strategy is frozen before forty fresh tests: ten matched initial-state pairs for each goal. Test outcomes never select or retune the profile. This is a bounded feedback engineering experiment, not a new PPO or neural-policy training result.
+
+Three runtime files reference 25 unchanged V12 dependencies. The old 20 mL controllers and results are preserved and are not imported by this runtime. Initial and final profile JSON files, both development matrices, the signed adjustment receipt and frozen strategy are included. Profiles are small self-written inputs; the six geometric cache/asset inputs remain local. Restore the original module layout and licensed resources for a new protocol; do not rebind SHA guards or resume the author's private journals.
+
+Audit dependencies are referenced from the prior V12/V13 archives: projects/pour_policy_adaptive_learning/audit_prefix_calibration.py, audit_response_collection.py and cycle_samples.py, plus projects/pour_policy_training_v9/audit_fine_run.py from the earlier V9 reference. Their original relative paths and literal SHA guards are required. The documented inherited diagnostic substep counter at time zero is separate from checked completed solver frames.
+
+One posthoc test uses an explicit synthetic-private-path placeholder in its public failure fixture and removal assertion. It still tests error-text sanitization; the manifest records separate original and published SHA values. All runtime, strategy, profile and result bytes remain unchanged.
+
+No SDK, third-party robot assets, NPZ, raw step logs, videos or credentials are distributed. Kinematic pregrasp and particle mass truth are not contact-grasp, real-scale or hardware validation. Two fixed targets and narrow initial-state randomization do not guarantee arbitrary 20--40 mL. No GUI default or out-of-box GUI entry is replaced.

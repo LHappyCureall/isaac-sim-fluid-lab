@@ -1,0 +1,17 @@
+{
+  "kind": "retry3040_target_angle_profiles_v1",
+  "profile_id": "bounded_development_adjustment_002",
+  "goal_profiles": {
+    "30": {
+      "first_approach_tilt_deg": 85.5,
+      "retry_approach_tilt_deg": 85.6
+    },
+    "40": {
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    }
+  },
+  "origin": "one_preregistered_0.1degree_change_from_pilot001_actual_candidate_only",
+  "all_motion_speeds_fixed": true,
+  "prior_development_audit_sha256": "8560968b817ecb6fbd6207dfbf561660d2e8f874caa74a9a790ca90f920faac4"
+}

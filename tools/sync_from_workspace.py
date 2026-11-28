@@ -1266,6 +1266,11 @@ def prepare_sync(workspace):
     retry = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(retry)
     prepared.extend(retry.prepare(root, PROJECT_ROOT, prepared))
+    retry3040_path = PROJECT_ROOT / "tools/retry3040_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_retry3040_bundle", retry3040_path)
+    retry3040 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(retry3040)
+    prepared.extend(retry3040.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

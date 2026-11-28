@@ -1,0 +1,256 @@
+{
+  "kind": "fixed3040_conditional_second_cycle_strategy_v1",
+  "task_kind": "fixed30_40ml_absolute05ml_24s_onegrain_v1",
+  "created_at_utc": "2026-11-28T09:25:41.155933+00:00",
+  "experiment_plan_sha256": "dc4fa45c82dcb30011b3f682cafb3b2506babc50803e97d32f1bd74bbcd79add",
+  "targets_ml": [
+    30.0,
+    40.0
+  ],
+  "completed_development_stages": [
+    "pilot_001",
+    "pilot_002"
+  ],
+  "development_stages": [
+    {
+      "stage": "pilot_001",
+      "protocol_id": "1443cc1892af4a39cb2e8775d586c1ada4c515466ce9c0a340de9c171e986b4b",
+      "audit_sha256": "8560968b817ecb6fbd6207dfbf561660d2e8f874caa74a9a790ca90f920faac4",
+      "auditor_source_sha256": "f658538d89e404eaef4b9ba83d813c64e19d375983dfa0bdcf0fc61c4c1a1d75",
+      "input_artifact_sha256": {
+        "protocol.json": "587e58a5329bb1af5d85aeea1052ea50e7a3047574434af8484a36fe8253079d",
+        "summary.json": "ec30f09da30168633c3630f3def423eeaa875e112ea88a90f2798a016b2e96a6",
+        "job_state.json": "8e391acb446c22eda6d3c792784e6d59c3f4fb70689453853cf2b7af536e187f",
+        "episodes.jsonl": "2836bc5c69813f535dda6fce4c7e53b6d8126e252813de8fdfbe785c3be34cb1",
+        "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matrix.json": "f901c78e41100e790da5ebcd49c0acd18af8c9e6907c91f9b01c80ec51098e3c",
+        "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d"
+      },
+      "completed_sidecar_sha256": {
+        "pilot_001_baseline_t30_s197101": "648e7b0193eabf803c61964551e183f5d3064cdc6d11351c419f964222a117a2",
+        "pilot_001_baseline_t40_s197101": "3f28c331e68b6c4816e85f076be3ea691a80937e289e92586ad5c29e50c65f3a",
+        "pilot_001_candidate_t30_s197101": "ad0e83fa2eb080ea4bb069635a84eda159f87de6dfc254b646f32b97a55e5e80",
+        "pilot_001_candidate_t40_s197101": "12cadf426d29bc0ee680912586169aec719de99cbc47b775b54319b8607f3421"
+      },
+      "raw_artifact_sha256": {
+        "traces/pilot_001_baseline_t30_s197101.steps.jsonl.gz": "301f0f8bb4373983d2abd6047985228db64e2c483144caed2f4a97dc64ca9eed",
+        "traces/pilot_001_baseline_t30_s197101.post.jsonl.gz": "2daa87ee8dcf1780fa7f007f5bcd7f47e1e2be85bc21638b6efda2dcd6409178",
+        "traces/pilot_001_baseline_t40_s197101.steps.jsonl.gz": "652c1838c653f244b3a172230a9207f3a6e5618c2ef5d71e435c9e9b4f318d95",
+        "traces/pilot_001_baseline_t40_s197101.post.jsonl.gz": "4ea31745a936ce6b8cd77a28e67561e48b73a223bd0e253e669284d860ce9c43",
+        "traces/pilot_001_candidate_t30_s197101.steps.jsonl.gz": "8a14600525df8213cd96c498a8c2080a457fb737f6825670a954ba9378496ee4",
+        "traces/pilot_001_candidate_t30_s197101.post.jsonl.gz": "19dee5b174ba3a7632428186bb7efbb452c08ad688dc1213ca7343f63c8abc72",
+        "traces/pilot_001_candidate_t40_s197101.steps.jsonl.gz": "1c83167e0acce31f915a68b213698f89d4c071dc24e6876c08e1d95f249b42f5",
+        "traces/pilot_001_candidate_t40_s197101.post.jsonl.gz": "5fa61aaa66a8c27b5680f7bfe28cfe35fff0675abc521971bf2e860fc87a81fc"
+      },
+      "goal_profile_file": "projects/pour_policy_retry3040/profiles_pilot_001.json",
+      "goal_profile_id": "train_supported_engineering_proposal_001",
+      "goal_profile_raw_sha256": "5355230e6014686393150d52771519dc3f610963b1ace625b14559afddf3c147",
+      "goal_profiles": {
+        "30": {
+          "first_approach_tilt_deg": 85.5,
+          "retry_approach_tilt_deg": 85.6
+        },
+        "40": {
+          "first_approach_tilt_deg": 87.2,
+          "retry_approach_tilt_deg": 87.3
+        }
+      },
+      "candidate_by_goal": {
+        "30": {
+          "target_ml": 30.0,
+          "actual_received_ml": 29.839428000000005,
+          "error_ml": -0.16057199999999483,
+          "primary_passed": true
+        },
+        "40": {
+          "target_ml": 40.0,
+          "actual_received_ml": 40.92095700000001,
+          "error_ml": 0.9209570000000085,
+          "primary_passed": false
+        }
+      },
+      "all_non_dose_safety_passed": true,
+      "development_gate_passed": false
+    },
+    {
+      "stage": "pilot_002",
+      "protocol_id": "bce0a24b09cc9b8edb38099fa94525976e55b217de3c05679f3a75fe7e85d8e8",
+      "audit_sha256": "7566682bb0fb97bf093f0fbbb5fc3a44bec46df9cb0c6800d2385c3879f79a8e",
+      "auditor_source_sha256": "f658538d89e404eaef4b9ba83d813c64e19d375983dfa0bdcf0fc61c4c1a1d75",
+      "input_artifact_sha256": {
+        "protocol.json": "85491431a8a01b9207a889a45f0ae04c3f948748583fbab3a870765aef516ebe",
+        "summary.json": "71a650136b391406d9861e2866de8745c98031afcd38dd35cba986ff5a00cbff",
+        "job_state.json": "4dd7f41fa516566d252e709d79ed20857031d2d63589f6a4744f5d7cb61cc29e",
+        "episodes.jsonl": "6b6de8f81d3ffcae59d3dbd7bb35520566616295b832c6bf8db8b6caca7f8b8c",
+        "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "matrix.json": "631333addd6ded93078ed3a21760b7b5892c9af311da0956e1e8645b4e77d783",
+        "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d"
+      },
+      "completed_sidecar_sha256": {
+        "pilot_002_baseline_t30_s197101": "ce913dbff23e8551e7facc4ce15e55ab1ff30dfe7c94684a1e7844c47ea7f69c",
+        "pilot_002_baseline_t40_s197101": "d7f50c2d10322fd0d93239c0fcd7aa0de69c8e2395a208a7fabec50121434112",
+        "pilot_002_candidate_t30_s197101": "412dcaec5554cde014ec996bbac6e54050aef215fe9e9483e11aa39e096a869d",
+        "pilot_002_candidate_t40_s197101": "31fdaf09faf9d270136a0a07f41553ce786f8b187003f726138bfd049f4e5ce1"
+      },
+      "raw_artifact_sha256": {
+        "traces/pilot_002_baseline_t30_s197101.steps.jsonl.gz": "6223fa861b7fffb408426c2c2c26b8419877e26e57016331b991ac8afbe2bc8a",
+        "traces/pilot_002_baseline_t30_s197101.post.jsonl.gz": "e89f5297280651466fd5eacc834210edb00a4c8fd3c59f3aeb26298590f95550",
+        "traces/pilot_002_baseline_t40_s197101.steps.jsonl.gz": "4a67364bcb5395d19a298a51c55e8f942fc6a1041a031ad723dc2430d06b2895",
+        "traces/pilot_002_baseline_t40_s197101.post.jsonl.gz": "89496409d1ec4b468e899f599bbfe8b0492ddd452f2885bf3d2e532ef0f57f13",
+        "traces/pilot_002_candidate_t30_s197101.steps.jsonl.gz": "d64c22bff7dd915375dc0e72274a4bd6200b205b2a8a3e2e77a7ac6465030ca4",
+        "traces/pilot_002_candidate_t30_s197101.post.jsonl.gz": "4b025068ffd1361d59964a182372e106c85dc68f261cd36d6d969cfc7d4e8392",
+        "traces/pilot_002_candidate_t40_s197101.steps.jsonl.gz": "f7ca655693ad66b577b898cdef4c3b6541970ff406ced9db0b2e26c918540738",
+        "traces/pilot_002_candidate_t40_s197101.post.jsonl.gz": "3520698ec2bc92608411910ab40836bea92056c4cecf70396d55551c8b141f46"
+      },
+      "goal_profile_file": "projects/pour_policy_retry3040/profiles_pilot_002.json",
+      "goal_profile_id": "bounded_development_adjustment_002",
+      "goal_profile_raw_sha256": "74acf31d026878ff42e4dff1d43a4f0ee4da4a8620af340db3e8eae7d29ca2ca",
+      "goal_profiles": {
+        "30": {
+          "first_approach_tilt_deg": 85.5,
+          "retry_approach_tilt_deg": 85.6
+        },
+        "40": {
+          "first_approach_tilt_deg": 87.1,
+          "retry_approach_tilt_deg": 87.2
+        }
+      },
+      "candidate_by_goal": {
+        "30": {
+          "target_ml": 30.0,
+          "actual_received_ml": 29.839428000000005,
+          "error_ml": -0.16057199999999483,
+          "primary_passed": true
+        },
+        "40": {
+          "target_ml": 40.0,
+          "actual_received_ml": 40.42888200000001,
+          "error_ml": 0.42888200000000865,
+          "primary_passed": true
+        }
+      },
+      "all_non_dose_safety_passed": true,
+      "development_gate_passed": true
+    }
+  ],
+  "development_artifact_sha256": {
+    "pilot_001": {
+      "protocol.json": "587e58a5329bb1af5d85aeea1052ea50e7a3047574434af8484a36fe8253079d",
+      "summary.json": "ec30f09da30168633c3630f3def423eeaa875e112ea88a90f2798a016b2e96a6",
+      "job_state.json": "8e391acb446c22eda6d3c792784e6d59c3f4fb70689453853cf2b7af536e187f",
+      "episodes.jsonl": "2836bc5c69813f535dda6fce4c7e53b6d8126e252813de8fdfbe785c3be34cb1",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "f901c78e41100e790da5ebcd49c0acd18af8c9e6907c91f9b01c80ec51098e3c",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d",
+      "audit.json": "8560968b817ecb6fbd6207dfbf561660d2e8f874caa74a9a790ca90f920faac4"
+    },
+    "pilot_002": {
+      "protocol.json": "85491431a8a01b9207a889a45f0ae04c3f948748583fbab3a870765aef516ebe",
+      "summary.json": "71a650136b391406d9861e2866de8745c98031afcd38dd35cba986ff5a00cbff",
+      "job_state.json": "4dd7f41fa516566d252e709d79ed20857031d2d63589f6a4744f5d7cb61cc29e",
+      "episodes.jsonl": "6b6de8f81d3ffcae59d3dbd7bb35520566616295b832c6bf8db8b6caca7f8b8c",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "631333addd6ded93078ed3a21760b7b5892c9af311da0956e1e8645b4e77d783",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d",
+      "audit.json": "7566682bb0fb97bf093f0fbbb5fc3a44bec46df9cb0c6800d2385c3879f79a8e"
+    }
+  },
+  "development_adjustment": {
+    "file": "development_adjustment_001.json",
+    "sha256": "89ef80f43cadb5f08baf7e822545bececa170fef517318d004e7934c552af994"
+  },
+  "selected_development_stage": "pilot_002",
+  "development_cases": 8,
+  "development_gate_passed": true,
+  "goal_profile_file": "projects/pour_policy_retry3040/profiles_pilot_002.json",
+  "goal_profile_id": "bounded_development_adjustment_002",
+  "goal_profile_raw_sha256": "74acf31d026878ff42e4dff1d43a4f0ee4da4a8620af340db3e8eae7d29ca2ca",
+  "goal_profiles": {
+    "30": {
+      "first_approach_tilt_deg": 85.5,
+      "retry_approach_tilt_deg": 85.6
+    },
+    "40": {
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    }
+  },
+  "fixed_parameters": {
+    "prepare_fraction": 1.0,
+    "dose_tilt_deg_s": 25.6,
+    "return_fraction": 1.0,
+    "tail_lead_s": 0.26,
+    "stop_bias_ml": 10.0,
+    "max_dose_u_accel": 6.0,
+    "approach_tilt_deg_s": 6.0,
+    "action_delta_deg": 0.03,
+    "action_tilt_deg_s": 0.6,
+    "hold_seconds": 0.1,
+    "backoff_delta_deg": 0.5,
+    "backoff_tilt_deg_s": 4.0,
+    "anchor_return_tilt_deg_s": 6.0,
+    "quiet_seconds": 0.25,
+    "maximum_measurement_hold_s": 1.0
+  },
+  "maximum_cycles_baseline": 1,
+  "maximum_cycles_candidate": 2,
+  "test_cases": 40,
+  "test_goal_seed_conditions": 20,
+  "no_data_fitting_or_model_selection": true,
+  "no_new_training_search_or_neural_policy": true,
+  "test_used_for_selection": false,
+  "versions": {
+    "numpy": "2.3.1",
+    "warp": "1.17.0",
+    "newton": "1.6.1",
+    "device": "cuda:0"
+  },
+  "default_gui_deployment": false,
+  "no_continuous_goal_guarantee": true,
+  "freeze_helper_sha256": "b7bcd71fa86ff93e24412c390dbafa800f56d58496bc92ab4670239b23c40bd7",
+  "stage_auditor_source_sha256": "f658538d89e404eaef4b9ba83d813c64e19d375983dfa0bdcf0fc61c4c1a1d75",
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_retry3040/run_retry_test.py": "379d27427fc233c7af6e880153783ea394704811803a7a5b8034be0c721ff62f",
+    "projects/pour_policy_retry3040/task_score.py": "078bfbbd98f5cfcc2a4ded491dff92fe963346cc571b088b89a55bd11a5d372a",
+    "projects/pour_policy_retry3040/retry_control.py": "c71402904507995fbd8e08ad19991629ac085561725114adc72196aeaf61c0a2"
+  },
+  "input_sha256": {
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+    "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+    "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae",
+    "projects/pour_policy_retry3040/profiles_pilot_002.json": "74acf31d026878ff42e4dff1d43a4f0ee4da4a8620af340db3e8eae7d29ca2ca"
+  },
+  "gui_sha256": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2"
+  }
+}

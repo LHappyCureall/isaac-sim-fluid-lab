@@ -1,0 +1,15 @@
+{
+  "kind": "retry3040_preregistered_development_adjustment_v1",
+  "pilot001_audit_sha256": "8560968b817ecb6fbd6207dfbf561660d2e8f874caa74a9a790ca90f920faac4",
+  "changes": [
+    {
+      "target_ml": 40.0,
+      "actual_prior_error_ml": 0.9209570000000085,
+      "delta_degrees": -0.1
+    }
+  ],
+  "old_profile_sha256": "5355230e6014686393150d52771519dc3f610963b1ace625b14559afddf3c147",
+  "new_profile_sha256": "74acf31d026878ff42e4dff1d43a4f0ee4da4a8620af340db3e8eae7d29ca2ca",
+  "no_code_or_speed_or_criterion_change": true,
+  "test_data_read_or_used": false
+}

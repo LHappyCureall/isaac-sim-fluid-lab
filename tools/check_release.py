@@ -1087,6 +1087,10 @@ def main():
     retry_bundle = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(retry_bundle)
     retry_bundle.verify_public(ROOT)
+    spec = importlib.util.spec_from_file_location("check_retry3040_bundle", ROOT / "tools/retry3040_bundle.py")
+    retry3040_bundle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(retry3040_bundle)
+    retry3040_bundle.verify_public(ROOT)
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
     print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
@@ -1097,6 +1101,7 @@ def main():
     print("Easy20: separate6/4/10 beginner task, original strict criterion retained; baseline/candidate/recommendation and paired tests bound, no GUI/default or arbitrary-range claim.")
     print("Refine20: separate3/6/4/10 single-correction curriculum; primary +/-0.5mL and both secondary criteria bound, train/validation-only choice, no default or arbitrary-range claim.")
     print("Retry20: one seen development pilot and ten fresh pairs; fixed guarded retry, no training/selection, actual whole cycles and skipped micro-actions kept distinct.")
+    print("Retry30/40: eight bounded development cases and forty fresh paired tests; the one prescribed angle calibration is retained, no test-based profile selection or default/range claim.")
 
 
 if __name__ == "__main__":

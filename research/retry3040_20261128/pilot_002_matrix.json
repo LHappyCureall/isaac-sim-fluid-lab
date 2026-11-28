@@ -1,0 +1,67 @@
+{
+  "kind": "retry3040_stage_matrix_v1",
+  "draft": false,
+  "stage": "pilot_002",
+  "experiment_plan_sha256": "dc4fa45c82dcb30011b3f682cafb3b2506babc50803e97d32f1bd74bbcd79add",
+  "goal_profile_file": "projects/pour_policy_retry3040/profiles_pilot_002.json",
+  "goal_profiles": {
+    "30": {
+      "first_approach_tilt_deg": 85.5,
+      "retry_approach_tilt_deg": 85.6
+    },
+    "40": {
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    }
+  },
+  "cases": [
+    {
+      "case_id": "pilot_002_baseline_t30_s197101",
+      "target_ml": 30.0,
+      "seed": 197101,
+      "split": "development",
+      "role": "baseline",
+      "policy": {
+        "enable_retry": false,
+        "first_approach_tilt_deg": 85.5,
+        "retry_approach_tilt_deg": 85.6
+      }
+    },
+    {
+      "case_id": "pilot_002_baseline_t40_s197101",
+      "target_ml": 40.0,
+      "seed": 197101,
+      "split": "development",
+      "role": "baseline",
+      "policy": {
+        "enable_retry": false,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2
+      }
+    },
+    {
+      "case_id": "pilot_002_candidate_t30_s197101",
+      "target_ml": 30.0,
+      "seed": 197101,
+      "split": "development",
+      "role": "candidate",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 85.5,
+        "retry_approach_tilt_deg": 85.6
+      }
+    },
+    {
+      "case_id": "pilot_002_candidate_t40_s197101",
+      "target_ml": 40.0,
+      "seed": 197101,
+      "split": "development",
+      "role": "candidate",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2
+      }
+    }
+  ]
+}

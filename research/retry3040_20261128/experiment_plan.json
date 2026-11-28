@@ -1,0 +1,66 @@
+{
+  "kind": "retry3040_bounded_expansion_preregistration_v1",
+  "draft": false,
+  "targets_ml": [
+    30.0,
+    40.0
+  ],
+  "task": {
+    "absolute_tolerance_ml": 0.5,
+    "deadline_physical_seconds": 24.0,
+    "home_quiet_frames": 12,
+    "peak_all_label_spill_particles": 1,
+    "post_physical_seconds": 2.0,
+    "original_strict_relative_tolerance": 0.001
+  },
+  "development": {
+    "first_stage": "pilot_001",
+    "cases_per_stage": 4,
+    "maximum_stages": 2,
+    "maximum_cases": 8,
+    "seed": 197101,
+    "paired_roles": [
+      "baseline",
+      "candidate"
+    ],
+    "optional_second_stage_rule": "Only if candidate dose fails and all non-dose gates pass: lower first/retry angles by0.1degree on overdose, raise by0.1 on undershoot; retain passing goal profile. No other adjustment. No invalid/home/spill/late failure may be hidden.",
+    "fresh_test_gate": "Both candidate goals joint primary pass and all four cases non-dose safety pass; independent complete stage audit before strategy freeze. If not achieved by stage2, record development-stop; no test claims."
+  },
+  "test": {
+    "stage": "test",
+    "cases": 40,
+    "seeds": [
+      197301,
+      197302,
+      197303,
+      197304,
+      197305,
+      197306,
+      197307,
+      197308,
+      197309,
+      197310
+    ],
+    "targets_ml": [
+      30.0,
+      40.0
+    ],
+    "roles": [
+      "baseline",
+      "candidate"
+    ],
+    "paired_conditions": 20,
+    "fixed_strategy_frozen_before_every_reset": true,
+    "test_used_for_selection": false
+  },
+  "initial_goal_profile_file": "projects/pour_policy_retry3040/profiles_pilot_001.json",
+  "initial_goal_profile_raw_sha256": "5355230e6014686393150d52771519dc3f610963b1ace625b14559afddf3c147",
+  "fresh_seed_scan_sha256": "453c2bd83cad4acda4ef46f12065a0c3c3e90159af47304171fcc77cf0058361",
+  "no_new_training_search_or_neural_policy": true,
+  "baseline_definition": "one settled correction cycle, same first angle per goal",
+  "candidate_definition": "same first cycle plus at most one conditional measured second cycle",
+  "actual_angle_gap_degrees": 0.1,
+  "old20_implementation_and_results_immutable": true,
+  "no_default_gui_deployment": true,
+  "no_continuous_goal_guarantee": true
+}
