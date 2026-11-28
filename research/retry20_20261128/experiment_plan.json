@@ -1,0 +1,56 @@
+{
+  "kind": "retry20_fixed_policy_preregistration_v1",
+  "draft": false,
+  "budget": 21,
+  "budgets": {
+    "pilot": 1,
+    "test": 20
+  },
+  "target_ml": 20.0,
+  "absolute_tolerance_ml": 0.5,
+  "easy_absolute_tolerance_ml": 1.0,
+  "deadline_s": 24.0,
+  "peak_all_label_spill_limit": 1,
+  "post_seconds": 2.0,
+  "pilot_seed": 195301,
+  "pilot_is_seen_development_revisit": true,
+  "pilot_reference_sha256": {
+    "droplet_out/pour_policy_refine20/refine20_001/test/protocol.json": "8eaeae8e3539d0e81272f868e82c89d838ee0a542c804aff8f9bedbfaad24006",
+    "droplet_out/pour_policy_refine20/refine20_001/test/completed/test_candidate_s195301.json": "e5a859b9d07a3096031a73f87af4c5ed0347e88e97f57cf5ac46bbb00a9dbbf3",
+    "droplet_out/pour_policy_refine20/refine20_001/test/traces/test_candidate_s195301.steps.jsonl.gz": "2b1b30da2ae54589d808cba092e6d092ca28432036d8ddff831824dee68f206d",
+    "droplet_out/pour_policy_refine20/refine20_001/test/traces/test_candidate_s195301.post.jsonl.gz": "68b5ad82fcd07cf25a181b7aa5cc1ecb7ac38fdaec892152a8ef8623b14c1611"
+  },
+  "test_seeds": [
+    196301,
+    196302,
+    196303,
+    196304,
+    196305,
+    196306,
+    196307,
+    196308,
+    196309,
+    196310
+  ],
+  "profiles": {
+    "baseline": {
+      "enable_retry": false
+    },
+    "candidate": {
+      "enable_retry": true
+    }
+  },
+  "first_approach_tilt_deg": 84.0,
+  "retry_approach_tilt_deg": 84.1,
+  "first_cycle_and_all_speeds_fixed": true,
+  "maximum_cycles_baseline": 1,
+  "maximum_cycles_candidate": 2,
+  "retry_trigger": "only actual settled dose<19.5mL, peak spill<=1, one complete prior cycle, independent conservative full-home budget<=24s",
+  "pilot_gate": "all joint task criteria and an actually executed second complete cycle; exact old-case first-cycle physical trace equivalence",
+  "freeze_fixed_strategy_before_fresh_tests": true,
+  "data_fitting_or_model_selection": false,
+  "test_may_not_select_or_update_model": true,
+  "original_strict_target_relative_tolerance": 0.001,
+  "default_model_deployment": false,
+  "narrow_randomization_not_arbitrary_goal_guarantee": true
+}

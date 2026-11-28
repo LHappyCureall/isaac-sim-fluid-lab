@@ -1,0 +1,17 @@
+{
+  "draft": false,
+  "stage": "pilot",
+  "parent_plan_sha256": "fb91ad34f86e1298885fefc3b00c18b8077342916d53169906ddf98cf35db3b2",
+  "cases": [
+    {
+      "case_id": "pilot_known_s195301",
+      "target_ml": 20.0,
+      "seed": 195301,
+      "split": "development",
+      "role": "candidate",
+      "policy": {
+        "enable_retry": true
+      }
+    }
+  ]
+}

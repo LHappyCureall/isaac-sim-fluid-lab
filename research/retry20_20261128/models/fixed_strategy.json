@@ -1,0 +1,91 @@
+{
+  "kind": "fixed20_conditional_second_cycle_strategy_v1",
+  "task_kind": "fixed20ml_absolute05ml_24s_onegrain_v1",
+  "created_at_utc": "2026-11-28T05:23:19.273026+00:00",
+  "experiment_plan_sha256": "fb91ad34f86e1298885fefc3b00c18b8077342916d53169906ddf98cf35db3b2",
+  "profiles": {
+    "baseline": {
+      "enable_retry": false
+    },
+    "candidate": {
+      "enable_retry": true
+    }
+  },
+  "fixed_parameters": {
+    "prepare_fraction": 1.0,
+    "dose_tilt_deg_s": 25.6,
+    "return_fraction": 1.0,
+    "tail_lead_s": 0.26,
+    "stop_bias_ml": 10.0,
+    "max_dose_u_accel": 6.0,
+    "approach_tilt_deg_s": 6.0,
+    "action_delta_deg": 0.03,
+    "action_tilt_deg_s": 0.6,
+    "hold_seconds": 0.1,
+    "backoff_delta_deg": 0.5,
+    "backoff_tilt_deg_s": 4.0,
+    "anchor_return_tilt_deg_s": 6.0,
+    "quiet_seconds": 0.25,
+    "maximum_measurement_hold_s": 1.0,
+    "first_approach_tilt_deg": 84.0,
+    "retry_approach_tilt_deg": 84.1,
+    "maximum_cycles_baseline": 1,
+    "maximum_cycles_candidate": 2,
+    "target_ml": 20.0,
+    "absolute_tolerance_ml": 0.5,
+    "deadline_s": 24.0,
+    "peak_all_label_spill_limit": 1
+  },
+  "pilot_protocol_id": "dc7fa64f63bd9dd7f5e6ac5b49c73269dedb79d8a56979c8bc2eb44c4a53de88",
+  "pilot_journal_sha256": "a3fa726e971b954cd1f6a9bf67c2128d54ead71a2bcb7c294c0598275bced211",
+  "pilot_audit_sha256": "176a8ff70543fc87312ca37456e3ba0bd4fb9598e83a10ae11a2aa3805f38af0",
+  "pilot_uses_seen_previous_test_seed": true,
+  "pilot_joint_task_passed": true,
+  "no_data_fitting_or_model_selection": true,
+  "test_used_for_selection": false,
+  "default_gui_deployment": false,
+  "freeze_helper_sha256": "eddb39c0b8926608eafaf3e101de044842835880202606fc942e094a91310029",
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_retry20/run_retry_test.py": "c446085cf5714d99bd021568839327885f3142a3ac338075170ef97334fa23d4",
+    "projects/pour_policy_retry20/task_score.py": "28f40bedd47ffbb60931d1d6798a4d15f344a3a6e209ce18307e6f142109b992",
+    "projects/pour_policy_retry20/retry_control.py": "3110775a203c538b51c563603409cc035fb547c24faf7f5de4bc7ada3b60255b"
+  },
+  "input_sha256": {
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+    "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+    "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae"
+  },
+  "gui_sha256": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2"
+  }
+}
