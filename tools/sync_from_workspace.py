@@ -1276,6 +1276,11 @@ def prepare_sync(workspace):
     first40 = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(first40)
     prepared.extend(first40.prepare(root, PROJECT_ROOT, prepared))
+    coarse40_path = PROJECT_ROOT / "tools/coarse40_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_coarse40_bundle", coarse40_path)
+    coarse40 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(coarse40)
+    prepared.extend(coarse40.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

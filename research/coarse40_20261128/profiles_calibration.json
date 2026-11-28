@@ -1,0 +1,24 @@
+{
+  "kind": "coarse40_explicit_profiles_v1",
+  "profile_id": "coarse40_calibration001",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 25.6
+    },
+    "coarse_252": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 25.2
+    },
+    "coarse_248": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    }
+  }
+}

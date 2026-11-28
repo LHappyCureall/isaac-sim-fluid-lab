@@ -1,0 +1,94 @@
+{
+  "kind": "coarse40_coarse_speed_preregistration_v1",
+  "draft": false,
+  "target_ml": 40.0,
+  "task": {
+    "absolute_tolerance_ml": 0.5,
+    "deadline_physical_seconds": 24.0,
+    "home_quiet_frames": 12,
+    "peak_all_label_spill_particles": 1,
+    "post_physical_seconds": 2.0,
+    "original_strict_relative_tolerance": 0.001
+  },
+  "stages": {
+    "calibration": {
+      "cases": 6,
+      "seeds": [
+        197304,
+        198304
+      ],
+      "known_seen_development_not_holdout": true,
+      "baseline_speed_deg_s": 25.6,
+      "candidate_speeds_in_tie_order_deg_s": [
+        25.2,
+        24.8
+      ]
+    },
+    "validation": {
+      "cases": 4,
+      "seeds": [
+        198201,
+        198202
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "candidate_both_primary_required": true,
+      "baseline_valid_comparator_task_failures_retained": true,
+      "no_profile_retune_or_baseline_fallback": true
+    },
+    "test": {
+      "cases": 20,
+      "seeds": [
+        198401,
+        198402,
+        198403,
+        198404,
+        198405,
+        198406,
+        198407,
+        198408,
+        198409,
+        198410
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "test_used_for_selection": false
+    }
+  },
+  "selection_rule": "Both seen candidate cases must jointly pass unchanged dose/home/spill/late gates; feasible groups rank mean original physical action time then declared speed order. Other valid groups rank mean absolute error then sum all-label peak spill. Invalid groups cannot be selected. Baseline is a valid negative comparator, never an elite.",
+  "maximum_actual_cases": 30,
+  "only_coarse_dose_speed_varies": true,
+  "first_angle_fixed_deg": 87.0,
+  "retry_angle_fixed_deg": 87.2,
+  "enable_retry_for_both_roles": true,
+  "maximum_cycles": 2,
+  "all_other_speeds_micro_waits_and_physics_fixed": true,
+  "protected_versions_file": "projects/pour_policy_coarse40/protected_versions_001.json",
+  "protected_versions_raw_sha256": "aa7eef5d226bb1d7085ec27bb0cb731a741698efce23dcff3ff62397bbc83a3b",
+  "protected_file_count": 50,
+  "known_reference_sha256": {
+    "197304": {
+      "droplet_out/pour_policy_first40/first40_001/calibration/protocol.json": "cab91d43511163d6ad00a40a6ee3d6e1b32aea0154ac7155c6c0ba3eb164d57d",
+      "droplet_out/pour_policy_first40/first40_001/calibration/completed/calibration_first_8700_s197304.json": "f3d13a9f9e037e34c230569d682140cc45cd107884400c458fa0079d60de4854",
+      "droplet_out/pour_policy_first40/first40_001/calibration/traces/calibration_first_8700_s197304.steps.jsonl.gz": "e1a697aba9f577f6c6d13ca6a927c44d4e2271a469a7ae176afe287e7b50f722",
+      "droplet_out/pour_policy_first40/first40_001/calibration/traces/calibration_first_8700_s197304.post.jsonl.gz": "58f52e27321ba617fba7e2819bfcce2c7f02532ce4efa685cf66f8bd6aaf1289"
+    },
+    "198304": {
+      "droplet_out/pour_policy_first40/first40_001/test/protocol.json": "e09a9b0c9d4496c00e518e956d4a12bf4e3ff7e5b1be5d40fac2922536f63fb7",
+      "droplet_out/pour_policy_first40/first40_001/test/completed/test_candidate_s198304.json": "9d6206bd9f8efe43d15256eb9273448e8048d1ce901aa30fb5e770614852bf4c",
+      "droplet_out/pour_policy_first40/first40_001/test/traces/test_candidate_s198304.steps.jsonl.gz": "539c16742b01b20e91a5f1ea8a82813d1cc418d1be8119025d218987f9d2276e",
+      "droplet_out/pour_policy_first40/first40_001/test/traces/test_candidate_s198304.post.jsonl.gz": "66c737a1259d1e78ac7ad6e1ba9a1ac01fbe009c256d7ee2ec24023767744908"
+    }
+  },
+  "fresh_seed_scan_sha256": "7083c8eaefde85c6b5b625881f30695ae9a22124beeb827dabd884b09abef126",
+  "old20_and30_unchanged": true,
+  "first40_versions_unchanged": true,
+  "no_test_profile_selection": true,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false,
+  "causal_boundary": "Prior spill classification preceded first-angle action; landing time does not establish emission cause. Slower coarse dosing is a new development hypothesis only."
+}

@@ -1,0 +1,118 @@
+{
+  "draft": false,
+  "stage": "calibration",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 25.6
+    },
+    "coarse_252": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 25.2
+    },
+    "coarse_248": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    }
+  },
+  "profile_file": "projects/pour_policy_coarse40/profiles_calibration.json",
+  "experiment_plan_sha256": "604819128b25be9856e228a118a9567c34cc8bfe4e38441096015cb4dc7e05c7",
+  "cases": [
+    {
+      "case_id": "calibration_baseline_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "baseline",
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 25.6
+      }
+    },
+    {
+      "case_id": "calibration_baseline_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "baseline",
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 25.6
+      }
+    },
+    {
+      "case_id": "calibration_coarse_252_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "coarse_252",
+      "candidate_id": "coarse_252",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 25.2
+      }
+    },
+    {
+      "case_id": "calibration_coarse_252_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "coarse_252",
+      "candidate_id": "coarse_252",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 25.2
+      }
+    },
+    {
+      "case_id": "calibration_coarse_248_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "coarse_248",
+      "candidate_id": "coarse_248",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_coarse_248_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "coarse_248",
+      "candidate_id": "coarse_248",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    }
+  ]
+}
