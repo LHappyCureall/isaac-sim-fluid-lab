@@ -1,0 +1,86 @@
+{
+  "draft": false,
+  "stage": "calibration",
+  "experiment_plan_sha256": "e65b69757b9129940c0ff0786b90c38d83018d83e9022a524a0c8679f671b857",
+  "profile_file": "projects/pour_policy_first40/profiles_calibration.json",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8700": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8705": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.05,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8695": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 86.95,
+      "retry_approach_tilt_deg": 87.2
+    }
+  },
+  "cases": [
+    {
+      "case_id": "calibration_baseline_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "split": "development",
+      "role": "baseline",
+      "candidate_id": "baseline",
+      "profile_key": "baseline",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2
+      }
+    },
+    {
+      "case_id": "calibration_first_8700_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "split": "development",
+      "role": "candidate",
+      "candidate_id": "first_8700",
+      "profile_key": "first_8700",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2
+      }
+    },
+    {
+      "case_id": "calibration_first_8705_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "split": "development",
+      "role": "candidate",
+      "candidate_id": "first_8705",
+      "profile_key": "first_8705",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.05,
+        "retry_approach_tilt_deg": 87.2
+      }
+    },
+    {
+      "case_id": "calibration_first_8695_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "split": "development",
+      "role": "candidate",
+      "candidate_id": "first_8695",
+      "profile_key": "first_8695",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 86.95,
+        "retry_approach_tilt_deg": 87.2
+      }
+    }
+  ]
+}

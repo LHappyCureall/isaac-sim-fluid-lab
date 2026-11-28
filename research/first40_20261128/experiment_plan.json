@@ -1,0 +1,83 @@
+{
+  "kind": "first40_first_angle_preregistration_v1",
+  "draft": false,
+  "target_ml": 40.0,
+  "task": {
+    "absolute_tolerance_ml": 0.5,
+    "deadline_physical_seconds": 24.0,
+    "home_quiet_frames": 12,
+    "peak_all_label_spill_particles": 1,
+    "post_physical_seconds": 2.0,
+    "original_strict_relative_tolerance": 0.001
+  },
+  "stages": {
+    "calibration": {
+      "cases": 4,
+      "seed": 197304,
+      "known_seen_development_not_holdout": true,
+      "baseline_angle_deg": 87.1,
+      "candidate_angles_in_tie_order": [
+        87.0,
+        87.05,
+        86.95
+      ]
+    },
+    "validation": {
+      "cases": 4,
+      "seeds": [
+        198101,
+        198102
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "candidate_both_primary_and_all_cases_non_dose_safe_required": true,
+      "no_profile_retune_or_baseline_fallback": true
+    },
+    "test": {
+      "cases": 20,
+      "seeds": [
+        198301,
+        198302,
+        198303,
+        198304,
+        198305,
+        198306,
+        198307,
+        198308,
+        198309,
+        198310
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "test_used_for_selection": false
+    }
+  },
+  "selection_rule": "Among three candidates, invalid evidence rejected; feasible primary cases rank only by original physical action seconds, exact ties use declared angle order. Infeasible cases rank absolute error then all-label peak spill. Selected candidate must pass known dose/time/home/spill/late; baseline must reproduce old whole first-cycle physics with only documented t0 counter exception.",
+  "maximum_actual_cases": 28,
+  "only_first_angle_varies": true,
+  "first_angle_bounds_deg": [
+    86.9,
+    87.1
+  ],
+  "retry_angle_fixed_deg": 87.2,
+  "enable_retry_for_both_roles": true,
+  "maximum_cycles": 2,
+  "all_other_speeds_coarse_micro_waits_and_physics_fixed": true,
+  "protected_versions_file": "projects/pour_policy_first40/protected_versions_001.json",
+  "protected_versions_raw_sha256": "48e24924f8ef1e78f39dba4621e670961368cf561f699d62219d6d165fd5ab05",
+  "known_reference_sha256": {
+    "droplet_out/pour_policy_retry3040/expansion_001/test/protocol.json": "6d380f02fa468665d2a0d13acaa67dd045b27059a1ef59f5e0b8cbae5b75c3e9",
+    "droplet_out/pour_policy_retry3040/expansion_001/test/completed/test_candidate_t40_s197304.json": "6b3ec7f48e407ba2adcdaa39cf14ddf48a475b0969ddf00b6bd47eb0b397234c",
+    "droplet_out/pour_policy_retry3040/expansion_001/test/traces/test_candidate_t40_s197304.steps.jsonl.gz": "0c9fb9fb496ed3b54832bfdfdec8f99b822b4af13e93b9773e4c6c71de6eec5f",
+    "droplet_out/pour_policy_retry3040/expansion_001/test/traces/test_candidate_t40_s197304.post.jsonl.gz": "e4de489d4d0adfbacd0ecbff96f3377902e807aeac6824292a3defdefae30988"
+  },
+  "fresh_seed_scan_sha256": "cdf8783089ca096a63a5b9eba8b166cb8f576439741602bac15c8cd93302ec15",
+  "old20_and30_unchanged": true,
+  "no_test_profile_selection": true,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false
+}

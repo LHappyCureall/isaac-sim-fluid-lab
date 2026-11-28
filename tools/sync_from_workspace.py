@@ -1271,6 +1271,11 @@ def prepare_sync(workspace):
     retry3040 = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(retry3040)
     prepared.extend(retry3040.prepare(root, PROJECT_ROOT, prepared))
+    first40_path = PROJECT_ROOT / "tools/first40_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_first40_bundle", first40_path)
+    first40 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(first40)
+    prepared.extend(first40.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

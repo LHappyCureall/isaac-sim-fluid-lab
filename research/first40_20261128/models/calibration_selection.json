@@ -1,0 +1,373 @@
+{
+  "kind": "first40_calibration_selection_v1",
+  "created_at_utc": "2026-11-28T10:29:25.021873+00:00",
+  "task_kind": "fixed40ml_absolute05ml_24s_onegrain_v1",
+  "experiment_plan_sha256": "e65b69757b9129940c0ff0786b90c38d83018d83e9022a524a0c8679f671b857",
+  "profile_file": "projects/pour_policy_first40/profiles_calibration.json",
+  "profile_id": "first40_calibration001",
+  "profile_raw_sha256": "b0ca746dbcbabf117e61e1035a47fea67f1d08fee5d2c193bbbb83e1dfb82a59",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8700": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8705": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.05,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8695": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 86.95,
+      "retry_approach_tilt_deg": 87.2
+    }
+  },
+  "selected_profile_key": "first_8700",
+  "selected_first_approach_tilt_deg": 87.0,
+  "retry_approach_tilt_deg": 87.2,
+  "baseline_profile_key": "baseline",
+  "baseline_first_approach_tilt_deg": 87.1,
+  "both_roles_enable_retry": true,
+  "maximum_cycles": 2,
+  "only_first_angle_varies": true,
+  "fixed_parameters": {
+    "prepare_fraction": 1.0,
+    "dose_tilt_deg_s": 25.6,
+    "return_fraction": 1.0,
+    "tail_lead_s": 0.26,
+    "stop_bias_ml": 10.0,
+    "max_dose_u_accel": 6.0,
+    "approach_tilt_deg_s": 6.0,
+    "action_delta_deg": 0.03,
+    "action_tilt_deg_s": 0.6,
+    "hold_seconds": 0.1,
+    "backoff_delta_deg": 0.5,
+    "backoff_tilt_deg_s": 4.0,
+    "anchor_return_tilt_deg_s": 6.0,
+    "quiet_seconds": 0.25,
+    "maximum_measurement_hold_s": 1.0
+  },
+  "calibration_proof": {
+    "stage": "calibration",
+    "protocol_id": "0ed381bfbee2098b6afd0e2b8e7c07d588143c1342716729577274a4d115e70a",
+    "audit_sha256": "049b1671d1a682c677154c7df88f47bdc1cfe3302e7e07cceb53c3860867746e",
+    "auditor_source_sha256": "5ccd055256c5147430ff83db4c576dd17d32863ab1a4ad2cfc45e9aaf2ae654e",
+    "input_artifact_sha256": {
+      "protocol.json": "cab91d43511163d6ad00a40a6ee3d6e1b32aea0154ac7155c6c0ba3eb164d57d",
+      "summary.json": "beca18de0a0d6df1e728b2bb348b99df52f389b5dfa640c4310faca97191d497",
+      "job_state.json": "167111875604a83033ecbfd566910308f5756ec516af6d73d113e7f2878a784b",
+      "episodes.jsonl": "8669de71455f469ad92b0d6a73695ad530ab13fbad01c607cee036c5c912244a",
+      "responses.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matrix.json": "8b7a622ac7e1fca140651a9a7c708ae6a356805dd25779d45dc06c7fe7987b0e",
+      "versions.json": "ffbeb11700c0b3712df6c5b81ef191a35950366fb34d0782264a3bb917481b8d"
+    },
+    "completed_sidecar_sha256": {
+      "calibration_baseline_s197304": "97e3832a46e6d23f3dc5aeb7d6aeb935a5a2edbeac29af0e911c898a5a0c7da0",
+      "calibration_first_8700_s197304": "f3d13a9f9e037e34c230569d682140cc45cd107884400c458fa0079d60de4854",
+      "calibration_first_8705_s197304": "fcd1e7564d8c9ff0df66039b91fe61cc01f9eda262a5b24ed498468b8f6d50d9",
+      "calibration_first_8695_s197304": "79d0b6fac80bdf1ea9fb0b1800d4bf842f457c4e38323798f79838fab7b4a628"
+    },
+    "raw_artifact_sha256": {
+      "traces/calibration_baseline_s197304.steps.jsonl.gz": "294c28906bb11b81dc43bd577630b2a1c819a1425e155952f11b5d69c573a627",
+      "traces/calibration_baseline_s197304.post.jsonl.gz": "17c3d5d568cfd0b3836481d0111e63a1558465df77dca56f3c6a560d8abca509",
+      "traces/calibration_first_8700_s197304.steps.jsonl.gz": "e1a697aba9f577f6c6d13ca6a927c44d4e2271a469a7ae176afe287e7b50f722",
+      "traces/calibration_first_8700_s197304.post.jsonl.gz": "58f52e27321ba617fba7e2819bfcce2c7f02532ce4efa685cf66f8bd6aaf1289",
+      "traces/calibration_first_8705_s197304.steps.jsonl.gz": "fc8d631ae73ea70110e80e358c5bcd0c216759c08dbdb8a51955fd5da48a263b",
+      "traces/calibration_first_8705_s197304.post.jsonl.gz": "8c7629ae1d615139e811e9de95940b915415f37ee124ccc96528f0bc4a19638b",
+      "traces/calibration_first_8695_s197304.steps.jsonl.gz": "1cc8d4a0f7a36b7e84b081fc09b9c39965ed17575d39346a2c25ef876ace9e12",
+      "traces/calibration_first_8695_s197304.post.jsonl.gz": "b23c82cb2d1293ebf3f3dcf0a4272d852bc8808bf0703e2a5652d02297e62cfd"
+    },
+    "created_at_utc": "2026-11-28T10:27:51.607598+00:00",
+    "actual_cases": [
+      {
+        "episode_id": "calibration_baseline_s197304",
+        "profile_key": "baseline",
+        "role": "baseline",
+        "seed": 197304,
+        "actual_received_ml": 40.527297000000004,
+        "error_ml": 0.5272970000000043,
+        "absolute_error_ml": 0.5272970000000043,
+        "physical_time_s": 14.383333333333333,
+        "all_label_peak_spill_particles": 1,
+        "valid_evidence": true,
+        "primary_passed": false
+      },
+      {
+        "episode_id": "calibration_first_8700_s197304",
+        "profile_key": "first_8700",
+        "role": "candidate",
+        "seed": 197304,
+        "actual_received_ml": 39.87775800000001,
+        "error_ml": -0.12224199999999286,
+        "absolute_error_ml": 0.12224199999999286,
+        "physical_time_s": 14.266666666666666,
+        "all_label_peak_spill_particles": 1,
+        "valid_evidence": true,
+        "primary_passed": true
+      },
+      {
+        "episode_id": "calibration_first_8705_s197304",
+        "profile_key": "first_8705",
+        "role": "candidate",
+        "seed": 197304,
+        "actual_received_ml": 40.015539000000004,
+        "error_ml": 0.015539000000003966,
+        "absolute_error_ml": 0.015539000000003966,
+        "physical_time_s": 14.75,
+        "all_label_peak_spill_particles": 1,
+        "valid_evidence": true,
+        "primary_passed": true
+      },
+      {
+        "episode_id": "calibration_first_8695_s197304",
+        "profile_key": "first_8695",
+        "role": "candidate",
+        "seed": 197304,
+        "actual_received_ml": 39.503781000000004,
+        "error_ml": -0.4962189999999964,
+        "absolute_error_ml": 0.4962189999999964,
+        "physical_time_s": 14.633333333333333,
+        "all_label_peak_spill_particles": 1,
+        "valid_evidence": true,
+        "primary_passed": true
+      }
+    ]
+  },
+  "known_baseline_equivalence": {
+    "seen_development_case_not_independent": true,
+    "source_reference_sha256": {
+      "droplet_out/pour_policy_retry3040/expansion_001/test/protocol.json": "6d380f02fa468665d2a0d13acaa67dd045b27059a1ef59f5e0b8cbae5b75c3e9",
+      "droplet_out/pour_policy_retry3040/expansion_001/test/completed/test_candidate_t40_s197304.json": "6b3ec7f48e407ba2adcdaa39cf14ddf48a475b0969ddf00b6bd47eb0b397234c",
+      "droplet_out/pour_policy_retry3040/expansion_001/test/traces/test_candidate_t40_s197304.steps.jsonl.gz": "0c9fb9fb496ed3b54832bfdfdec8f99b822b4af13e93b9773e4c6c71de6eec5f",
+      "droplet_out/pour_policy_retry3040/expansion_001/test/traces/test_candidate_t40_s197304.post.jsonl.gz": "e4de489d4d0adfbacd0ecbff96f3377902e807aeac6824292a3defdefae30988"
+    },
+    "original_failed_received_ml": 40.527297000000004,
+    "first_cycle_end_physical_s": 12.683333333333334,
+    "first_cycle_frames": 762,
+    "zero_time_inherited_last_substeps": {
+      "reference": 6,
+      "pilot": 4,
+      "is_actual_completed_frame": false,
+      "excluded_from_equivalence_only": true,
+      "source_file": "assets/robot_testtube_pour/scripts/liquid.py",
+      "source_sha256": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+      "reason": "frozen reset clears frame count but retains last_substeps; step_frame recomputes each real frame from actual velocity"
+    },
+    "all_completed_frame_substep_counts_exactly_equal": true,
+    "first_cycle_water_motion_partitions_exactly_equal": true,
+    "first_cycle_original_events_exactly_equal": true,
+    "verified": true,
+    "actual_water_motion_partitions_exactly_equal": true
+  },
+  "selector_source_sha256": "694394edea738fc5fdd7dc42363a73c499906601187536712836a268a11ba9dc",
+  "auditor_source_sha256": "5ccd055256c5147430ff83db4c576dd17d32863ab1a4ad2cfc45e9aaf2ae654e",
+  "versions": {
+    "numpy": "2.3.1",
+    "warp": "1.17.0",
+    "newton": "1.6.1",
+    "device": "cuda:0"
+  },
+  "source_sha256": {
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_first40/run_first_test.py": "7127f6fd81af4ddcda61791c7e5b0517a4d449e9c47bb55c099ca518352ff8fe",
+    "projects/pour_policy_first40/task_score.py": "3756da0fd0d597dac6d6069ed8bc6524c6a90db5972785dd7ba4571eca1b1a7e",
+    "projects/pour_policy_first40/first_control.py": "3a9f84bec0a31e77fa034d3ea95d6dda28e253827a5d88d4153213bb0f1b9299"
+  },
+  "input_sha256": {
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "projects/pour_policy_training_v3/mouth_pivot_z022_cache.npz": "f0dec80ef890b2ef8946627af98be8d736e2a3d684e7f8f7bf2adb120aa46d40",
+    "projects/pour_policy_training_v3/mouth_pivot_z026_cache.npz": "86ebd4f519f9341fc39c21b02fea47fb9cebe6117d367da68ef6729391dc1bfd",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "projects/pour_policy_training_v3/mouth_pivot_lift025_z022_cache.npz": "106706110581ef85ac87137aafaf5f513491b37f9f6ea16c2f427f7685c06a1f",
+    "projects/pour_policy_training_v3/fast_path_smooth_cache.npz": "9d4e24e28e93d21320856ed7ae67282b32d8ce62587d3e46131b2d9a8bcbe7ae",
+    "projects/pour_policy_first40/profiles_calibration.json": "b0ca746dbcbabf117e61e1035a47fea67f1d08fee5d2c193bbbb83e1dfb82a59",
+    "projects/pour_policy_first40/protected_versions_001.json": "48e24924f8ef1e78f39dba4621e670961368cf561f699d62219d6d165fd5ab05"
+  },
+  "gui_sha256": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2"
+  },
+  "protected_file_sha256": {
+    "assets/robot_testtube_pour/policy/precision_v2.json": "981028ed1d5fe57fceb3e8840b9542df28da21108ae3bbe6c837b4df1e2ad8e8",
+    "assets/robot_testtube_pour/policy/target_volume_candidate.json": "35c6d2e3c2ac488e77e2083d8fa5cc1687f8b9b743539dd351d6500280054dd2",
+    "assets/robot_testtube_pour/policy/target_volume_policy.json": "256dbf45fd8445f57519a69d00493adf9c48f972b3a0cf5805961cdc4ba64147",
+    "assets/robot_testtube_pour/scripts/direct_fast_control.py": "35adf6fc22c936c8586299c05614e996b9f6575e87487e2286a321d516ef3fff",
+    "assets/robot_testtube_pour/scripts/direct_fast_geometry.py": "82617498436b0a9af8efab585b77acb657711b07aa735e77138355b91742798d",
+    "assets/robot_testtube_pour/scripts/direct_training_env.py": "cfbc9ac83b12a44576a7659bcc37f418532f819dec07ad6636c6c536fa51b7ee",
+    "assets/robot_testtube_pour/scripts/fast_control.py": "4c325050e3f052a4bb30562438d73206e9d008ea502bb7c326672c1707e650b5",
+    "assets/robot_testtube_pour/scripts/fast_geometry.py": "7a259763a3f12a9c0866fed02226a76e777d3ff654846954cd777270875b10ef",
+    "assets/robot_testtube_pour/scripts/fast_training_env.py": "454a492bd433de2ce9e84191fc466d11ba57ad29ba3c9595fae8803a1ba36d5b",
+    "assets/robot_testtube_pour/scripts/geometry.py": "a0071f92d282c0bb10d8c2e121fd65e5a91c08bf40b9188b3a4594fc9bb5cfda",
+    "assets/robot_testtube_pour/scripts/liquid.py": "7e283343805c588d8761f02f69817d60f7a4da794e471351a946f698f7def8ed",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_fast_geometry.py": "44b11468f1ecfbad56127a1747d7c54848b0b56475c0c3ea0c27b6d20eaaaffb",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_control_v2.py": "6b17db742e812777d562e6cd15f2c53ee5009fcf75c60052b702d4e5707c95ca",
+    "assets/robot_testtube_pour/scripts/mouth_pivot_lift_geometry.py": "6f5ee0f694958ede3f111b1d27134c6571c4d7ef0ce5dae96425c4829638bfa9",
+    "assets/robot_testtube_pour/scripts/pour_training_env.py": "ce9294fdf27d14b31bdcc5cbd8a099d2e51c6b47b5e7bbec2621a80493452907",
+    "assets/robot_testtube_pour/scripts/robot.py": "6b735760b81ccfb6733db620cbb852e1fabd55cb5b0fed662d03fe17095e6a1d",
+    "assets/robot_testtube_pour/scripts/target_control.py": "a1740d547a8bdb031a80908088c35dfbc5c0020838a090b2d8bdb016b2ffbe5c",
+    "droplet_out/pour_policy_retry20/retry20_001/fixed_strategy.json": "57c223612140ae56263750c3b82a1f436bdd9ff63606ae2253437eee27dc99c2",
+    "droplet_out/pour_policy_retry3040/expansion_001/fixed_strategy.json": "784499ad76bf1a43bdf0dce38a8957b1c1907a436b963ce986f050e6b0f1fc5e",
+    "projects/isaac-sim-fluid-lab/results/retry20_20261128.json": "6a73454d21225fb46b421fa61a61747644d06c15412df06cb54ba0de70198740",
+    "projects/isaac-sim-fluid-lab/results/retry3040_20261128.json": "a7f7a959e8484ab238474d429ab594d4b29d63a305dd55f8a79491b6a5252a26",
+    "projects/pour_policy_adaptive_learning/cycle_control.py": "927d2b7600ec1d0d40a34296659c29bb4727e73969a1d9810648347972a79daa",
+    "projects/pour_policy_adaptive_learning/cycle_env.py": "fdf97bcb9480d680a9fae539d55efae93c2d1331fe89303dfd2bd0e89a7227c7",
+    "projects/pour_policy_adaptive_learning/response_control.py": "875b8629d04fe17a8f67ec6287cc60d4644ffa562baa1682ac3f1a01a78730a6",
+    "projects/pour_policy_adaptive_learning/response_env.py": "b2f49a62c6340ff62379a4d5d525e795d72d7d2de67a4ee0392aec0d8ec8f9f5",
+    "projects/pour_policy_adaptive_learning/response_samples.py": "adf2a584b9adaa6ba90979ebb51c95f3112588c70e2821e2145d6022409b02b3",
+    "projects/pour_policy_retry20/experiment_plan_001.json": "fb91ad34f86e1298885fefc3b00c18b8077342916d53169906ddf98cf35db3b2",
+    "projects/pour_policy_retry20/retry_control.py": "3110775a203c538b51c563603409cc035fb547c24faf7f5de4bc7ada3b60255b",
+    "projects/pour_policy_retry20/run_retry_test.py": "c446085cf5714d99bd021568839327885f3142a3ac338075170ef97334fa23d4",
+    "projects/pour_policy_retry20/task_score.py": "28f40bedd47ffbb60931d1d6798a4d15f344a3a6e209ce18307e6f142109b992",
+    "projects/pour_policy_retry3040/experiment_plan_001.json": "dc4fa45c82dcb30011b3f682cafb3b2506babc50803e97d32f1bd74bbcd79add",
+    "projects/pour_policy_retry3040/profiles_pilot_001.json": "5355230e6014686393150d52771519dc3f610963b1ace625b14559afddf3c147",
+    "projects/pour_policy_retry3040/profiles_pilot_002.json": "74acf31d026878ff42e4dff1d43a4f0ee4da4a8620af340db3e8eae7d29ca2ca",
+    "projects/pour_policy_retry3040/retry_control.py": "c71402904507995fbd8e08ad19991629ac085561725114adc72196aeaf61c0a2",
+    "projects/pour_policy_retry3040/run_retry_test.py": "379d27427fc233c7af6e880153783ea394704811803a7a5b8034be0c721ff62f",
+    "projects/pour_policy_retry3040/task_score.py": "078bfbbd98f5cfcc2a4ded491dff92fe963346cc571b088b89a55bd11a5d372a",
+    "projects/pour_policy_training_v10/range_control.py": "7e76bf74c8d266fc7a3eb47eeeba2f6f1ed68880f64835b2114cf030927df729",
+    "projects/pour_policy_training_v9/fine_control.py": "00e5181e6f1c1c111e258c24fd3decf91655823523e3fc826411b2678bde51ff",
+    "projects/pour_policy_training_v9/fine_env.py": "98f8589e2022248bcec969c1d6a09bbbfff57a07a3e8bd30a4fea47f16e4a777",
+    "projects/pour_policy_training_v9/legacy_control.py": "006b279080fd474770788e5ae50d97ca606ef89d56a2b7d6da3e3f39a6bad821",
+    "projects/pour_policy_training_v9/run_fine_search.py": "8a9f10e4d2448ff67ab44e5e6bf58c01ecaffd2d8b3a4441249403025dcdb251",
+    "train_target_volume_policy.py": "014adbd9673c5317a80d796ebb8c4ea36696cc0ec3e1ae433c5db235b8c29ef7"
+  },
+  "calibration_gate_passed": true,
+  "calibration_cases": 4,
+  "all_calibration_cases": [
+    {
+      "episode_id": "calibration_baseline_s197304",
+      "profile_key": "baseline",
+      "role": "baseline",
+      "seed": 197304,
+      "actual_received_ml": 40.527297000000004,
+      "error_ml": 0.5272970000000043,
+      "absolute_error_ml": 0.5272970000000043,
+      "physical_time_s": 14.383333333333333,
+      "all_label_peak_spill_particles": 1,
+      "valid_evidence": true,
+      "primary_passed": false
+    },
+    {
+      "episode_id": "calibration_first_8700_s197304",
+      "profile_key": "first_8700",
+      "role": "candidate",
+      "seed": 197304,
+      "actual_received_ml": 39.87775800000001,
+      "error_ml": -0.12224199999999286,
+      "absolute_error_ml": 0.12224199999999286,
+      "physical_time_s": 14.266666666666666,
+      "all_label_peak_spill_particles": 1,
+      "valid_evidence": true,
+      "primary_passed": true
+    },
+    {
+      "episode_id": "calibration_first_8705_s197304",
+      "profile_key": "first_8705",
+      "role": "candidate",
+      "seed": 197304,
+      "actual_received_ml": 40.015539000000004,
+      "error_ml": 0.015539000000003966,
+      "absolute_error_ml": 0.015539000000003966,
+      "physical_time_s": 14.75,
+      "all_label_peak_spill_particles": 1,
+      "valid_evidence": true,
+      "primary_passed": true
+    },
+    {
+      "episode_id": "calibration_first_8695_s197304",
+      "profile_key": "first_8695",
+      "role": "candidate",
+      "seed": 197304,
+      "actual_received_ml": 39.503781000000004,
+      "error_ml": -0.4962189999999964,
+      "absolute_error_ml": 0.4962189999999964,
+      "physical_time_s": 14.633333333333333,
+      "all_label_peak_spill_particles": 1,
+      "valid_evidence": true,
+      "primary_passed": true
+    }
+  ],
+  "candidate_ranking": [
+    {
+      "profile_key": "first_8700",
+      "rank": [
+        0,
+        14.266666666666666,
+        0
+      ]
+    },
+    {
+      "profile_key": "first_8695",
+      "rank": [
+        0,
+        14.633333333333333,
+        2
+      ]
+    },
+    {
+      "profile_key": "first_8705",
+      "rank": [
+        0,
+        14.75,
+        1
+      ]
+    }
+  ],
+  "candidate_scores": {
+    "first_8700": [
+      0,
+      14.266666666666666
+    ],
+    "first_8705": [
+      0,
+      14.75
+    ],
+    "first_8695": [
+      0,
+      14.633333333333333
+    ]
+  },
+  "candidate_tie_order": [
+    "first_8700",
+    "first_8705",
+    "first_8695"
+  ],
+  "known_case_is_seen_development": true,
+  "validation_used_for_selection": false,
+  "test_used_for_selection": false,
+  "feasible_rank_uses_only_physical_time_then_exact_declared_order": true,
+  "validation_may_gate_but_not_retune_or_fallback": true,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "first40_explicit_profiles_v1",
+  "profile_id": "first40_calibration001",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8700": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8705": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.05,
+      "retry_approach_tilt_deg": 87.2
+    },
+    "first_8695": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 86.95,
+      "retry_approach_tilt_deg": 87.2
+    }
+  }
+}

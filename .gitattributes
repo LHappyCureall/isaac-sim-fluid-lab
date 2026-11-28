@@ -14,3 +14,4 @@ results/easy20_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-b
 results/refine20_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 results/retry20_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 results/retry3040_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+results/first40_20261128.json -text whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
