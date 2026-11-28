@@ -673,4 +673,3 @@ def verify_public(project):
         need(image["file"] == PLOT_PUBLIC and raw.startswith(b"\x89PNG\r\n\x1a\n") and digest(raw) == image["sha256"], "Actual selected figure changed")
     base.private_paths((project / REPORT).read_bytes())
     base.private_paths((project / PUBLIC / "source_manifest.json").read_bytes())
-
