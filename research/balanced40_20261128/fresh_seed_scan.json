@@ -1,0 +1,23 @@
+{
+  "known_development_seeds": [
+    197304,
+    198304,
+    198403
+  ],
+  "fresh_validation_and_test_seeds": [
+    199101,
+    199102,
+    199301,
+    199302,
+    199303,
+    199304,
+    199305,
+    199306,
+    199307,
+    199308,
+    199309,
+    199310
+  ],
+  "scanned_prior_files": 162,
+  "collisions": []
+}

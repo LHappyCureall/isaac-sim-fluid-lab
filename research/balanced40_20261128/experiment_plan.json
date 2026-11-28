@@ -1,0 +1,108 @@
+{
+  "kind": "balanced40_first_angle_preregistration_v1",
+  "draft": false,
+  "target_ml": 40.0,
+  "task": {
+    "absolute_tolerance_ml": 0.5,
+    "deadline_physical_seconds": 24.0,
+    "home_quiet_frames": 12,
+    "peak_all_label_spill_particles": 1,
+    "post_physical_seconds": 2.0,
+    "original_strict_relative_tolerance": 0.001
+  },
+  "stages": {
+    "calibration": {
+      "cases": 9,
+      "seeds": [
+        197304,
+        198304,
+        198403
+      ],
+      "known_seen_development_not_holdout": true,
+      "baseline_first_angle_deg": 87.0,
+      "candidate_angles_in_tie_order_deg": [
+        87.05,
+        87.1
+      ]
+    },
+    "validation": {
+      "cases": 4,
+      "seeds": [
+        199101,
+        199102
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "candidate_both_primary_required": true,
+      "baseline_valid_comparator_task_failures_retained": true,
+      "no_profile_retune_or_baseline_fallback": true
+    },
+    "test": {
+      "cases": 20,
+      "seeds": [
+        199301,
+        199302,
+        199303,
+        199304,
+        199305,
+        199306,
+        199307,
+        199308,
+        199309,
+        199310
+      ],
+      "roles": [
+        "baseline",
+        "candidate"
+      ],
+      "test_used_for_selection": false
+    }
+  },
+  "selection_rule": "Candidate must jointly pass all three seen cases. Feasible groups rank only mean original physical action time then declared angle order; other valid groups rank mean absolute error then sum peak spill. Invalid groups cannot be selected. Negative baseline comparators never compete as elites.",
+  "maximum_actual_cases": 33,
+  "only_first_angle_varies": true,
+  "coarse_dose_speed_fixed_deg_s": 24.8,
+  "baseline_first_angle_deg": 87.0,
+  "first_angle_choices_deg": [
+    87.0,
+    87.05,
+    87.1
+  ],
+  "retry_angle_fixed_deg": 87.2,
+  "enable_retry_for_both_roles": true,
+  "maximum_cycles": 2,
+  "all_motion_speeds_micro_waits_and_physics_fixed": true,
+  "protected_versions_file": "projects/pour_policy_balanced40/protected_versions_001.json",
+  "protected_versions_raw_sha256": "1daa7e794f927151cd17dd3351381ca4322a074cf3aeca37868a47acc7f34e0e",
+  "protected_file_count": 58,
+  "known_reference_sha256": {
+    "197304": {
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/protocol.json": "db253ad1961267dafb922fb8d9faf1a0f8f38cc2280d1e2e810a88c03c8edc7b",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/completed/calibration_coarse_248_s197304.json": "d77024f8190bbdbad2f3c07f54dae329ca6e4e31223f07ed7ffd85a9b0e0a154",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/traces/calibration_coarse_248_s197304.steps.jsonl.gz": "22d604843e4ae0adcc7e070bb8cc15a9b1c357472167b9818faa913eccf9fa1e",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/traces/calibration_coarse_248_s197304.post.jsonl.gz": "991967464a3c9c7c84c952e51bda628d534262370561b2d07514ebed2837bc41"
+    },
+    "198304": {
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/protocol.json": "db253ad1961267dafb922fb8d9faf1a0f8f38cc2280d1e2e810a88c03c8edc7b",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/completed/calibration_coarse_248_s198304.json": "9d29e94d46de3938a45e911f3f6c10b05ce4510d91f414ce4fc7ab885dcd8763",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/traces/calibration_coarse_248_s198304.steps.jsonl.gz": "0a63f38b5d0c83bc954738859e67ec2759d5a80d2c8a4160614f807e933366f1",
+      "droplet_out/pour_policy_coarse40/coarse40_001/calibration/traces/calibration_coarse_248_s198304.post.jsonl.gz": "b376a6bf252c1654de84549ad83bd51f0e0f10a72fb911166ef16fee65ac86a1"
+    },
+    "198403": {
+      "droplet_out/pour_policy_coarse40/coarse40_001/test/protocol.json": "bf207edc94c2137a0196cd9fc4fd795c3141104c889e5bc6892853f06555e02f",
+      "droplet_out/pour_policy_coarse40/coarse40_001/test/completed/test_candidate_s198403.json": "af8e560f80c566bb0f11aea9e1ebd4b5485488b1ea39ce8e29d3611770924f6a",
+      "droplet_out/pour_policy_coarse40/coarse40_001/test/traces/test_candidate_s198403.steps.jsonl.gz": "63ffa124282db98426c5140c2cf52b29c2447b24cc0b59df45878a27ffb72698",
+      "droplet_out/pour_policy_coarse40/coarse40_001/test/traces/test_candidate_s198403.post.jsonl.gz": "04a6e656d189028396dac67b9ec0d21047f450b9177cdc62345a098a16b235fe"
+    }
+  },
+  "fresh_seed_scan_sha256": "39ee57dbc351f92bff5326f9be54bf60b083b7af737d950c71b5c71a0532dfef",
+  "old20_and30_unchanged": true,
+  "first40_versions_unchanged": true,
+  "coarse40_versions_unchanged": true,
+  "no_test_profile_selection": true,
+  "default_gui_deployment": false,
+  "all_continuous_goals_guaranteed": false,
+  "bounded_next_step": "One final local first-angle grid after the completed coarse-speed study; no silent unbounded continuation or reuse of seen test conditions as new holdouts."
+}

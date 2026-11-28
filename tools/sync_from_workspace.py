@@ -1281,6 +1281,11 @@ def prepare_sync(workspace):
     coarse40 = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(coarse40)
     prepared.extend(coarse40.prepare(root, PROJECT_ROOT, prepared))
+    balanced40_path = PROJECT_ROOT / "tools/balanced40_bundle.py"
+    spec = importlib.util.spec_from_file_location("sync_balanced40_bundle", balanced40_path)
+    balanced40 = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(balanced40)
+    prepared.extend(balanced40.prepare(root, PROJECT_ROOT, prepared))
     return prepared
 
 

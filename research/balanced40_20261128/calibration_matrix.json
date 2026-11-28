@@ -1,0 +1,163 @@
+{
+  "draft": false,
+  "stage": "calibration",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    },
+    "first_8705": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.05,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    },
+    "first_8710": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    }
+  },
+  "profile_file": "projects/pour_policy_balanced40/profiles_calibration.json",
+  "experiment_plan_sha256": "78fcd8ea2adee55ccf7c2fa1adfbd407e904a230c1bd88e8969270fa41606ae3",
+  "cases": [
+    {
+      "case_id": "calibration_baseline_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "baseline",
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_baseline_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "baseline",
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_baseline_s198403",
+      "target_ml": 40.0,
+      "seed": 198403,
+      "profile_key": "baseline",
+      "candidate_id": "baseline",
+      "role": "baseline",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.0,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8705_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "first_8705",
+      "candidate_id": "first_8705",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.05,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8705_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "first_8705",
+      "candidate_id": "first_8705",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.05,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8705_s198403",
+      "target_ml": 40.0,
+      "seed": 198403,
+      "profile_key": "first_8705",
+      "candidate_id": "first_8705",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.05,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8710_s197304",
+      "target_ml": 40.0,
+      "seed": 197304,
+      "profile_key": "first_8710",
+      "candidate_id": "first_8710",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8710_s198304",
+      "target_ml": 40.0,
+      "seed": 198304,
+      "profile_key": "first_8710",
+      "candidate_id": "first_8710",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    },
+    {
+      "case_id": "calibration_first_8710_s198403",
+      "target_ml": 40.0,
+      "seed": 198403,
+      "profile_key": "first_8710",
+      "candidate_id": "first_8710",
+      "role": "candidate",
+      "split": "development",
+      "policy": {
+        "enable_retry": true,
+        "first_approach_tilt_deg": 87.1,
+        "retry_approach_tilt_deg": 87.2,
+        "coarse_dose_tilt_deg_s": 24.8
+      }
+    }
+  ]
+}

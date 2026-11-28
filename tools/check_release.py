@@ -1099,6 +1099,10 @@ def main():
     coarse40_bundle = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(coarse40_bundle)
     coarse40_bundle.verify_public(ROOT)
+    spec = importlib.util.spec_from_file_location("check_balanced40_bundle", ROOT / "tools/balanced40_bundle.py")
+    balanced40_bundle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(balanced40_bundle)
+    balanced40_bundle.verify_public(ROOT)
     print(f"PASS: {len(sources)} Python sources compile; baseline, quick, full, V2, V3/V4, dose-window, 12 s correction results and 14 pure V5 score checks are consistent.")
     print("GPU physics is validated separately in Isaac Sim; this check does not run it.")
     print("Archived source selection rejects unreviewed edits and missing or changed snapshots.")
@@ -1112,6 +1116,7 @@ def main():
     print("Retry30/40: eight bounded development cases and forty fresh paired tests; the one prescribed angle calibration is retained, no test-based profile selection or default/range claim.")
     print("First40: only the first angle is calibrated from a four-run known grid; fresh validation gates a fixed choice before paired tests, both roles retain the same retry, old20/30 versions remain bound.")
     print("Coarse40: grouped two-seed coarse-speed calibration; valid negative baselines are retained, candidate joint criteria remain unchanged, preparation-only control proofs stop before treatment.")
+    print("Balanced40: three-condition first-angle calibration at fixed24.8deg/s; valid negative controls and all actual cases remain, quiet-coarse proofs stop before the changed first angle, no test-based retuning or GUI default.")
 
 
 if __name__ == "__main__":

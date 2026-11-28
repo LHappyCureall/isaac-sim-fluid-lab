@@ -1,0 +1,24 @@
+{
+  "kind": "balanced40_explicit_profiles_v1",
+  "profile_id": "balanced40_calibration001",
+  "profiles": {
+    "baseline": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.0,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    },
+    "first_8705": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.05,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    },
+    "first_8710": {
+      "enable_retry": true,
+      "first_approach_tilt_deg": 87.1,
+      "retry_approach_tilt_deg": 87.2,
+      "coarse_dose_tilt_deg_s": 24.8
+    }
+  }
+}
